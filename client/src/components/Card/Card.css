@@ -1,0 +1,74 @@
+.card {
+  position: relative;
+  width: inherit;
+  background: white;
+  padding: 15px 15px 30px;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 10px 30px rgba(100,100,100,.08), 0 3px 8px rgba(0,0,0,.01);
+
+  &:hover {
+    transform: translateY(-2px);
+    transition: all .45s ease;
+  }
+
+  @media(--s) {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  a {
+    word-break: break-all;
+    font-family: var(--consoleFont);
+    font-weight: 400;
+    font-size: 12px;
+    text-decoration: underline;
+  }
+
+  &:hover .leadImg {
+    display: none;
+    opacity: .5;
+  }
+  .leadImg {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 60%;
+    max-width: 300px;
+    pointer-events: none;
+
+    opacity: 0;
+    transition: all 0.5s ease;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  .breadcrumbs {
+  }
+  .main {
+    padding: 10px;
+    font-size: 16px;
+    a {
+      color: var(--actionColor);
+      text-decoration: none;
+    }
+  }
+  .tags {
+    position: absolute;
+    display: flex;
+    bottom: 5px;
+    right: 5px;
+    padding: 5px;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+    font-size: 11px;
+    font-family: var(--consoleFont);
+    color: var(--mainColor);
+
+    li {
+      padding: 0 5px;
+    }
+  }
+}

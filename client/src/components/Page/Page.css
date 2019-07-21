@@ -1,0 +1,24 @@
+@import 'styles/mixins.css';
+
+.container {
+  /*margin-top: var(--headerHeight) !important;*/
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 40px var(--l-gutter);
+  margin: 0 auto;
+
+  @mixin responsive;
+  @media (--m) {
+    padding: 40px var(--gutter);
+  }
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}

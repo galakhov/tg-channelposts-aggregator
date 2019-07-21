@@ -1,0 +1,13 @@
+.page-main {
+  width: 620px;
+  margin-right: 40px;
+
+  @media (--m) {
+    width: 440px;
+    margin-right: 28px;
+  }
+  @media (--s) {
+    width: 100%;
+    margin-right: 0px;
+  }
+}

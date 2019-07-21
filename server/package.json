@@ -1,0 +1,28 @@
+{
+  "name": "telegram-channel-dashboard",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "foreseaz",
+  "license": "MIT",
+  "dependencies": {
+    "clean-mark": "^0.8.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.2",
+    "get-urls": "^7.2.0",
+    "lodash": "^4.17.15",
+    "mongoose": "^4.13.19",
+    "node-mercury-parser": "^1.0.4",
+    "telegraf": "^3.16.4"
+  },
+  "scripts": {
+    "dev:client": "cd client && node scripts/start.js",
+    "dev:server": "nodemon server.js",
+    "start": "npm run dev:server | npm run dev:client",
+    "serve:pm2": "pm2 startOrRestart pm2.config.js start server.js",
+    "serve:simple": "nohup node server.js &"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1",
+    "dotenv": "^8.0.0"
+  }
+}

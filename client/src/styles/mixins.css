@@ -1,0 +1,12 @@
+/* customized responsive, delete this when using styling framework */
+@define-mixin responsive {
+  max-width: var(--l-breakpoint);
+
+  @media (--m) {
+    max-width: var(--m-breakpoint);
+  }
+
+  @media (--s) {
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,29 @@
+.container {
+  position: relative;
+  padding: 20px 30px;
+  @media(--s) {
+    padding: 10px 0px;
+  }
+  max-width: 90vw;
+}
+.logout {
+  margin-top: 15px;
+}
+.close {
+  position: absolute;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  padding-left: 5px;
+  top: -10px;
+  right: -10px;
+}
+.edit {
+  position: absolute;
+  cursor: pointer;
+  width: 25px;
+  height: 20px;
+  padding-left: 5px;
+  bottom: -10px;
+  right: -10px;
+}

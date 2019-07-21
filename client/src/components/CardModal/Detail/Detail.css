@@ -1,0 +1,132 @@
+.container {
+  display: flex;
+  max-height: 80vh;
+  @media(--m) {
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .left {
+    @media(--l) {
+      overflow: auto;
+      max-width: 360px;
+      padding-right: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    max-width: 500px;
+    padding: 10px;
+
+    .content {
+      overflow: auto;
+    }
+
+    .main {
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      a {
+        color: var(--actionColor);
+        word-wrap: break-word;
+        text-decoration: none;
+      }
+    }
+
+    .leadImg {
+      margin: 10px auto;
+      display: block;
+      max-width: 100%;
+      padding: inherit;
+    }
+
+    .tags {
+
+    }
+  }
+  .right {
+    max-width: 500px;
+    border-left: solid 1px var(--lineColor);
+
+    @media(--l) {
+      overflow: auto;
+      padding-left: 15px;
+    }
+    @media(--m) {
+      padding-top: 20px;
+      border-left: none;
+      border-top: solid 1px var(--lineColor);
+    }
+
+    h3 a {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--actionColor);
+    }
+    .mark {
+      width: inherit;
+
+      img {
+        width: 100%;
+      }
+
+      a {
+        word-wrap: break-word;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      h2 {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      h3 {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      h4 {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      h5 {
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      h6 {
+        font-size: 10px;
+        font-weight: 600;
+      }
+
+      p {
+        margin-top: 0;
+        margin-bottom: 10px;
+      }
+
+      ul {
+        padding-left: 20px;
+        margin: 0.25em;
+      }
+
+      ul li {
+        padding-left: 10px;
+        list-style-type: decimal;
+      }
+
+      li {
+        word-wrap: break-all;
+      }
+
+      li>p {
+        margin-top: 16px;
+      }
+    }
+  }
+}

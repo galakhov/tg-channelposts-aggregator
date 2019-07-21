@@ -1,0 +1,94 @@
+@import "cssrecipes-defaults";
+@import "normalize.css";
+@import "reset-css";
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: #fffbf7;
+
+  color: var(--dark);
+  line-height: 1.57;
+  font-size: 14px;
+  font-family: var(--sansFont);
+
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+
+  /*user-select: none;*/
+}
+::selection {
+  outline: none;
+  background: #fcc3c6;
+}
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 1em 0;
+  padding: 0;
+}
+
+/* form control */
+button, select, option {
+  font-family: var(--sansFont);
+}
+
+b {
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+  color: var(--blue);
+}
+
+button {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  outline: none;
+  overflow: visible;
+  cursor: pointer;
+
+  background: transparent;
+
+  /* inherit font & color from ancestor */
+  color: inherit;
+  font: inherit;
+
+  /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+  line-height: normal;
+
+  /* Corrects font smoothing for webkit */
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+
+  /* Corrects inability to style clickable `input` types in iOS */
+  -webkit-appearance: none;
+  user-select: none;
+}
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+input[type="radio"] {
+  appearance: none;
+  background: none;
+  outline: none;
+  border: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

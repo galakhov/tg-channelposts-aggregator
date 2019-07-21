@@ -1,0 +1,40 @@
+.toggle {
+  .bar {
+    width: 18px;
+    display: block;
+    height: 1px;
+    margin-bottom: 3px;
+    border-radius: 1px;
+    transition: transform 0.5s, opacity 0.5s;
+
+    background-color: #fff;
+    @media (--s) {
+      background-color: var(--mainColor);
+    }
+  }
+  .bar:last-child {
+    width: 14px;
+  }
+}
+.showClose {
+  .bar:first-child {
+    transform: translateY(-15px);
+    opacity: 0;
+  }
+  .bar:nth-child(2) {
+    transform: rotate(45deg) translateX(1px) translateY(2px);
+  }
+  .bar:nth-child(3) {
+    transform: rotate(-45deg) translateX(1px) translateY(-2px);
+  }
+  .bar:last-child {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+}
+.bright {
+  background-color: #fff;
+}
+.dark {
+  background-color: var(--mainColor);
+}

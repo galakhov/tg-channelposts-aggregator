@@ -1,0 +1,7 @@
+export const GET_MSGS = 'dash/GET_MSGS'
+export const FETCHING = 'dash/FETCHING'
+export const FETCHING_END = 'dash/FETCHING_END'
+export const ADD_TAG = 'dash/ADD_TAG'
+export const OPEN_MODAL = 'dash/OPEN_MODAL'
+export const CLOSE_MODAL = 'dash/CLOSE_MODAL'
+export const SET_CURRENT_ID = 'dash/SET_CURRENT_ID'

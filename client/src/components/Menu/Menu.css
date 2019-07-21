@@ -1,0 +1,25 @@
+.menu {
+  margin: 0 auto;
+  height: 60px;
+  box-shadow: 3px 3px 5px rgba(0,0,0,0.1);
+  font-family: apercubold, sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  background: #fff;
+
+  .logo {
+    svg {
+      width: 30px;
+      height: 40px;
+    }
+    padding: 10px 15px;
+  }
+
+  ul {
+    display: flex;
+
+    li {
+      padding: 10px;
+    }
+  }
+}

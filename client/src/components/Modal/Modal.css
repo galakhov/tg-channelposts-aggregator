@@ -1,0 +1,19 @@
+:global {
+  .ReactModal__Content {
+    border: none !important;
+  }
+  .ReactModalPortal > * {
+    opacity: 0;
+  }
+  .ReactModal__Overlay {
+    z-index: 20;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    transition: opacity 200ms ease-in-out;
+    &--after-open {
+      opacity: 1;
+    }
+    &--before-close {
+      opacity: 0;
+    }
+  }
+}

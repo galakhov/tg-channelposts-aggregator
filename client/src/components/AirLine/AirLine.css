@@ -1,0 +1,20 @@
+:root {
+  --height: 50px;
+}
+
+.container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9;
+  transform: translateY(var(--height));
+  transition: all .3s ease;
+
+  height: var(--height);
+  background: white;
+
+  &.open {
+    transform: translateY(0);
+  }
+}

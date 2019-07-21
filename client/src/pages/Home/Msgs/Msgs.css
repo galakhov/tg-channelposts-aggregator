@@ -1,0 +1,8 @@
+.wrapper {
+  font-family: var(--textFont);
+  width: 100%;
+
+  @media(--s) {
+    width: 100%;
+  }
+}

@@ -1,0 +1,27 @@
+.container {
+  position: relative;
+  display: flex;
+}
+.logo {
+  margin-left: -20px;
+  margin-top: 81px;
+  @media (--s) {
+    margin-left: 0;
+    margin-top: 35px;
+  }
+}
+.intro {
+  font-size: 32px;
+  font-family: var(--titleFont);
+  margin: 80px 25px 30px;
+  @media (--s) {
+    font-size: 28px;
+    margin: 40px 25px 7px;
+  }
+}
+.container .subheadline {
+  margin: 103px 3px 30px;
+  @media (--s) {
+    margin: 0px 25px 20px 80px;
+  }
+}

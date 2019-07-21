@@ -1,0 +1,5 @@
+:global {
+  .global-without-hash {
+    color: var(--red);
+  }
+}
