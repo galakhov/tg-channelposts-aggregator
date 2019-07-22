@@ -20,11 +20,15 @@ const Card = ({ _id, onCardClick, createdDate, img, text, tags }) => (
     <div className={styles.main} dangerouslySetInnerHTML={createMarkup(text)} />
     <ul className={styles.tags}>
       {tags &&
-        tags.map((tag, idx) => (
-          <li key={idx}>
-            <a href="/">{tag}</a>
-          </li>
-        ))}
+        tags.map((tag, idx) =>
+          tag !== 'untagged' ? (
+            <li key={idx}>
+              tag && <a href="/">{tag}</a>
+            </li>
+          ) : (
+            ''
+          )
+        )}
     </ul>
   </div>
 )

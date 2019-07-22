@@ -12,6 +12,10 @@ const extraTags = text => {
   return tags.length > 0 ? tags : ['untagged']
 }
 
+const extractClutter = text => {
+  return text.replace(/\\n\\n@multifeed_edge_bot/g, '')
+}
+
 const extractHashtags = text => {
   if (!text) return ['untagged']
   const extractedTags = text.match(/\#(.*?)\ /g) // ['#tag ', '#foo ']
@@ -20,7 +24,7 @@ const extractHashtags = text => {
   return ['untagged']
 }
 
-const extraUrl = text => {
+const extractUrl = text => {
   const urlSet = getUrls(text)
   const urlArr = Array.from(urlSet)
 
@@ -37,6 +41,7 @@ const preparePreviewMark = async url => {
 
 exports.extraTags = extraTags
 exports.extractHashtags = extractHashtags
-exports.extraUrl = extraUrl
+exports.extractClutter = extractClutter
+exports.extractUrl = extractUrl
 exports.preparePreviewMercury = preparePreviewMercury
 exports.preparePreviewMark = preparePreviewMark

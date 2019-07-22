@@ -22,7 +22,8 @@
     "serve:simple": "nohup node server.js &"
   },
   "devDependencies": {
+    "dotenv": "^8.0.0",
     "nodemon": "^1.19.1",
-    "dotenv": "^8.0.0"
+    "tslint": "^5.18.0"
   }
 }

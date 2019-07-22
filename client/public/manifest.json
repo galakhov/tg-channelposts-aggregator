@@ -1,9 +1,9 @@
 {
   "short_name": "React App",
-  "name": "Create React App Sample",
+  "name": "Video Courses Aggregator",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "fav_icon.ico",
       "sizes": "192x192",
       "type": "image/png"
     }

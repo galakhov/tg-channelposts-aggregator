@@ -9,7 +9,7 @@ const initBot = () => {
   console.log('-------- initBot')
   bot.start(ctx => {
     console.log('started: ', ctx.from.id)
-    ctx.reply('Hello there!')
+    ctx.reply('Hello! I have started!')
     return true
   })
 
