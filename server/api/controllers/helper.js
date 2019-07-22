@@ -39,9 +39,17 @@ const preparePreviewMark = async url => {
   return cleanMark(url, {})
 }
 
+const isAd = text => {
+  if (text.match(/@RegularPromos/gi)) {
+    return true
+  }
+  return false
+}
+
 exports.extraTags = extraTags
 exports.extractHashtags = extractHashtags
 exports.extractClutter = extractClutter
 exports.extractUrl = extractUrl
 exports.preparePreviewMercury = preparePreviewMercury
 exports.preparePreviewMark = preparePreviewMark
+exports.isAd = isAd

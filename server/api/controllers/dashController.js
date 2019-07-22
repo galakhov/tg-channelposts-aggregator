@@ -24,6 +24,17 @@ const create_a_msg = async data => {
     new_msg.raw = data
     new_msg.message_id = data.message_id
 
+    let text = _.get(data, 'text', '')
+    if (text && text.length < 1) {
+      text = _.get(data, 'caption', '')
+    }
+    const isThisAnAd = ctlHelper.isAd(text)
+    if (isThisAnAd) {
+      console.log('Channel ad was blocked')
+      return
+    }
+    text = ctlHelper.extractClutter(text)
+
     const chat = _.get(data, 'chat', {})
     new_msg.username = chat.username
     if (chat.type !== 'channel') {
@@ -32,12 +43,6 @@ const create_a_msg = async data => {
       new_msg.username = chat.title
     }
     new_msg.chat_id = chat.id
-
-    let text = _.get(data, 'text', '')
-    if (text && text.length < 1) {
-      text = _.get(data, 'caption', '')
-    }
-    text = ctrlHelper.extractClutter(text)
 
     const tags = ctlHelper.extractHashtags(text)
     new_msg.tags = tags
