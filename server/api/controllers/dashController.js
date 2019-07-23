@@ -33,7 +33,7 @@ const create_a_msg = async data => {
       console.log('Channel ad was blocked')
       return
     }
-    text = ctlHelper.extractClutter(text)
+    new_msg.raw.text = ctlHelper.extractClutter(text)
 
     const chat = _.get(data, 'chat', {})
     new_msg.username = chat.username
@@ -50,6 +50,7 @@ const create_a_msg = async data => {
     // save msg first
     const url = ctlHelper.extractUrl(text)
     new_msg.preview.url = url
+    console.log('-------- parsed urls', url)
     new_msg.save((e, msg) => {
       if (e) {
         console.error('ERR: SAVE ERROR')

@@ -2,11 +2,12 @@
 
 🚧 ...Work in progress... 🚧
 
-📩 📭 Aggregates posts from telegram channels of which your bot is admin, adds them to MongoDB &amp; displays them in a React Frontend.
+📩 📭 Aggregates posts from your telegram channel(s) assigned to your bot(s) (must be an admin), filters the data, saves it into MongoDB & renders the data using React (see the **client** folder).
 
 # Features
 
 - [telegraf.js](https://telegraf.js.org/#/?id=features)
+- [mercury-parser](https://www.npmjs.com/package/@postlight/mercury-parser)
 
 # Credits
 

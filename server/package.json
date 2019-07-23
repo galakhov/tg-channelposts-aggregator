@@ -5,13 +5,13 @@
   "author": "foreseaz",
   "license": "MIT",
   "dependencies": {
+    "@postlight/mercury-parser": "^2.1.1",
     "clean-mark": "^0.8.0",
     "cors": "^2.8.5",
     "express": "^4.16.2",
     "get-urls": "^7.2.0",
     "lodash": "^4.17.15",
     "mongoose": "^4.13.19",
-    "node-mercury-parser": "^1.0.4",
     "telegraf": "^3.16.4"
   },
   "scripts": {

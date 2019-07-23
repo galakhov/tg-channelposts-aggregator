@@ -9,7 +9,7 @@ export default {
           service: 'api',
           version: 'v1'
         },
-        path: `/msgs`
+        path: `/posts`
       })
     }
   }
