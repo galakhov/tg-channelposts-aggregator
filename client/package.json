@@ -2,6 +2,14 @@
   "name": "cook-react",
   "version": "0.1.0",
   "private": true,
+  "contributors": [
+    {
+      "name": "foreseaz"
+    },
+    {
+      "name": "galakhov"
+    }
+  ],
   "dependencies": {
     "autolinker": "^1.6.0",
     "classnames": "^2.2.5",

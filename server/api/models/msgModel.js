@@ -10,7 +10,9 @@ const MsgSchema = new Schema({
   preview: {
     url: String,
     mark: Schema.Types.Mixed,
-    mercury: Schema.Types.Mixed
+    // mercury: Schema.Types.Mixed,
+    courseId: Number,
+    courseUrl: String
   },
   created_date: {
     type: Date,

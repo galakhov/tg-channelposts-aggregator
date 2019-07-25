@@ -1715,12 +1715,6 @@ node-fetch@^2.0.0-alpha.9:
   version "2.0.0-alpha.9"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.0.0-alpha.9.tgz#990c0634f510f76449a0d6f6eaec96b22f273628"
 
-node-mercury-parser@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/node-mercury-parser/-/node-mercury-parser-1.0.4.tgz#9d8db33ba1da52ea5b83d2c18d2be2ef933099ca"
-  dependencies:
-    axios "^0.16.1"
-
 node-pre-gyp@^0.6.39:
   version "0.6.39"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.6.39.tgz#c00e96860b23c0e1420ac7befc5044e1d78d8649"

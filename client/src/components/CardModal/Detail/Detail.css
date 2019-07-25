@@ -1,13 +1,13 @@
 .container {
   display: flex;
   max-height: 80vh;
-  @media(--m) {
+  @media (--m) {
     flex-direction: column;
     overflow: auto;
   }
 
   .left {
-    @media(--l) {
+    @media (--l) {
       overflow: auto;
       max-width: 360px;
       padding-right: 15px;
@@ -42,27 +42,20 @@
     }
 
     .tags {
-
     }
   }
   .right {
     max-width: 500px;
     border-left: solid 1px var(--lineColor);
 
-    @media(--l) {
+    @media (--l) {
       overflow: auto;
       padding-left: 15px;
     }
-    @media(--m) {
+    @media (--m) {
       padding-top: 20px;
       border-left: none;
       border-top: solid 1px var(--lineColor);
-    }
-
-    h3 a {
-      font-size: 16px;
-      font-weight: bold;
-      color: var(--actionColor);
     }
     .mark {
       width: inherit;
@@ -124,9 +117,17 @@
         word-wrap: break-all;
       }
 
-      li>p {
+      li > p {
         margin-top: 16px;
       }
     }
+  }
+  .left a,
+  .right h3 a {
+    color: var(--actionColor);
+  }
+  .right h3 {
+    font-weight: bold;
+    font-size: 16px;
   }
 }
