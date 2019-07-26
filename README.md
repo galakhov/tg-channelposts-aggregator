@@ -7,7 +7,9 @@
 # Features
 
 - [telegraf.js](https://telegraf.js.org/#/?id=features)
-- [mercury-parser](https://www.npmjs.com/package/@postlight/mercury-parser)
+- [cheerio](https://www.npmjs.com/package/cheerio)
+- [sync-request](https://www.npmjs.com/package/sync-request) but consider [then-request](https://github.com/then/then-request)
+- [normalize-url](https://www.npmjs.com/package/normalize-url)
 
 # Credits
 
