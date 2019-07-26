@@ -7,24 +7,26 @@ import * as ACTION_TYPES from './types'
 import Dashboard from '~/utils/api/Dashboard'
 
 const filterByTags = (dash, dispatch) => {
-  const { msgs, tags } = dash
-  const filtered = _filter(msgs, msg => _intersection(msg.tags, tags).length > 0)
+  const { posts, tags } = dash
+  const filtered = _filter(
+    posts,
+    post => _intersection(post.tags, tags).length > 0
+  )
   console.log('00000000000000', filtered)
 }
 
-export const getMsgs = () => (dispatch) => {
+export const getPosts = () => dispatch => {
   dispatch(showLoading())
   dispatch({ type: ACTION_TYPES.FETCHING })
 
-  Dashboard.Msgs.get()
-    .then(({ data }) => {
-      dispatch(hideLoading())
-      dispatch({ type: ACTION_TYPES.FETCHING_END })
-      dispatch({
-        type: ACTION_TYPES.GET_MSGS,
-        data
-      })
+  Dashboard.Posts.get().then(({ data }) => {
+    dispatch(hideLoading())
+    dispatch({ type: ACTION_TYPES.FETCHING_END })
+    dispatch({
+      type: ACTION_TYPES.GET_POSTS,
+      data
     })
+  })
 }
 
 export const addTag = tag => (dispatch, getState) => {
@@ -37,20 +39,20 @@ export const addTag = tag => (dispatch, getState) => {
   filterByTags(currentDash, dispatch)
 }
 
-export const openModal = (_id) => (dispatch) => {
+export const openModal = _id => dispatch => {
   dispatch({
     type: ACTION_TYPES.OPEN_MODAL,
     _id
   })
 }
 
-export const closeModal = () => (dispatch) => {
+export const closeModal = () => dispatch => {
   dispatch({
     type: ACTION_TYPES.CLOSE_MODAL
   })
 }
 
-export const setCurrentId = (id) => dispatch => {
+export const setCurrentId = id => dispatch => {
   dispatch({
     type: ACTION_TYPES.SET_CURRENT_ID,
     _id: id

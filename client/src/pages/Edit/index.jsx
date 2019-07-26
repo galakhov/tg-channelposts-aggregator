@@ -1,10 +1,10 @@
 import * as React from 'react'
 
 import { connect } from 'react-redux'
-import { setCurrentId, getMsgs, openModal } from '~/actions/Dashboard'
+import { setCurrentId, getPosts, openModal } from '~/actions/Dashboard'
 
 // import t from '~/utils/locales'
-import { currentMsgSelector } from '~/reducers/selector.js'
+import { currentPostSelector } from '~/reducers/selector.js'
 import Page from '~/components/Page'
 
 import '~/styles/global/global.css'
@@ -12,34 +12,39 @@ import styles from './Edit.css'
 
 class Edit extends React.Component {
   componentWillMount () {
-    const { match: { params: { msgId } } } = this.props
-    this.props.setCurrentId(msgId)
+    const {
+      match: {
+        params: { postId }
+      }
+    } = this.props
+    this.props.setCurrentId(postId)
   }
   componentDidMount () {
-    this.props.getMsgs()
+    this.props.getPosts()
   }
   render () {
-    const { currentMsg } = this.props
+    const { currentPost } = this.props
 
     return (
       <Page>
-        <pre className={styles.raw}>
-          {JSON.stringify(currentMsg, null, 2)}
-        </pre>
+        <pre className={styles.raw}>{JSON.stringify(currentPost, null, 2)}</pre>
       </Page>
     )
   }
 }
 
 const mapStateToProps = state => ({
-  currentMsg: currentMsgSelector(state),
+  currentPost: currentPostSelector(state),
   isModalOpen: state.dashboard.isModalOpen,
-  msgs: state.dashboard.msgs
+  posts: state.dashboard.posts
 })
 const mapDispatchToProps = {
   openModal,
-  getMsgs,
+  getPosts,
   setCurrentId
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Edit)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Edit)

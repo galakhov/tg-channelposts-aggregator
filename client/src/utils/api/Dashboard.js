@@ -1,7 +1,7 @@
 import _fetch from './_fetch'
 
 export default {
-  Msgs: {
+  Posts: {
     get () {
       return _fetch({
         method: 'GET',

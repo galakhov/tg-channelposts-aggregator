@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const MsgSchema = new Schema({
+const PostSchema = new Schema({
   raw: Schema.Types.Mixed,
   message_id: Number,
   username: String,
@@ -9,8 +9,7 @@ const MsgSchema = new Schema({
   tags: [String],
   preview: {
     url: String,
-    mark: Schema.Types.Mixed,
-    // mercury: Schema.Types.Mixed,
+    courseContents: Schema.Types.Mixed,
     courseId: Number,
     courseUrl: String
   },
@@ -20,4 +19,4 @@ const MsgSchema = new Schema({
   }
 })
 
-module.exports = mongoose.model('Msg', MsgSchema)
+module.exports = mongoose.model('Post', PostSchema)

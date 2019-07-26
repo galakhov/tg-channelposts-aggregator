@@ -1,6 +1,8 @@
 const getUrls = require('get-urls')
 const cleanMark = require('clean-mark')
 const UdemyCrawler = require('./crawler')
+const UdemyOffCrawler = require('./udemyOffParser')
+const UrlCrawler = require('./ifttt')
 // const nodeMercuryParser = require('node-mercury-parser')
 // nodeMercuryParser.init(process.env.MERCURY_PARSER_KEY)
 
@@ -12,19 +14,28 @@ const crawler = new UdemyCrawler({
   }
 })
 
+// TODO: refactor
+const parseUrl = async url => {
+  console.log('parse the link from third-party site', 'Starting...')
+  const urlParser = new UrlCrawler()
+  return urlParser.execute(url)
+}
+
+// TODO: refactor
+const parseUdemyOff = async url => {
+  console.log('parse the link from third-party site', 'Starting...')
+  const udemyUrl = new UdemyOffCrawler()
+  return udemyUrl.execute(url)
+}
+
 const prepareUdemyCourseJSON = async url => {
-  console.log('prepareUdemyCourseJSON', 'Starting...')
-  return crawler.execute(url, (err, course) => {
+  console.log('-------- prepareUdemyCourseJSON', 'Starting...')
+  return crawler.execute(url, (err, content) => {
     if (err) {
       return console.error(err.message)
     }
-    // const courseContents = course // JSON.stringify(course)
-    console.log('Finishing...', course)
-    return course
-    // if (courseContents) {
-    //   return courseContents
-    // }
-    // return console.log("Parsing wasn't possible.")
+    console.log('-------- Finishing...', content)
+    return content
   })
 }
 
@@ -50,6 +61,10 @@ const extractHashtags = text => {
   return ['untagged']
 }
 
+const replaceAll = (originalString, findRegExp, replace) => {
+  return originalString.replace(new RegExp(findRegExp, 'g'), replace)
+}
+
 const extractUrl = text => {
   // https://github.com/sindresorhus/normalize-url#options
   const urlSet = getUrls(text, { stripWWW: false })
@@ -58,13 +73,11 @@ const extractUrl = text => {
   if (urlArr[0]) {
     let rightPartOfUrlPosition = urlArr[0].search(/.com/gm)
 
-    // fix urls with '.com' only
+    // fix urls with '.com' ending only
     if (rightPartOfUrlPosition !== -1) {
-      // rightPartOfUrlPosition = urlArr[0].search(/.tt/gm)
-      // offset -= 1
       const leftPart = urlArr[0].substr(0, rightPartOfUrlPosition + offset)
       const rightPart = urlArr[0].substr(rightPartOfUrlPosition + offset)
-      return `${leftPart}${rightPart.replace(/\./g, '')}`
+      return `${leftPart}${replaceAll(rightPart, /\./, '')}`
     }
     return urlArr[0]
   }
@@ -88,4 +101,7 @@ exports.extractClutter = extractClutter
 exports.extractUrl = extractUrl
 exports.preparePreviewMark = preparePreviewMark
 exports.prepareUdemyCourseJSON = prepareUdemyCourseJSON
+exports.parseUdemyOff = parseUdemyOff
+exports.parseUrl = parseUrl
 exports.isAd = isAd
+exports.replaceAll = replaceAll

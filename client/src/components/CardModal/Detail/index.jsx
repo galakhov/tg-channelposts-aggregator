@@ -8,24 +8,24 @@ import { getCleanText } from '~/utils'
 import Tag from '~/components/Tag'
 import styles from './Detail.css'
 
-const Detail = ({ msg }) => {
-  const imgSrc = _get(msg, 'preview.mark.url')
-  const markContent = _get(msg, 'preview.mark.text')
-  const author = _get(msg, 'preview.mark.author')
-  // const date = _get(msg, 'preview.mark.date')
-  const lastUpdate = _get(msg, 'preview.mark.date')
-  const courseUrl = _get(msg, 'preview.courseUrl') || _get(msg, 'preview.url')
-  let keywords = _get(msg, 'preview.mark.keywords')
+const Detail = ({ post }) => {
+  const imgSrc = _get(post, 'preview.courseContents.url')
+  const courseContent = _get(post, 'preview.courseContents.text')
+  const author = _get(post, 'preview.courseContents.author')
+  // const date = _get(post, 'preview.courseContents.date')
+  const lastUpdate = _get(post, 'preview.courseContents.date')
+  const courseUrl = _get(post, 'preview.courseUrl') || _get(post, 'preview.url')
+  let keywords = _get(post, 'preview.courseContents.keywords')
   if (keywords) {
     keywords = keywords.split(', ')
   }
 
   const onTagClick = () => ({})
 
-  return _isEmpty(msg) ? null : (
+  return _isEmpty(post) ? null : (
     <div className={styles.container}>
       <div className={styles.left}>
-        <div className={styles.msg}>
+        <div className={styles.post}>
           {imgSrc && (
             <img className={styles.leadImg} src={imgSrc} alt="lead-img" />
           )}
@@ -36,7 +36,7 @@ const Detail = ({ msg }) => {
           </div>
           <div
             className={styles.main}
-            dangerouslySetInnerHTML={{ __html: getCleanText(msg.raw.text) }}
+            dangerouslySetInnerHTML={{ __html: getCleanText(post.raw.text) }}
           />
         </div>
         <ul className={styles.tags}>
@@ -46,11 +46,11 @@ const Detail = ({ msg }) => {
             ))}
         </ul>
       </div>
-      {markContent && (
+      {courseContent && (
         <div className={styles.right}>
           <h3>
             <a href={courseUrl} alt="title">
-              {msg.preview.mark.title}
+              {post.preview.courseContents.title}
             </a>
           </h3>
           {author && <div>Author: {author}</div>}
@@ -60,10 +60,12 @@ const Detail = ({ msg }) => {
               {lastUpdate}
             </div>
           )}
-          {msg.preview.mark.keywords && <div>{msg.preview.mark.keywords}</div>}
+          {post.preview.courseContents.keywords && (
+            <div>{post.preview.courseContents.keywords}</div>
+          )}
           <hr />
-          {/* <ReactMarkdown source={markContent} className={styles.mark} /> */}
-          <div dangerouslySetInnerHTML={{ __html: markContent }} />
+          {/* <ReactMarkdown source={courseContent} className={styles.course} /> */}
+          <div dangerouslySetInnerHTML={{ __html: courseContent }} />
         </div>
       )}
     </div>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { openModal, closeModal } from '~/actions/Dashboard'
-import { currentMsgSelector } from '~/reducers/selector.js'
+import { currentPostSelector } from '~/reducers/selector.js'
 
 import CloseIcon from '~/assets/icons/close.svg'
 import EditIcon from '~/assets/icons/edit.svg'
@@ -19,8 +19,8 @@ class CardModal extends React.Component {
   }
 
   render () {
-    console.log('currentMsg', this.props.currentMsg)
-    const { currentMsg, currentMsgId } = this.props
+    console.log('currentPost', this.props.currentPost)
+    const { currentPost, currentPostId } = this.props
 
     return (
       <Modal
@@ -28,14 +28,11 @@ class CardModal extends React.Component {
         onRequestClose={this.props.closeModal}
       >
         <div className={styles.container}>
-          <span
-            className={styles.close}
-            onClick={this.props.closeModal}
-          >
+          <span className={styles.close} onClick={this.props.closeModal}>
             <CloseIcon />
           </span>
-          <Detail msg={currentMsg} />
-          <Link to={`/edit/${currentMsgId}`}>
+          <Detail post={currentPost} />
+          <Link to={`/edit/${currentPostId}`}>
             <span className={styles.edit}>
               <EditIcon />
             </span>
@@ -46,14 +43,17 @@ class CardModal extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  currentMsg: currentMsgSelector(state),
+const mapStateToProps = state => ({
+  currentPost: currentPostSelector(state),
   isModalOpen: state.dashboard.isModalOpen,
-  currentMsgId: state.dashboard.currentMsgId
+  currentPostId: state.dashboard.currentPostId
 })
 const mapDispatchToProps = {
   openModal,
   closeModal
 }
-const Connect = connect(mapStateToProps, mapDispatchToProps)(CardModal)
+const Connect = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CardModal)
 export default Connect

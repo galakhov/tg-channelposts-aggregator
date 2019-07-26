@@ -5,5 +5,5 @@ import Edit from '~/pages/Edit'
 export default [
   { path: '/', exact: true, component: Home },
   { path: '/about', component: About },
-  { path: '/edit/:msgId', component: Edit }
+  { path: '/edit/:postId', component: Edit }
 ]

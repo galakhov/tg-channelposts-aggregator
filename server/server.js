@@ -7,7 +7,7 @@ const express = require('express'),
   cors = require('cors'),
   mongoose = require('mongoose'),
   bodyParser = require('body-parser'),
-  Msg = require('./api/models/msgModel'),
+  Post = require('./api/models/postModel'),
   routes = require('./api/routes/dashRoutes'),
   initBot = require('./bot/index')
 

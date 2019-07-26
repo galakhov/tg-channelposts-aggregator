@@ -3,7 +3,7 @@
   "name": "Video Courses Aggregator",
   "icons": [
     {
-      "src": "fav_icon.ico",
+      "src": "favicon.ico",
       "sizes": "192x192",
       "type": "image/png"
     }

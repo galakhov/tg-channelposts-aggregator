@@ -1,4 +1,4 @@
-const paths = require('./config/paths');
+const paths = require('./config/paths')
 
 const { viewports, variables } = require('./src/styles/vars')
 
@@ -6,7 +6,7 @@ module.exports = {
   plugins: [
     require('postcss-flexbugs-fixes'),
     require('postcss-import')({
-      path: paths.appSrc,
+      path: paths.appSrc
     }),
     require('postcss-custom-properties')({
       variables
@@ -18,12 +18,7 @@ module.exports = {
     require('postcss-calc'),
     require('postcss-nested'),
     require('autoprefixer')({
-      browsers: [
-        '>1%',
-        'last 4 versions',
-        'Firefox ESR',
-        'not ie < 9'
-      ]
+      browsers: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9']
     })
-  ],
-};
+  ]
+}

@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  max-height: 80vh;
+  /* max-height: 80vh; */
   @media (--m) {
     flex-direction: column;
     overflow: auto;
@@ -57,7 +57,7 @@
       border-left: none;
       border-top: solid 1px var(--lineColor);
     }
-    .mark {
+    .course {
       width: inherit;
 
       img {

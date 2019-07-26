@@ -1,6 +1,6 @@
 const Telegraf = require('telegraf')
 
-const Msg = require('../api/models/msgModel'),
+const Post = require('../api/models/postModel'),
   dashboard = require('../api/controllers/dashController')
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
@@ -15,9 +15,9 @@ const initBot = () => {
 
   bot.on(['channel_post'], ctx => {
     if (ctx.channelPost) {
-      console.log(ctx.channelPost)
+      console.log('NEW POST ARRIVED: ', ctx.channelPost)
       try {
-        dashboard.create_a_msg(ctx.channelPost)
+        dashboard.addPost(ctx.channelPost)
       } catch (e) {
         ctx.reply('// TG channel bot save error', e)
       }
@@ -25,12 +25,12 @@ const initBot = () => {
   })
 
   bot.on(['edited_channel_post'], ctx => {
-    console.log('hear edited', ctx)
+    console.log('EDITING: ', ctx)
     if (ctx.update) {
       console.log(ctx.update)
       const { update } = ctx
       try {
-        dashboard.update_a_msg(update)
+        dashboard.updatePost(update)
       } catch (e) {
         ctx.reply('// TG channel bot update error', e)
       }

@@ -25,11 +25,11 @@ class Nav extends React.Component {
       this.setState({ navOpened: false })
     }
     this.getTypes = () => {
-      const { msgs } = this.props
+      const { posts } = this.props
 
       let allTypes = []
-      msgs.forEach(msg => {
-        allTypes = allTypes.concat(msg.tags)
+      posts.forEach(post => {
+        allTypes = allTypes.concat(post.tags)
       })
 
       let typeCounts = allTypes.reduce((prev, curr) => {
@@ -37,11 +37,14 @@ class Nav extends React.Component {
         return prev
       }, {})
 
-      const types = Object.keys(typeCounts).map(type => ({ type: type, count: typeCounts[type] }))
+      const types = Object.keys(typeCounts).map(type => ({
+        type: type,
+        count: typeCounts[type]
+      }))
 
       return _orderBy(types, ['count'], ['desc'])
     }
-    this.tagClickHandler = (tag) => {
+    this.tagClickHandler = tag => {
       this.props.addTag(tag)
     }
   }
@@ -53,23 +56,26 @@ class Nav extends React.Component {
           <div className={styles.strip} onClick={this.toggleNav}>
             <ToggleButton showClose={this.state.navOpened} />
             <span className={styles.slogan}>
-              <strong>T.C.:</strong> A personal thoughts catcher based on Telegram Channel.
+              <strong>T.C.:</strong> A personal thoughts catcher based on
+              Telegram Channel.
             </span>
           </div>
           <div className={styles.bg}>
             <section>
               <h4>Filter By Type</h4>
               <ul>
-                {
-                  this.getTypes().map((tag, idx) => (
-                    <li key={idx} className={styles.type} onClick={() => this.tagClickHandler(tag)}>
-                      <a className={cx('tag', 'blue')}>
-                        {tag.type}
-                        <span>{tag.count}</span>
-                      </a>
-                    </li>
-                  ))
-                }
+                {this.getTypes().map((tag, idx) => (
+                  <li
+                    key={idx}
+                    className={styles.type}
+                    onClick={() => this.tagClickHandler(tag)}
+                  >
+                    <a className={cx('tag', 'blue')}>
+                      {tag.type}
+                      <span>{tag.count}</span>
+                    </a>
+                  </li>
+                ))}
               </ul>
             </section>
           </div>
@@ -80,10 +86,13 @@ class Nav extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  filteredMsgs: state.dashboard.msgs
+  filteredPosts: state.dashboard.posts
 })
 const mapDispatchToProps = {
   addTag
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Nav)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Nav)

@@ -4,18 +4,18 @@ import _uniq from 'lodash/uniq'
 const initialState = {
   isFetching: false,
   isModalOpen: false,
-  currentMsgId: '',
-  msgs: [],
+  currentPostId: '',
+  posts: [],
   tags: [],
-  filteredMsgs: []
+  filteredPosts: []
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case ACTION_TYPES.GET_MSGS:
+    case ACTION_TYPES.GET_POSTS:
       return {
         ...state,
-        msgs: action.data
+        posts: action.data
       }
     case ACTION_TYPES.FETCHING:
       return {
@@ -35,13 +35,13 @@ export default (state = initialState, action) => {
     case ACTION_TYPES.SET_CURRENT_ID:
       return {
         ...state,
-        currentMsgId: action._id
+        currentPostId: action._id
       }
     case ACTION_TYPES.OPEN_MODAL:
       return {
         ...state,
         isModalOpen: true,
-        currentMsgId: action._id
+        currentPostId: action._id
       }
     case ACTION_TYPES.CLOSE_MODAL:
       return {

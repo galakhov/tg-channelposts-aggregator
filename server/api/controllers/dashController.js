@@ -3,14 +3,14 @@ const ctlHelper = require('./helper')
 const limitPerPage = 100
 
 const mongoose = require('mongoose'),
-  Msg = mongoose.model('Msg')
+  Post = mongoose.model('Post')
 
-const list_all_msgs = (req, res) => {
-  Msg.find({}, (err, msgs) => {
+const listAllPosts = (req, res) => {
+  Post.find({}, (err, posts) => {
     if (err) {
       res.send(err)
     }
-    res.json(msgs)
+    res.json(posts)
   })
     .limit(limitPerPage)
     .sort({
@@ -18,138 +18,218 @@ const list_all_msgs = (req, res) => {
     })
 }
 
-const create_a_msg = async data => {
+const isDuplicate = url => {
+  // exit on duplicates
+  const cleanedUrl = url
+    ? url.replace(/(^\w+:|^)\/\//, '').replace(/\/$/, '')
+    : 0
+
+  if (cleanedUrl !== 0) {
+    Post.findOne(
+      { 'preview.url': { $regex: cleanedUrl, $options: 'i' } },
+      function(err, response) {
+        if (response !== null) {
+          console.error(
+            '-------- this post is already in DB. Aborting.',
+            cleanedUrl
+          )
+          return true
+        } else {
+          if (err) {
+            console.error('-------- DB query error', err)
+          }
+          return false
+        }
+      }
+    )
+  }
+  console.error('-------- URL query error')
+  return false
+}
+
+const addPost = async data => {
   try {
-    const new_msg = new Msg()
-    new_msg.raw = data
-    new_msg.message_id = data.message_id
+    const NewPost = new Post()
+    NewPost.raw = data
+    NewPost.message_id = data.message_id
 
     let text = _.get(data, 'text', '') || _.get(data, 'caption', '')
     if (text && text.length < 1) {
       text = _.get(data, 'caption', '')
-      console.log('-------- No text found. Getting caption instead', text)
+      console.log(
+        '-------- ADD_POST: No text found. Getting caption instead',
+        text
+      )
     }
+
     const isThisAnAd = ctlHelper.isAd(text)
-    if (isThisAnAd) {
-      console.log('Channel’s ad was blocked')
-      return
-    }
-    new_msg.raw.text = ctlHelper.extractClutter(text)
+    if (!isThisAnAd) {
+      // TODO: extract the correct url (udemy.com)
+      let url = ctlHelper.extractUrl(text)
+      console.log('-------- ADD_POST parsed urls:', url)
 
-    const chat = _.get(data, 'chat', {})
-    new_msg.username = chat.username
-    if (chat.type !== 'channel') {
-      new_msg.username = chat.username
-    } else {
-      new_msg.username = chat.title
-    }
-    new_msg.chat_id = chat.id
+      if (url.indexOf('udemyoff.com') !== -1) {
+        const udemyOff = await ctlHelper
+          .parseUdemyOff(url)
+          .catch(err => console.error('-------- ADD_POST parseUdemyOff: ', err))
+        console.log('-------- ADD_POST udemyOff parsed', udemyOff)
+        url = udemyOff.indexOf('udemy.com') !== -1 ? udemyOff : url
+        console.log(
+          'parse the link from the third-party site. Finishing...',
+          url
+        )
+      } else if (url.indexOf('ift.tt/') !== -1) {
+        const entities = _.get(data, 'entities', '')
+        if (entities) {
+          const foundUrlAtIndex = entities.findIndex(e =>
+            e.url ? e.url.indexOf('udemy.com') !== -1 : false
+          )
+          console.log('-------- real.dicount URL: ', foundUrlAtIndex)
 
-    const tags = ctlHelper.extractHashtags(text)
-    new_msg.tags = tags
+          if (foundUrlAtIndex === -1) {
+            // TODO: get the name of the course from the text
+            const reg = /100% Off] (.*?)Udemy Coupon/
+            let courseName = text.match(reg)
+            courseName = courseName[1] ? courseName[1].trim() : 'No name found'
+            console.log('-------- real.dicount courseName', courseName)
 
-    // save msg first
-    const url = ctlHelper.extractUrl(text)
-    new_msg.preview.url = url
-    console.log('-------- parsed urls', url)
-    new_msg.save((e, msg) => {
-      if (e) {
-        console.error('ERR: SAVE ERROR')
-        throw e
-      }
-    })
-
-    // crawl previews
-    if (url) {
-      let udemyContents = 'No udemy course found'
-      if (url.indexOf('udemy.com') !== -1) {
-        udemyContents = await ctlHelper.prepareUdemyCourseJSON(url)
-
-        // const udemyContent = JSON.parse(JSON.stringify(udemyContents))
-
-        if (udemyContents) {
-          new_msg.preview.mark = {}
-          new_msg.preview.courseId = udemyContents.id
-          new_msg.preview.courseUrl = udemyContents.url
-          new_msg.preview.mark.text = udemyContents.description
-          new_msg.preview.mark.author = udemyContents.authors
-          new_msg.preview.mark.date = udemyContents.date
-          new_msg.preview.mark.title = udemyContents.title
-          new_msg.preview.mark.description = udemyContents.curriculum
-          new_msg.preview.mark.keywords = udemyContents.topics.join(', ')
-          new_msg.preview.mark.url = udemyContents.image
-        } else {
-          console.log('-------- Error populating course contents')
+            // TODO: discover url by udemy's course name
+            const parsedUrl = ctlHelper.parseUrl(url)
+            if (parsedUrl && parsedUrl.length > 7) {
+              url = parsedUrl
+              console.log('-------- real.dicount url discovered', parsedUrl)
+            }
+          } else {
+            url = entities[foundUrlAtIndex].url
+            console.log('-------- real.dicount foundUrlAtIndex', url)
+          }
         }
       }
-
-      // const mark = await ctlHelper.preparePreviewMark(url)
-
-      // try {
-      //   new_msg.preview.mark = JSON.parse(JSON.stringify(mark))
-      // } catch (e) {
-      //   console.error('-------- create_a_msg: MARK_ERROR:', new_msg)
-      // }
 
       try {
-        // new_msg.preview.udemy = JSON.parse(JSON.stringify(udemyContents))
-        console.log('-------- What’s inside udemyContents?', udemyContents)
-      } catch (e) {
-        console.error('-------- create_a_msg: ERROR:', new_msg)
-      }
+        // exit on a duplicate
+        if (
+          !isDuplicate(url) &&
+          url.indexOf('udemyoff.com') === -1 &&
+          url.indexOf('ift.tt/') === -1
+        ) {
+          // If post doesn't exist, continue...
 
-      // update msg
-      new_msg.save((e, post) => {
-        if (e) {
-          console.error('-------- ERR: SAVE ERROR')
-          throw e
+          NewPost.preview.url = url
+
+          NewPost.raw.text = ctlHelper.extractClutter(text)
+
+          const chat = _.get(data, 'chat', {})
+          NewPost.username = chat.username
+          if (chat.type !== 'channel') {
+            NewPost.username = chat.username
+          } else {
+            NewPost.username = chat.title
+          }
+          NewPost.chat_id = chat.id
+
+          const tags = ctlHelper.extractHashtags(text)
+          NewPost.tags = tags
+
+          // crawl and parse contents
+          let udemyContents = 'No udemy course found'
+
+          if (url.indexOf('udemy.com') !== -1) {
+            // do the parsing of udemy.com/course
+            udemyContents = await ctlHelper
+              .prepareUdemyCourseJSON(url)
+              .catch(err =>
+                console.error('-------- ADD_POST prepareUdemyCourseJSON: ', err)
+              )
+
+            // const udemyContent = JSON.parse(JSON.stringify(udemyContents))
+
+            if (udemyContents) {
+              NewPost.preview.courseContents = {}
+              NewPost.preview.courseId = udemyContents.id
+              NewPost.preview.courseUrl = udemyContents.url
+              NewPost.preview.courseContents.text = udemyContents.description
+              NewPost.preview.courseContents.author = udemyContents.authors
+              NewPost.preview.courseContents.date = udemyContents.date
+              NewPost.preview.courseContents.title = udemyContents.title
+              NewPost.preview.courseContents.headline = udemyContents.headline
+              NewPost.preview.courseContents.description =
+                udemyContents.curriculum
+              NewPost.preview.courseContents.keywords = udemyContents.topics.join(
+                ', '
+              )
+              NewPost.preview.courseContents.url = udemyContents.image
+            } else {
+              console.error('-------- ADD_POST: ')
+              // exit on Error: "Udemy page response with status 403" or other status than 200
+              throw 'Error populating course contents'
+            }
+          }
+
+          // save post only if the given url is valid and the contents were parsed
+          NewPost.save((e, post) => {
+            if (e) {
+              console.error('-------- ADD_POST:')
+              throw e
+            }
+          })
+        } else {
+          throw new Error('Post already exists. Aborting.')
         }
-      })
+      } catch (e) {
+        console.error('-------- ADD_POST: ', e)
+      }
+    } else {
+      console.error('-------- ADD_POST: Channel’s ad was blocked')
+      // throw new Error('Ad Blocked. Aborting.')
     }
   } catch (e) {
+    console.error('-------- ADD_POST:')
     throw e
   }
 }
 
-const update_a_msg = ({ edited_channel_post: data }) => {
+const updatePost = ({ edited_channel_post: data }) => {
   try {
-    Msg.findOne({ message_id: data.message_id }, async (err, old_msg) => {
-      console.log('----- FOUND', old_msg)
-      if (old_msg) {
+    Post.findOne({ message_id: data.message_id }, async (err, existingPost) => {
+      console.log('----- FOUND', existingPost)
+      if (existingPost) {
         const chat = _.get(data, 'chat', {})
         let text = _.get(data, 'text', '') || _.get(data, 'caption', '')
         if (text && text.length < 1) {
           text = _.get(data, 'caption', '')
         }
 
-        old_msg.tags = ctlHelper.extractHashtags(text)
-        old_msg.raw = data
+        existingPost.tags = ctlHelper.extractHashtags(text)
+        existingPost.raw = data
         if (chat.type !== 'channel') {
-          old_msg.username = chat.username
+          existingPost.username = chat.username
         }
-        old_msg.chat_id = chat.id
+        existingPost.chat_id = chat.id
 
         // previews
         const url = ctlHelper.extractUrl(text)
-        old_msg.preview.url = url
+        existingPost.preview.url = url
         if (url) {
-          const mercury = await ctlHelper.preparePreviewMercury(url)
-          const mark = await ctlHelper.preparePreviewMark(url)
+          const courseContents = await ctlHelper
+            .prepareUdemyCourseJSON(url)
+            .catch(err =>
+              console.error(
+                '-------- UPDATE_POST prepareUdemyCourseJSON: ',
+                err
+              )
+            )
 
           try {
-            old_msg.preview.mark = JSON.parse(JSON.stringify(mark))
+            existingPost.preview.courseContents = JSON.parse(
+              JSON.stringify(courseContents)
+            )
           } catch (e) {
-            console.error('-------- MARK_ERROR:', old_msg)
-          }
-
-          try {
-            old_msg.preview.mark = JSON.parse(JSON.stringify(mark))
-          } catch (e) {
-            console.error('-------- MERCURY_ERROR:', old_msg)
+            console.error('-------- UPDATE_POST courseContents:', existingPost)
           }
         }
 
-        old_msg.save((e, old_msg) => {
+        existingPost.save((e, existingPost) => {
           if (e) {
             throw e
           }
@@ -157,11 +237,11 @@ const update_a_msg = ({ edited_channel_post: data }) => {
       }
     })
   } catch (e) {
-    console.error('ERR: UPDATE_MSG_ERR')
+    console.error('-------- UPDATE_POST: ')
     throw e
   }
 }
 
-exports.list_all_msgs = list_all_msgs
-exports.create_a_msg = create_a_msg
-exports.update_a_msg = update_a_msg
+exports.listAllPosts = listAllPosts
+exports.addPost = addPost
+exports.updatePost = updatePost
