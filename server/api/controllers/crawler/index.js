@@ -68,7 +68,10 @@ class UdemyCrawler {
     }
 
     // coupon code
-    Course.couponCode = objUrl.searchParams.get('couponCode') || ''
+    Course.couponCode =
+      objUrl.searchParams.get('couponCode') ||
+      objUrl.searchParams.get('deal_code') ||
+      ''
 
     const resLandingPage = request('GET', requestUrl, {
       headers: {

@@ -1,8 +1,7 @@
 const getUrls = require('get-urls')
 const cleanMark = require('clean-mark')
 const UdemyCrawler = require('./crawler')
-const UdemyOffCrawler = require('./udemyOffParser')
-const UrlCrawler = require('./ifttt')
+const UrlCrawler = require('./urlParser')
 // const nodeMercuryParser = require('node-mercury-parser')
 // nodeMercuryParser.init(process.env.MERCURY_PARSER_KEY)
 
@@ -15,17 +14,13 @@ const crawler = new UdemyCrawler({
 })
 
 // TODO: refactor
-const parseUrl = async url => {
-  console.log('parse the link from third-party site', 'Starting...')
+const parseUrl = async (url, paths = ['body a']) => {
+  console.log(
+    '-------- parseUrl: parse the link from third-party site',
+    'Starting...'
+  )
   const urlParser = new UrlCrawler()
-  return urlParser.execute(url)
-}
-
-// TODO: refactor
-const parseUdemyOff = async url => {
-  console.log('parse the link from third-party site', 'Starting...')
-  const udemyUrl = new UdemyOffCrawler()
-  return udemyUrl.execute(url)
+  return urlParser.execute(url, paths)
 }
 
 const prepareUdemyCourseJSON = async url => {
@@ -101,7 +96,6 @@ exports.extractClutter = extractClutter
 exports.extractUrl = extractUrl
 exports.preparePreviewMark = preparePreviewMark
 exports.prepareUdemyCourseJSON = prepareUdemyCourseJSON
-exports.parseUdemyOff = parseUdemyOff
 exports.parseUrl = parseUrl
 exports.isAd = isAd
 exports.replaceAll = replaceAll

@@ -16,7 +16,7 @@ class UrlCrawler {
     }
   }
 
-  execute(url) {
+  execute(url, pathsToCheck) {
     const response = request('GET', url, {
       headers: {
         'User-Agent': this.config.headers['User-Agent']
@@ -31,16 +31,28 @@ class UrlCrawler {
 
     const $ = cheerio.load(response.getBody())
 
-    let href = $('body a').attr('href')
+    let content = ''
+    const scrapedContent = []
 
-    if (!href) {
+    pathsToCheck.forEach(target => {
+      content =
+        $(target).attr('href') ||
+        $(target).attr('data-src') ||
+        $(target).attr('src')
+      if (content) {
+        scrapedContent.push(content.trim())
+      }
+      content = ''
+    })
+
+    console.log('-------- scrapedContent', scrapedContent)
+
+    if (scrapedContent.length > 0) {
       // href = $('#content .elementor-button-link').attr('href')
       // eturn href.trim()
-    } else if (href && href.length > 4) {
-      return href.trim()
-    } else {
-      return new Error("Couldn't parse the requested page.")
+      return scrapedContent
     }
+    return new Error("Couldn't parse the requested element(s).")
   }
 }
 

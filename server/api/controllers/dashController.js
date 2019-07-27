@@ -18,32 +18,53 @@ const listAllPosts = (req, res) => {
     })
 }
 
-const isDuplicate = url => {
-  // exit on duplicates
-  const cleanedUrl = url
-    ? url.replace(/(^\w+:|^)\/\//, '').replace(/\/$/, '')
-    : 0
+const cleanUrl = url => {
+  let cleanedUrl = url
+  let posToEnd = url.indexOf('/?couponCode=')
+  if (posToEnd === -1) {
+    posToEnd = url.indexOf('/?&deal_code=')
+  }
+  if (posToEnd !== -1) {
+    cleanedUrl = url.substr(0, posToEnd)
+  }
+  if (cleanedUrl && cleanedUrl.length > 5) {
+    // strip 'http(s)://' and the trailing slash in the end
+    cleanedUrl = cleanedUrl.replace(/(^\w+:|^)\/\//, '')
+    cleanedUrl = cleanedUrl.replace(/\/$/, '')
+  } else {
+    cleanedUrl = 0
+  }
 
+  console.log('-------- How cleaned url looks like:', cleanedUrl)
+  return cleanedUrl
+}
+
+const isDuplicate = cleanedUrl => {
+  // exit on duplicates
   if (cleanedUrl !== 0) {
+    let isInDB = true
     Post.findOne(
       { 'preview.url': { $regex: cleanedUrl, $options: 'i' } },
-      function(err, response) {
+      async (err, response) => {
         if (response !== null) {
           console.error(
-            '-------- this post is already in DB. Aborting.',
+            '-------- This post was already added to DB before. Aborting.',
             cleanedUrl
           )
-          return true
+          isInDB = true
+          // throw new Error('This post was already added to DB before. Aborting.')
         } else {
           if (err) {
             console.error('-------- DB query error', err)
           }
-          return false
+          isInDB = false
         }
       }
     )
+    console.log('-------- isAlreadyInDB', isInDB)
+    return isInDB
   }
-  console.error('-------- URL query error')
+  console.error('-------- URL is invalid')
   return false
 }
 
@@ -61,21 +82,24 @@ const addPost = async data => {
         text
       )
     }
-
+    const isSticker = _.get(data, 'sticker', '')
+    console.log('-------- What is a type of a sticker?', typeof isSticker)
+    console.log('-------- Inside of a sticker is nothing?', isSticker === '')
     const isThisAnAd = ctlHelper.isAd(text)
-    if (!isThisAnAd) {
+
+    if (!isThisAnAd && isSticker === '') {
       // TODO: extract the correct url (udemy.com)
       let url = ctlHelper.extractUrl(text)
       console.log('-------- ADD_POST parsed urls:', url)
 
       if (url.indexOf('udemyoff.com') !== -1) {
         const udemyOff = await ctlHelper
-          .parseUdemyOff(url)
+          .parseUrl(url, ['#content .wp-block-button__link'])
           .catch(err => console.error('-------- ADD_POST parseUdemyOff: ', err))
-        console.log('-------- ADD_POST udemyOff parsed', udemyOff)
-        url = udemyOff.indexOf('udemy.com') !== -1 ? udemyOff : url
+        console.log('-------- ADD_POST udemyOff parsed', udemyOff[0])
+        url = udemyOff[0].indexOf('udemy.com') !== -1 ? udemyOff[0] : url
         console.log(
-          'parse the link from the third-party site. Finishing...',
+          '-------- save the link from the third-party site. Finishing...',
           url
         )
       } else if (url.indexOf('ift.tt/') !== -1) {
@@ -87,31 +111,48 @@ const addPost = async data => {
           console.log('-------- real.dicount URL: ', foundUrlAtIndex)
 
           if (foundUrlAtIndex === -1) {
-            // TODO: get the name of the course from the text
-            const reg = /100% Off] (.*?)Udemy Coupon/
-            let courseName = text.match(reg)
-            courseName = courseName[1] ? courseName[1].trim() : 'No name found'
-            console.log('-------- real.dicount courseName', courseName)
-
-            // TODO: discover url by udemy's course name
-            const parsedUrl = ctlHelper.parseUrl(url)
-            if (parsedUrl && parsedUrl.length > 7) {
-              url = parsedUrl
-              console.log('-------- real.dicount url discovered', parsedUrl)
+            const parsedUrl = await ctlHelper
+              .parseUrl(url, ['body a'])
+              .catch(err =>
+                console.error(
+                  '-------- ADD_POST ctlHelper.parseUrl[body a]: ',
+                  err
+                )
+              )
+            if (parsedUrl[0] && parsedUrl[0].length > 7) {
+              url = parsedUrl[0]
+              console.log('-------- real.dicount url found', parsedUrl[0])
             }
           } else {
             url = entities[foundUrlAtIndex].url
             console.log('-------- real.dicount foundUrlAtIndex', url)
           }
         }
+      } else if (url.indexOf('smartybro.com') !== -1) {
+        const scrapedContent = await ctlHelper
+          .parseUrl(url, [
+            // '.sing-cont img',
+            '.sing-cont .fasc-button'
+          ])
+          .catch(err =>
+            console.error(
+              '-------- ADD_POST ctlHelper.parseUrl[.sing-cont .fasc-button]: ',
+              err
+            )
+          )
+        url = scrapedContent[0]
+        // the eduonix.com urls are blocked (no parser yet)
       }
 
       try {
+        url = cleanUrl(url)
         // exit on a duplicate
         if (
           !isDuplicate(url) &&
           url.indexOf('udemyoff.com') === -1 &&
-          url.indexOf('ift.tt/') === -1
+          url.indexOf('ift.tt/') === -1 &&
+          url.indexOf('eduonix.com') === -1 &&
+          url.indexOf('smartybro.com') === -1
         ) {
           // If post doesn't exist, continue...
 
@@ -174,13 +215,13 @@ const addPost = async data => {
             }
           })
         } else {
-          throw new Error('Post already exists. Aborting.')
+          throw new Error('The post already exists. Aborting.')
         }
       } catch (e) {
         console.error('-------- ADD_POST: ', e)
       }
     } else {
-      console.error('-------- ADD_POST: Channel’s ad was blocked')
+      console.error('-------- ADD_POST: Channel’s ad/sticker was blocked')
       // throw new Error('Ad Blocked. Aborting.')
     }
   } catch (e) {
