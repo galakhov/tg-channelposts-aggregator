@@ -35,6 +35,7 @@ class UrlCrawler {
     const scrapedContent = []
 
     pathsToCheck.forEach(target => {
+      // universal parser: currently works with links & images
       content =
         $(target).attr('href') ||
         $(target).attr('data-src') ||

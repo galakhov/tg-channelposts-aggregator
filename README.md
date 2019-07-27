@@ -10,6 +10,7 @@
 - [cheerio](https://www.npmjs.com/package/cheerio)
 - [sync-request](https://www.npmjs.com/package/sync-request) but consider [then-request](https://github.com/then/then-request)
 - [normalize-url](https://www.npmjs.com/package/normalize-url)
+- @multifeed_edge_bot to aggregate and [redirect](https://github.com/galakhov/tg-channelposts-aggregator/tree/master/server) messages from a set of channels
 
 # Credits
 

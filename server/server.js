@@ -15,6 +15,17 @@ const express = require('express'),
 mongoose.Promise = global.Promise
 mongoose.connect('mongodb://localhost/TelegramChannelDB')
 
+/*
+  const MongoClient = require('mongodb').MongoClient;
+  const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}.mongodb.net/test?retryWrites=true&w=majority`;
+  const client = new MongoClient(uri, { useNewUrlParser: true });
+  client.connect(err => {
+    const collection = client.db("test").collection("devices");
+    // perform actions on the collection object
+    client.close();
+  });
+*/
+
 // allow cors
 app.use(cors())
 app.options('*', cors())
