@@ -30,7 +30,7 @@ const Detail = ({ post }) => {
             <img className={styles.leadImg} src={imgSrc} alt="lead-img" />
           )}
           <div>
-            <a href={courseUrl} alt="title">
+            <a target="_blank" href={courseUrl} alt="title">
               Get the course!
             </a>
           </div>
@@ -49,7 +49,7 @@ const Detail = ({ post }) => {
       {courseContent && (
         <div className={styles.right}>
           <h3>
-            <a href={courseUrl} alt="title">
+            <a target="_blank" href={courseUrl} alt="title">
               {post.preview.courseContents.title}
             </a>
           </h3>
