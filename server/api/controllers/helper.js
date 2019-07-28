@@ -29,7 +29,8 @@ const prepareUdemyCourseJSON = async url => {
     if (err) {
       return console.error(err.message)
     }
-    console.log('-------- Finishing...', content)
+    console.log(content)
+    console.log('-------- prepareUdemyCourseJSON: parsing finished...')
     return content
   })
 }

@@ -39,11 +39,11 @@ const cleanUrl = url => {
   return cleanedUrl
 }
 
-const isDuplicate = cleanedUrl => {
+const isAlreadyInDB = cleanedUrl => {
   // exit on duplicates
   if (cleanedUrl !== 0) {
     let isInDB = true
-    Post.findOne(
+    return Post.findOne(
       { 'preview.url': { $regex: cleanedUrl, $options: 'i' } },
       async (err, response) => {
         if (response !== null) {
@@ -52,20 +52,32 @@ const isDuplicate = cleanedUrl => {
             cleanedUrl
           )
           isInDB = true
+          console.log('-------- isAlreadyInDB', isInDB)
+          return isInDB
           // throw new Error('This post was already added to DB before. Aborting.')
         } else {
           if (err) {
             console.error('-------- DB query error', err)
           }
           isInDB = false
+          console.log('-------- isAlreadyInDB', isInDB)
+          return isInDB
         }
       }
     )
-    console.log('-------- isAlreadyInDB', isInDB)
-    return isInDB
+    // return isInDB
   }
   console.error('-------- URL is invalid')
   return false
+}
+
+const isThirdPartyLink = url => {
+  return (
+    url.indexOf('udemyoff.com') !== -1 ||
+    url.indexOf('ift.tt/') !== -1 ||
+    url.indexOf('eduonix.com') !== -1 ||
+    url.indexOf('smartybro.com') !== -1
+  )
 }
 
 const addPost = async data => {
@@ -145,17 +157,15 @@ const addPost = async data => {
       }
 
       try {
-        url = cleanUrl(url)
-        // exit on a duplicate
+        const urlWithoutParameters = cleanUrl(url)
+        // exit the process if duplicates exist in DB
+        let isLinkAlreadyInDB = await isAlreadyInDB(urlWithoutParameters)
         if (
-          !isDuplicate(url) &&
-          url.indexOf('udemyoff.com') === -1 &&
-          url.indexOf('ift.tt/') === -1 &&
-          url.indexOf('eduonix.com') === -1 &&
-          url.indexOf('smartybro.com') === -1
+          // If the course link isn't in DB, continue...
+          typeof isLinkAlreadyInDB !== 'undefined' &&
+          !isLinkAlreadyInDB &&
+          !isThirdPartyLink(url)
         ) {
-          // If post doesn't exist, continue...
-
           NewPost.preview.url = url
 
           NewPost.raw.text = ctlHelper.extractClutter(text)
@@ -215,7 +225,7 @@ const addPost = async data => {
             }
           })
         } else {
-          throw new Error('The post already exists. Aborting.')
+          throw new Error('The post is already in DB. Aborting.')
         }
       } catch (e) {
         console.error('-------- ADD_POST: ', e)
