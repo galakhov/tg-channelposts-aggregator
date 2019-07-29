@@ -25,10 +25,9 @@
   },
   "scripts": {
     "install": "cd client && npm i",
-    "postinstall": "node client/scripts/build.js",
-    "dev:client": "cd client/ && npm i && node scripts/start.js",
+    "dev:client": "cd client/ && npm i",
     "dev:server": "nodemon server.js",
-    "start": "npm run serve:pm2 | npm run dev:client",
+    "start": "npm run serve:pm2",
     "dev": "npm run dev:server | npm run dev:client",
     "serve:pm2": "pm2 startOrRestart pm2.config.js start server.js",
     "serve:simple": "nohup node server.js &"
