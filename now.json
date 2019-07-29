@@ -19,9 +19,19 @@
       "src": "server/server.js",
       "use": "@now/node",
       "config": {
-        "includeFiles": ["api/*/**", "bot/*/**"]
+        "includeFiles": ["api/**", "bot/**", "api/*/**", "bot/*/**"]
       }
     }
   ],
-  "routes": [{ "src": "/(.*)", "dest": "server.js" }]
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server/server.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept"
+      }
+    }
+  ]
 }
