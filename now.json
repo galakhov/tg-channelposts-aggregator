@@ -2,7 +2,13 @@
   "name": "tg-aggregator",
   "version": 2,
   "env": {
-    "MONGODB_URI": "@mongodb-atlas-uri"
+    "MONGODB_URI": "@mongodb-atlas-uri",
+    "NODE_ENV": "production",
+    "PUBLIC_URL": "./",
+    "DB_HOST": "@dbhost",
+    "DB_USER": "@dbuser",
+    "DB_PASSWORD": "@dbpass",
+    "DB_NAME": "@dbname"
   },
   "builds": [
     {
@@ -25,7 +31,7 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/v1/(.*)",
       "dest": "server/server.js",
       "headers": {
         "Access-Control-Allow-Origin": "*",
