@@ -20,11 +20,13 @@ Even though this setup would also work in production, I'd suggest to install and
 
 # Set up
 
+Create new file in the `./server`'s root directory:
+
 ```
 touch .env
 ```
 
-Put the required lines into the `.env` file (add your BOT_TOKEN):
+Put the required lines into the `.env` file and fill in the required constants (at least add your BOT_TOKEN hash):
 
 ```
 NODE_ENV=development

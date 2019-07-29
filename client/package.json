@@ -11,6 +11,7 @@
     }
   ],
   "dependencies": {
+    "@now/static-build": "^0.9.1",
     "autolinker": "^1.6.0",
     "classnames": "^2.2.5",
     "cssrecipes-defaults": "^0.5.0",
@@ -75,7 +76,7 @@
     "postcss-loader": "2.0.6",
     "postcss-nested": "^2.1.2",
     "promise": "8.0.1",
-    "react-dev-utils": "^4.0.1",
+    "react-dev-utils": "^4.2.3",
     "react-svg-loader": "^1.1.1",
     "redux-devtools": "^3.4.0",
     "redux-logger": "^3.0.6",
@@ -93,6 +94,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },
+  "homepage": "https://tg-channelposts-aggregator.pr0duction.now.sh/client/public/",
   "eslintConfig": {
     "extends": "react-app"
   }

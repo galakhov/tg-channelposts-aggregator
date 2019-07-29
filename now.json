@@ -3,5 +3,15 @@
   "version": 2,
   "env": {
     "MONGODB_URI": "@mongodb-atlas-uri"
-  }
+  },
+  "builds": [
+    {
+      "src": "client/build/*.html",
+      "use": "@now/static",
+      "config": {
+        "includeFiles": ["build/static/**"]
+      }
+    },
+    { "src": "server/server.js", "use": "@now/node" }
+  ]
 }
