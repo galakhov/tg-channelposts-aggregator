@@ -94,7 +94,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },
-  "homepage": "https://tg-channelposts-aggregator.pr0duction.now.sh/client/public/",
+  "homepage": "",
   "eslintConfig": {
     "extends": "react-app"
   }
