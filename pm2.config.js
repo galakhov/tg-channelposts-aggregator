@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'tg',
+      name: 'tg-aggregator',
       instances: 1,
       script: './server.js',
       exec_mode: 'cluster',

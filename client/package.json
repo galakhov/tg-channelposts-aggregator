@@ -34,7 +34,12 @@
     "redux-thunk": "^2.2.0",
     "reselect": "^3.0.1",
     "reset-css": "^2.2.1",
-    "universal-cookie": "^2.1.2"
+    "universal-cookie": "^2.1.2",
+    "webpack": "3.5.1",
+    "sw-precache-webpack-plugin": "0.11.4",
+    "webpack-manifest-plugin": "1.2.1",
+    "html-webpack-plugin": "2.29.0",
+    "extract-text-webpack-plugin": "3.0.0"
   },
   "devDependencies": {
     "autoprefixer": "7.1.2",
@@ -63,10 +68,8 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "7.1.0",
     "eslint-plugin-standard": "^3.0.1",
-    "extract-text-webpack-plugin": "3.0.0",
     "file-loader": "0.11.2",
     "fs-extra": "3.0.1",
-    "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
     "object-assign": "4.1.1",
     "postcss-composes": "^0.1.0",
@@ -81,12 +84,9 @@
     "redux-devtools": "^3.4.0",
     "redux-logger": "^3.0.6",
     "style-loader": "0.18.2",
-    "sw-precache-webpack-plugin": "0.11.4",
     "tslint": "^5.18.0",
     "url-loader": "0.5.9",
-    "webpack": "3.5.1",
     "webpack-dev-server": "2.7.1",
-    "webpack-manifest-plugin": "1.2.1",
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
