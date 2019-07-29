@@ -1,5 +1,7 @@
 import _fetch from './_fetch'
 
+// Entrypoint: ./api/v1/posts
+
 export default {
   Posts: {
     get () {
