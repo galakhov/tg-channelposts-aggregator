@@ -25,6 +25,7 @@
   },
   "scripts": {
     "install": "cd client && npm i",
+    "postinstall": "npm install pm2 -g",
     "dev:client": "cd client/ && npm i",
     "dev:server": "nodemon server.js",
     "start": "npm run serve:pm2",
