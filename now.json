@@ -1,5 +1,5 @@
 {
-  "name": "mongodb-atlas-api",
+  "name": "tg-channelposts-aggregator",
   "version": 2,
   "env": {
     "MONGODB_URI": "@mongodb-atlas-uri"
@@ -9,9 +9,15 @@
       "src": "client/build/*.html",
       "use": "@now/static",
       "config": {
-        "includeFiles": ["build/static/**"]
+        "includeFiles": ["build/**", "build/static/**"]
       }
     },
-    { "src": "server/server.js", "use": "@now/node" }
+    {
+      "src": "server/server.js",
+      "use": "@now/node",
+      "config": {
+        "includeFiles": ["api/*/**", "bot/*/**"]
+      }
+    }
   ]
 }
