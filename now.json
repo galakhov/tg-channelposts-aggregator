@@ -4,7 +4,7 @@
   "env": {
     "MONGODB_URI": "@mongodb-atlas-uri",
     "NODE_ENV": "production",
-    "PUBLIC_URL": "./",
+    "PUBLIC_URL": "client/build/index.html",
     "DB_HOST": "@dbhost",
     "DB_USER": "@dbuser",
     "DB_PASSWORD": "@dbpass",
@@ -38,6 +38,15 @@
     {
       "src": "/api/v1/(.*)",
       "dest": "server/server.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "client/build/*.html",
       "headers": {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
