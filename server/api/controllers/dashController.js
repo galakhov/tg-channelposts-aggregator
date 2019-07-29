@@ -20,6 +20,8 @@ const listAllPosts = (req, res) => {
 
 const cleanUrl = url => {
   let cleanedUrl = url
+  console.log('-------- cleanedUrl', url)
+  console.log('-------- type of cleanedUrl', typeof url)
   let posToEnd = url.indexOf('/?couponCode=')
   if (posToEnd === -1) {
     posToEnd = url.indexOf('/?&deal_code=')
@@ -72,12 +74,85 @@ const isAlreadyInDB = cleanedUrl => {
 }
 
 const isThirdPartyLink = url => {
-  return (
+  const nonOriginalUdemyLink =
     url.indexOf('udemyoff.com') !== -1 ||
     url.indexOf('ift.tt/') !== -1 ||
     url.indexOf('eduonix.com') !== -1 ||
     url.indexOf('smartybro.com') !== -1
-  )
+  console.log('-------- nonOriginalUdemyLink', nonOriginalUdemyLink)
+  return nonOriginalUdemyLink
+}
+
+const timeoutBeforeNextRequest = ms => {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+const startUdemyOffParser = async url => {
+  try {
+    const udemyOff = await ctlHelper
+      .parseUrl(url, ['#content .wp-block-button__link'])
+      .catch(err => console.error('-------- ADD_POST parseUdemyOff: ', err))
+    console.log('-------- ADD_POST udemyOff parsed', udemyOff[0])
+    url = udemyOff[0].indexOf('udemy.com') !== -1 ? udemyOff[0] : url
+    console.log(
+      '-------- save the link from the third-party site. Finishing...'
+    )
+    console.log(url)
+    return url
+  } catch (err) {
+    console.error('-------- startUdemyOffParser', err)
+  }
+}
+
+const startRealDiscountParser = async (url, entities) => {
+  try {
+    console.log('-------- entities', entities)
+    if (entities) {
+      const foundUrlInDBAtIndex = entities.findIndex(entity =>
+        entity.url ? entity.url.indexOf('udemy.com') !== -1 : false
+      )
+      console.log('-------- real.dicount URL: ', foundUrlInDBAtIndex)
+
+      if (foundUrlInDBAtIndex === -1) {
+        const parsedUrl = await ctlHelper
+          .parseUrl(url, ['body a'])
+          .catch(err =>
+            console.error('-------- ADD_POST ctlHelper.parseUrl[body a]: ', err)
+          )
+        if (parsedUrl[0] && parsedUrl[0].length > 7) {
+          url = parsedUrl[0]
+          console.log('-------- real.dicount url found', parsedUrl[0])
+        }
+      } else {
+        url = entities[foundUrlInDBAtIndex].url
+        console.log('-------- real.dicount foundUrlInDBAtIndex', url)
+      }
+    }
+    return url
+  } catch (err) {
+    console.error('-------- startRealDiscountParser', err)
+  }
+}
+
+const startSmatrybroParser = async url => {
+  try {
+    const scrapedContent = await ctlHelper
+      .parseUrl(url, [
+        // '.sing-cont img',
+        '.sing-cont .fasc-button'
+      ])
+      .catch(err =>
+        console.error(
+          '-------- ADD_POST ctlHelper.parseUrl[.sing-cont .fasc-button]: ',
+          err
+        )
+      )
+    url = scrapedContent[0]
+    // the eduonix.com urls are blocked (no parser yet)
+    return url
+  } catch (err) {
+    console.error('-------- startSmatrybroParser', err)
+  }
 }
 
 const addPost = async data => {
@@ -95,8 +170,6 @@ const addPost = async data => {
       )
     }
     const isSticker = _.get(data, 'sticker', '')
-    console.log('-------- What is a type of a sticker?', typeof isSticker)
-    console.log('-------- Inside of a sticker is nothing?', isSticker === '')
     const isThisAnAd = ctlHelper.isAd(text)
 
     if (!isThisAnAd && isSticker === '') {
@@ -105,55 +178,12 @@ const addPost = async data => {
       console.log('-------- ADD_POST parsed urls:', url)
 
       if (url.indexOf('udemyoff.com') !== -1) {
-        const udemyOff = await ctlHelper
-          .parseUrl(url, ['#content .wp-block-button__link'])
-          .catch(err => console.error('-------- ADD_POST parseUdemyOff: ', err))
-        console.log('-------- ADD_POST udemyOff parsed', udemyOff[0])
-        url = udemyOff[0].indexOf('udemy.com') !== -1 ? udemyOff[0] : url
-        console.log(
-          '-------- save the link from the third-party site. Finishing...',
-          url
-        )
+        url = await startUdemyOffParser(url)
       } else if (url.indexOf('ift.tt/') !== -1) {
         const entities = _.get(data, 'entities', '')
-        if (entities) {
-          const foundUrlAtIndex = entities.findIndex(e =>
-            e.url ? e.url.indexOf('udemy.com') !== -1 : false
-          )
-          console.log('-------- real.dicount URL: ', foundUrlAtIndex)
-
-          if (foundUrlAtIndex === -1) {
-            const parsedUrl = await ctlHelper
-              .parseUrl(url, ['body a'])
-              .catch(err =>
-                console.error(
-                  '-------- ADD_POST ctlHelper.parseUrl[body a]: ',
-                  err
-                )
-              )
-            if (parsedUrl[0] && parsedUrl[0].length > 7) {
-              url = parsedUrl[0]
-              console.log('-------- real.dicount url found', parsedUrl[0])
-            }
-          } else {
-            url = entities[foundUrlAtIndex].url
-            console.log('-------- real.dicount foundUrlAtIndex', url)
-          }
-        }
+        url = await startRealDiscountParser(url, entities)
       } else if (url.indexOf('smartybro.com') !== -1) {
-        const scrapedContent = await ctlHelper
-          .parseUrl(url, [
-            // '.sing-cont img',
-            '.sing-cont .fasc-button'
-          ])
-          .catch(err =>
-            console.error(
-              '-------- ADD_POST ctlHelper.parseUrl[.sing-cont .fasc-button]: ',
-              err
-            )
-          )
-        url = scrapedContent[0]
-        // the eduonix.com urls are blocked (no parser yet)
+        url = await startSmatrybroParser(url)
       }
 
       try {
@@ -183,47 +213,58 @@ const addPost = async data => {
           NewPost.tags = tags
 
           // crawl and parse contents
-          let udemyContents = 'No udemy course found'
+          // let udemyContents = 'No udemy course found'
 
           if (url.indexOf('udemy.com') !== -1) {
             // do the parsing of udemy.com/course
-            udemyContents = await ctlHelper
-              .prepareUdemyCourseJSON(url)
-              .catch(err =>
-                console.error('-------- ADD_POST prepareUdemyCourseJSON: ', err)
-              )
 
-            // const udemyContent = JSON.parse(JSON.stringify(udemyContents))
+            let [parsedCourseContents] = await Promise.all([
+              ctlHelper
+                .prepareUdemyCourseJSON(url)
+                .then(contents => {
+                  if (contents) {
+                    NewPost.preview.courseContents = {}
+                    NewPost.preview.courseId = contents.id
+                    NewPost.preview.courseUrl = contents.url
+                    NewPost.preview.courseContents.text = contents.description
+                    NewPost.preview.courseContents.author = contents.authors
+                    NewPost.preview.courseContents.date = contents.date
+                    NewPost.preview.courseContents.title = contents.title
+                    NewPost.preview.courseContents.headline = contents.headline
+                    NewPost.preview.courseContents.description =
+                      contents.curriculum
+                    NewPost.preview.courseContents.keywords = contents.topics.join(
+                      ', '
+                    )
+                    NewPost.preview.courseContents.url = contents.image
 
-            if (udemyContents) {
-              NewPost.preview.courseContents = {}
-              NewPost.preview.courseId = udemyContents.id
-              NewPost.preview.courseUrl = udemyContents.url
-              NewPost.preview.courseContents.text = udemyContents.description
-              NewPost.preview.courseContents.author = udemyContents.authors
-              NewPost.preview.courseContents.date = udemyContents.date
-              NewPost.preview.courseContents.title = udemyContents.title
-              NewPost.preview.courseContents.headline = udemyContents.headline
-              NewPost.preview.courseContents.description =
-                udemyContents.curriculum
-              NewPost.preview.courseContents.keywords = udemyContents.topics.join(
-                ', '
-              )
-              NewPost.preview.courseContents.url = udemyContents.image
-            } else {
-              console.error('-------- ADD_POST: ')
-              // exit on Error: "Udemy page response with status 403" or other status than 200
-              throw 'Error populating course contents'
-            }
+                    // save post only if the given url is valid and the contents were parsed
+                    NewPost.save((e, post) => {
+                      e
+                        ? () => {
+                            console.error('-------- ADD_POST:')
+                            throw e
+                          }
+                        : console.log(
+                            '-------- ADD_POST course contents saved!'
+                          )
+                    })
+                  } else {
+                    console.error('-------- ADD_POST: ')
+                    // exit on Error: "Udemy page response with status 403" or other status than 200
+                    throw 'Error connecting to the course platform.'
+                  }
+                })
+                .catch(err =>
+                  console.error(
+                    '-------- ADD_POST prepareUdemyCourseJSON: ',
+                    err
+                  )
+                ),
+              timeoutBeforeNextRequest(3500)
+            ])
+            // udemyContents = parsedCourseContents
           }
-
-          // save post only if the given url is valid and the contents were parsed
-          NewPost.save((e, post) => {
-            if (e) {
-              console.error('-------- ADD_POST:')
-              throw e
-            }
-          })
         } else {
           throw new Error('The post is already in DB. Aborting.')
         }
