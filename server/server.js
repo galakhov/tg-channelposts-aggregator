@@ -21,9 +21,12 @@ if (process.env.NODE_ENV === 'production') {
   client.connect(err => {
     const collection = client
       .db(process.env.DB_NAME)
-      .collection(process.env.DB_COLLECTIONS)
+      .collection(process.env.DB_COLLECTION)
     // perform actions on the collection object
     client.close()
+    if (err) {
+      console.log('DB error: ', err)
+    }
   })
 } else {
   const mongoose = require('mongoose')
@@ -38,7 +41,14 @@ app.options('*', cors())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-app.use(express.static('../client/build'))
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')))
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname + '/client/build', 'index.html'))
+  })
+} else {
+  app.use(express.static('../client/build'))
+}
 
 routes(app) // register routes
 

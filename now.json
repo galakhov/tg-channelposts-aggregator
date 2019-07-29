@@ -9,7 +9,10 @@
       "src": "client/build/*.html",
       "use": "@now/static",
       "config": {
-        "includeFiles": ["build/**", "build/static/**"]
+        "includeFiles": ["build/**", "build/static/**"],
+        "config": {
+          "distDir": "client/build"
+        }
       }
     },
     {
@@ -19,5 +22,6 @@
         "includeFiles": ["api/*/**", "bot/*/**"]
       }
     }
-  ]
+  ],
+  "routes": [{ "src": "/(.*)", "dest": "server.js" }]
 }
