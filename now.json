@@ -4,7 +4,7 @@
   "env": {
     "MONGODB_URI": "@mongodb-atlas-uri",
     "NODE_ENV": "production",
-    "PUBLIC_URL": "client/build/index.html",
+    "PUBLIC_URL": "./",
     "DB_HOST": "@dbhost",
     "DB_USER": "@dbuser",
     "DB_PASSWORD": "@dbpass",
@@ -25,13 +25,8 @@
       "src": "server/**",
       "use": "@now/node",
       "config": {
-        "includeFiles": [
-          "server/api/**",
-          "server/bot/**",
-          "server/api/*/**",
-          "server/bot/*/**"
-        ],
-        "maxLambdaSize": "128mb",
+        "includeFiles": ["server/*/**"],
+        "maxLambdaSize": "256mb",
         "bundle": false
       }
     }
@@ -48,7 +43,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "client/build/*.html",
+      "dest": "client/build/**",
       "headers": {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
