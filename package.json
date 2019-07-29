@@ -25,7 +25,7 @@
   },
   "scripts": {
     "install": "cd client && npm i",
-    "postinstall": "node scripts/build.js",
+    "postinstall": "node client/scripts/build.js",
     "dev:client": "cd client/ && npm i && node scripts/start.js",
     "dev:server": "nodemon server.js",
     "start": "npm run serve:pm2 | npm run dev:client",
