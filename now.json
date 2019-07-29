@@ -15,9 +15,9 @@
       "src": "client/build/*.html",
       "use": "@now/static",
       "config": {
-        "includeFiles": ["build/**", "build/static/**"],
+        "includeFiles": ["client/build/**"],
         "config": {
-          "distDir": "client/build"
+          "distDir": "./"
         }
       }
     },
@@ -25,13 +25,18 @@
       "src": "server/server.js",
       "use": "@now/node",
       "config": {
-        "includeFiles": ["api/**", "bot/**", "api/*/**", "bot/*/**"]
+        "includeFiles": [
+          "server/api/**",
+          "server/bot/**",
+          "server/api/*/**",
+          "server/bot/*/**"
+        ]
       }
     }
   ],
   "routes": [
     {
-      "src": "/v1/(.*)",
+      "src": "/api/v1/(.*)",
       "dest": "server/server.js",
       "headers": {
         "Access-Control-Allow-Origin": "*",
