@@ -47,7 +47,7 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname + '/client/build', 'index.html'))
   })
 } else {
-  app.use(express.static('../client/build'))
+  app.use(express.static('client/build'))
 }
 
 routes(app) // register routes

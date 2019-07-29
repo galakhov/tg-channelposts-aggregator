@@ -24,13 +24,11 @@
     "telegraf": "^3.16.4"
   },
   "scripts": {
-    "dev:client": "cd ../client && node scripts/start.js",
+    "dev:client": "cd client/ && node scripts/start.js",
     "dev:server": "nodemon server.js",
     "start": "npm run dev:server | npm run dev:client",
     "serve:pm2": "pm2 startOrRestart pm2.config.js start server.js",
     "serve:simple": "nohup node server.js &"
-    /* ,
-    "deploy": "now -e NODE_ENV=production -e PUBLIC_URL=./ -e DB_HOST=@dbhost -e DB_USER=@dbuser -e DB_PASSWORD=@dbpass -e DB_NAME=@dbname" */
   },
   "devDependencies": {
     "dotenv": "^8.0.0",
