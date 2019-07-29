@@ -42,6 +42,7 @@ app.options('*', cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 if (process.env.NODE_ENV === 'production') {
+  const path = require('path')
   app.use(express.static(path.join(__dirname, 'client/build')))
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + '/client/build', 'index.html'))
