@@ -1,5 +1,5 @@
 {
-  "name": "tg-channelposts-aggregator",
+  "name": "tg-aggregator",
   "version": 2,
   "env": {
     "MONGODB_URI": "@mongodb-atlas-uri"
