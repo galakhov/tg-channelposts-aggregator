@@ -12,13 +12,13 @@
   },
   "builds": [
     {
-      "src": "client/build/*.html",
+      "src": "client/build/**",
       "use": "@now/static",
       "config": {
         "includeFiles": ["client/build/**"],
-        "config": {
-          "distDir": "./"
-        }
+        "distDir": "client/build/",
+        "maxLambdaSize": "128mb",
+        "bundle": false
       }
     },
     {
@@ -30,7 +30,9 @@
           "server/bot/**",
           "server/api/*/**",
           "server/bot/*/**"
-        ]
+        ],
+        "maxLambdaSize": "128mb",
+        "bundle": false
       }
     }
   ],
