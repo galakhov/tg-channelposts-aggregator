@@ -22,7 +22,7 @@
       }
     },
     {
-      "src": "server/server.js",
+      "src": "server/**",
       "use": "@now/node",
       "config": {
         "includeFiles": [
