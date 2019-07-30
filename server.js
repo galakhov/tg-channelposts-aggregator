@@ -49,7 +49,7 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'client/build')))
 
   app.get(/^\/|\/about|\/edit\/?$/i, (req, res) => {
-    // if (req.url === '/api/v1/posts' || req.url === '/login') return next()
+    if (req.url === '/api/v1/posts' || req.url === '/login') return next()
     res.sendFile(path.join(__dirname + '/client/build', 'index.html'))
   })
 
