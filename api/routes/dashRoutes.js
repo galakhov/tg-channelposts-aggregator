@@ -1,7 +1,8 @@
+const express = require('express')
+const router = express.Router()
+
 const dashboard = require('../controllers/dashController')
 
-const dashRoutes = app => {
-  app.route('/api/v1/posts').get(dashboard.listAllPosts)
-}
+router.get('/api/v1/posts', dashboard.listAllPosts)
 
-module.exports = dashRoutes
+module.exports = router
