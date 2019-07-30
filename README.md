@@ -63,6 +63,8 @@ BOT_TOKEN=123456789:AAH54XXXMBUXXXPz4XX-fbeXXXTXYYYY
 
 Debugging a node application on a VPS, cloud, or a dedicated server can be tricky. For simple debugging I'd suggest to use such tools as: `pm2 logs` or `node --inspect-brk=0.0.0.0:9229 server.js`. Both tools can be started if you change to an application's directory using a terminal/bash's `cd` command. PM2 will be installed globally during `postinstall` procedure (see package.json).
 
+Read this [pm2 documentation](http://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/) for more details.
+
 # Credits
 
 🙏 Inspired by and based on this [repo](https://github.com/foreseaz/tg-channel-dashboard).
