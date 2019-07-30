@@ -48,8 +48,11 @@ if (process.env.NODE_ENV === 'production') {
   const path = require('path')
   app.use(express.static(path.join(__dirname, 'client/build')))
 
+  const dashboard = require('./api/controllers/dashController')
+  app.get('/api/v1/posts', dashboard.listAllPosts)
+
   app.get(/^\/|\/about|\/edit\/?$/i, (req, res) => {
-    if (req.url === '/api/v1/posts' || req.url === '/login') return next()
+    // if (req.url === '/api/v1/posts' || req.url === '/login') return next()
     res.sendFile(path.join(__dirname + '/client/build', 'index.html'))
   })
 
@@ -70,8 +73,6 @@ if (process.env.NODE_ENV === 'production') {
   //   next()
   // })
   // router.use('/api/v1/posts', require('./api/routes/dashRoutes'))
-  const dashboard = require('./api/controllers/dashController')
-  app.get('/api/v1/posts', dashboard.listAllPosts)
 } else {
   app.use(express.static('client/build'))
 }
