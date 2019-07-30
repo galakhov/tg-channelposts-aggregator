@@ -17,7 +17,9 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 
 let db_uri
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
+  db_uri = 'mongodb://localhost/TelegramChannelDB'
+} else {
   // const MongoClient = require('mongodb').MongoClient
   db_uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
     process.env.DB_HOST
@@ -34,8 +36,6 @@ if (process.env.NODE_ENV === 'production') {
       console.log('DB error: ', err)
     }
   }) */
-} else {
-  db_uri = 'mongodb://localhost/TelegramChannelDB'
 }
 console.log('TCL: process.env.NODE_ENV', process.env.NODE_ENV)
 console.log('TCL: db_uri', db_uri)

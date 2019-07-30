@@ -81,7 +81,6 @@ const isThirdPartyLink = url => {
     url.indexOf('ift.tt/') !== -1 ||
     url.indexOf('eduonix.com') !== -1 ||
     url.indexOf('smartybro.com') !== -1
-  console.log('-------- nonOriginalUdemyLink', nonOriginalUdemyLink)
   return nonOriginalUdemyLink
 }
 
@@ -175,7 +174,6 @@ const addPost = async data => {
     const isThisAnAd = ctlHelper.isAd(text)
 
     if (!isThisAnAd && isSticker === '') {
-      // TODO: extract the correct url (udemy.com)
       let url = ctlHelper.extractUrl(text)
       console.log('-------- ADD_POST parsed urls:', url)
 
