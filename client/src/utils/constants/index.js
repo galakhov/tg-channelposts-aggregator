@@ -2,5 +2,5 @@
 const port = process.env.PORT || 8080
 export const API_HOST =
   process.env.NODE_ENV === 'production'
-    ? `https://aggregator.cleverapps.io:${port}`
+    ? `https://aggregator.cleverapps.io`
     : `http://localhost:${port}`
