@@ -82,9 +82,9 @@ app.use(express.static('client/build'))
 // routes(app) // register routes
 
 app.listen(port)
-console.log('app.address', app.address())
-console.log('app.address().address', app.address().address)
-console.log('app.address().port', app.address().port)
+// console.log('app.address', app.address())
+// console.log('app.address().address', app.address().address)
+// console.log('app.address().port', app.address().port)
 initBot()
 
 console.log(`TG Channel Dashboard API server started on: ${port}`)
