@@ -94,7 +94,7 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },
-  "homepage": "",
+  "homepage": "https://aggregator.cleverapps.io",
   "eslintConfig": {
     "extends": "react-app"
   }
