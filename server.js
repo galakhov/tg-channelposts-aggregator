@@ -1,5 +1,3 @@
-require('@risingstack/trace')
-
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -21,9 +19,10 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
   db_uri = 'mongodb://localhost/TelegramChannelDB'
 } else {
   // const MongoClient = require('mongodb').MongoClient
-  db_uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
+  db_uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
     process.env.DB_HOST
-  }.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
+  }.mongodb.net/${process.env.DB_NAME}`
+  // ?retryWrites=true&w=majority
 
   /* const client = new MongoClient(uri, { useNewUrlParser: true })
   client.connect(err => {
@@ -37,9 +36,16 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
     }
   }) */
 }
-console.log('TCL: process.env.NODE_ENV', process.env.NODE_ENV)
-console.log('TCL: db_uri', db_uri)
-mongoose.connect(db_uri)
+console.log('db_uri:', db_uri)
+mongoose
+  .connect(db_uri, {
+    useNewUrlParser: true,
+    reconnectInterval: 500,
+    reconnectTries: 10
+  })
+  .catch(error => {
+    console.log('mongoose.connection error', error)
+  })
 
 // allow cors
 app.use(cors())
