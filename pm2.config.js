@@ -7,7 +7,7 @@ module.exports = {
       exec_mode: 'cluster',
       env: {
         BOT_TOKEN: process.env.BOT_TOKEN,
-        PORT: 8081
+        PORT: 8080
       },
       max_memory_restart: '300M',
       watch: false

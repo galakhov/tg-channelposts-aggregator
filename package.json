@@ -26,10 +26,10 @@
   "scripts": {
     "install": "cd client && npm i",
     "postinstall": "npm install pm2 -g",
-    "dev:client": "cd client/ && npm i",
-    "dev:server": "nodemon server.js",
+    "prod:client": "cd client/ && npm i",
     "start": "npm run serve:pm2",
-    "dev": "npm run dev:server | npm run dev:client",
+    "dev:cleint": "cd client/ && node scripts/start.js",
+    "dev:server": "nodemon server.js",
     "serve:pm2": "pm2 startOrRestart pm2.config.js start server.js",
     "serve:simple": "nohup node server.js &"
   },

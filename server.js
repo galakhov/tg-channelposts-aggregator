@@ -3,7 +3,7 @@ dotenv.config()
 
 const express = require('express'),
   app = express(),
-  port = process.env.PORT || 8081,
+  port = process.env.PORT || 8080,
   cors = require('cors'),
   bodyParser = require('body-parser'),
   Post = require('./api/models/postModel'),
