@@ -35,7 +35,8 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   db_uri = 'mongodb://localhost/TelegramChannelDB'
 }
-
+console.log('TCL: process.env.NODE_ENV', process.env.NODE_ENV)
+console.log('TCL: db_uri', db_uri)
 mongoose.connect(db_uri)
 
 // allow cors
@@ -81,6 +82,9 @@ app.use(express.static('client/build'))
 // routes(app) // register routes
 
 app.listen(port)
+console.log('app.address', app.address())
+console.log('app.address().address', app.address().address)
+console.log('app.address().port', app.address().port)
 initBot()
 
 console.log(`TG Channel Dashboard API server started on: ${port}`)

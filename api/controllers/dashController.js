@@ -6,6 +6,8 @@ const mongoose = require('mongoose'),
   Post = mongoose.model('Post')
 
 const listAllPosts = (req, res) => {
+  console.log('listAllPosts req: ', req)
+  console.log('listAllPosts post: ', req.app.settings.port)
   Post.find({}, (err, posts) => {
     if (err) {
       res.send(err)
