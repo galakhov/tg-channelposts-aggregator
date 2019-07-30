@@ -48,6 +48,11 @@ if (process.env.NODE_ENV === 'production') {
   const path = require('path')
   app.use(express.static(path.join(__dirname, 'client/build')))
 
+  app.get('*', (req, res) => {
+    if (req.url === '/api/v1/posts' || req.url === '/login') return next()
+    res.sendFile(path.join(__dirname + '/client/build', 'index.html'))
+  })
+
   // An api endpoint that returns a short list of items
   app.get('/api/v1/posts', (req, res) => {
     // const posts = []
@@ -65,10 +70,6 @@ if (process.env.NODE_ENV === 'production') {
   //   next()
   // })
   router.use('/api/v1/posts', require('./api/routes/dashRoutes'))
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/client/build', 'index.html'))
-  })
 } else {
   app.use(express.static('client/build'))
 }
