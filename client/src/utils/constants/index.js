@@ -1,4 +1,4 @@
-// Deployment: paste your domain in here (also needed for CI/CD)
+// For successful deployment, add your domain in here (also needed for CI/CD)
 export const API_HOST =
   process.env.NODE_ENV === 'production'
     ? 'https://aggregator.cleverapps.io'

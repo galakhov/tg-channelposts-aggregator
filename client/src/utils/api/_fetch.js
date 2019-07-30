@@ -6,29 +6,25 @@ import _isEmtpy from 'lodash/isEmpty'
 
 import { API_HOST } from '~/utils/constants'
 
-
-const checkStatus = (res) => {
+const checkStatus = res => {
   if (res.status >= 200 && res.status < 300) return res
   throw res
 }
 
-const parseResponse = (res) => {
-  return res.text()
-    .then(text => {
-      const headers = res.headers
-      let data = null
-      try {
-        data = JSON.parse(text)
-      } catch (e) {
-        data = text || null
-      }
-      return { headers, data }
-    })
+const parseResponse = res => {
+  return res.text().then(text => {
+    const headers = res.headers
+    let data = null
+    try {
+      data = JSON.parse(text)
+    } catch (e) {
+      data = text || null
+    }
+    return { headers, data }
+  })
 }
 
-export default ({
-  api, method, path, query, body
-}) => {
+export default ({ api, method, path, query, body }) => {
   const queries = _isEmtpy(query) ? '' : `?${qs.encode(query)}`
   const _url = `${API_HOST}/${api.service}/${api.version}${path}${queries}`
 
@@ -49,9 +45,7 @@ export default ({
           'Content-Type': 'application/json'
         }
         : {},
-      body: isJSON
-        ? JSON.stringify(body)
-        : body
+      body: isJSON ? JSON.stringify(body) : body
     })
   }
 
@@ -60,7 +54,8 @@ export default ({
   return fetch(_url, _opts)
     .then(checkStatus)
     .then(parseResponse)
-    .catch((err) => {
+    .catch(err => {
+      console.log('Fetching of data from DB failed: ', err)
       throw err
     })
 }
