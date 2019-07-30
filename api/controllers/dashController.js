@@ -6,12 +6,12 @@ const mongoose = require('mongoose'),
   Post = mongoose.model('Post')
 
 const listAllPosts = (req, res) => {
-  console.log('listAllPosts req: ', req)
-  console.log('listAllPosts post: ', req.app.settings.port)
+  console.log('listAllPosts res: ', res)
   Post.find({}, (err, posts) => {
     if (err) {
       res.send(err)
     }
+    console.log('listAllPosts -> posts:', posts)
     res.json(posts)
   })
     .limit(limitPerPage)
