@@ -54,14 +54,14 @@ if (process.env.NODE_ENV === 'production') {
   })
 
   // An api endpoint that returns a short list of items
-  app.get('/api/v1/posts', (req, res) => {
-    // const posts = []
-    // res.set('Content-Type', 'application/json')
-    res.type('json')
-    // res.json()
-    console.log('Response from the API:', res)
-    console.log('List of posts initialized')
-  })
+  // app.get('/api/v1/posts', (req, res) => {
+  //   // const posts = []
+  //   // res.set('Content-Type', 'application/json')
+  //   res.type('json')
+  //   // res.json()
+  //   console.log('Response from the API:', res)
+  //   console.log('List of posts initialized')
+  // })
 
   // simple logger for this router's requests
   // all requests to this router will first hit this middleware
@@ -69,7 +69,9 @@ if (process.env.NODE_ENV === 'production') {
   //   console.log('%s %s %s', req.method, req.url, req.path)
   //   next()
   // })
-  router.use('/api/v1/posts', require('./api/routes/dashRoutes'))
+  // router.use('/api/v1/posts', require('./api/routes/dashRoutes'))
+  const dashboard = require('./api/controllers/dashController')
+  router.get('/api/v1/posts', dashboard.listAllPosts)
 } else {
   app.use(express.static('client/build'))
 }
