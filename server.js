@@ -7,8 +7,8 @@ const express = require('express'),
   cors = require('cors'),
   bodyParser = require('body-parser'),
   Post = require('./api/models/postModel'),
-  initBot = require('./bot/index'),
-  router = express.Router()
+  initBot = require('./bot/index')
+// ,router = express.Router()
 
 const mongoose = require('mongoose')
 // mongoose instance connection url connection
@@ -48,8 +48,8 @@ if (process.env.NODE_ENV === 'production') {
   const path = require('path')
   app.use(express.static(path.join(__dirname, 'client/build')))
 
-  app.get('*', (req, res) => {
-    if (req.url === '/api/v1/posts' || req.url === '/login') return next()
+  app.get(/^\/|\/about|\/edit\/?$/i, (req, res) => {
+    // if (req.url === '/api/v1/posts' || req.url === '/login') return next()
     res.sendFile(path.join(__dirname + '/client/build', 'index.html'))
   })
 
@@ -71,7 +71,7 @@ if (process.env.NODE_ENV === 'production') {
   // })
   // router.use('/api/v1/posts', require('./api/routes/dashRoutes'))
   const dashboard = require('./api/controllers/dashController')
-  router.get('/api/v1/posts', dashboard.listAllPosts)
+  app.get('/api/v1/posts', dashboard.listAllPosts)
 } else {
   app.use(express.static('client/build'))
 }
@@ -83,4 +83,4 @@ initBot()
 
 console.log(`TG Channel Dashboard API server started on: ${port}`)
 
-module.exports = router
+// module.exports = router
