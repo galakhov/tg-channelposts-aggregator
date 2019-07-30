@@ -19,9 +19,9 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
   db_uri = 'mongodb://localhost/TelegramChannelDB'
 } else {
   // const MongoClient = require('mongodb').MongoClient
-  db_uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
+  db_uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
     process.env.DB_HOST
-  }.mongodb.net/${process.env.DB_NAME}`
+  }.mongodb.net/`
   // ?retryWrites=true&w=majority
 
   /* const client = new MongoClient(uri, { useNewUrlParser: true })
@@ -39,6 +39,8 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
 console.log('db_uri:', db_uri)
 mongoose
   .connect(db_uri, {
+    // https://stackoverflow.com/questions/48917591/fail-to-connect-mongoose-to-atlas/48917626#48917626
+    dbName: process.env.DB_NAME,
     useNewUrlParser: true,
     reconnectInterval: 500,
     reconnectTries: 10
