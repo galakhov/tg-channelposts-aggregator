@@ -19,7 +19,7 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
   db_uri = 'mongodb://localhost/TelegramChannelDB'
 } else {
   // const MongoClient = require('mongodb').MongoClient
-  db_uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
+  db_uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
     process.env.DB_HOST
   }.mongodb.net/`
   // ?retryWrites=true&w=majority
