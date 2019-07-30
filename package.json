@@ -24,7 +24,7 @@
     "telegraf": "^3.16.4"
   },
   "scripts": {
-    "install": "cd client && npm run build",
+    "install": "cd client && npm i && npm run build",
     "postinstall": "npm install pm2 -g",
     "start": "npm run serve:pm2",
     "dev:client": "cd client/ && node scripts/start.js",
