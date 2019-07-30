@@ -56,8 +56,7 @@ class Nav extends React.Component {
           <div className={styles.strip} onClick={this.toggleNav}>
             <ToggleButton showClose={this.state.navOpened} />
             <span className={styles.slogan}>
-              <strong>T.C.:</strong> A personal thoughts catcher based on
-              Telegram Channel.
+              Aggregates video courses from various Telegram Channels.
             </span>
           </div>
           <div className={styles.bg}>
