@@ -7,12 +7,17 @@ import _isEmtpy from 'lodash/isEmpty'
 import { API_HOST } from '~/utils/constants'
 
 const checkStatus = res => {
-  if (res.status >= 200 && res.status < 300) return res
-  throw res
+  if (res.status >= 200 && res.status < 300) {
+    return res
+  } else {
+    console.log('Checking status: ', checkStatus)
+    throw res
+  }
 }
 
 const parseResponse = res => {
   return res.text().then(text => {
+    console.log('Getting response from the API: ', text)
     const headers = res.headers
     let data = null
     try {
@@ -49,6 +54,7 @@ export default ({ api, method, path, query, body }) => {
     })
   }
 
+  console.log('Accessing the API: ', _url)
   console.log(_opts)
 
   return fetch(_url, _opts)
