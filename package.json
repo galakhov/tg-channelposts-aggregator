@@ -8,7 +8,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@now/node": "^0.11.1",
+    "@risingstack/trace": "^3.18.0",
     "cheerio": "^1.0.0-rc.2",
     "clean-mark": "^0.8.0",
     "cors": "^2.8.5",
