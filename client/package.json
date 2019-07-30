@@ -97,5 +97,6 @@
   "homepage": "https://aggregator.cleverapps.io",
   "eslintConfig": {
     "extends": "react-app"
-  }
+  },
+  "proxy": "https://aggregator.cleverapps.io:8080"
 }
