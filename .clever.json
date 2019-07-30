@@ -1,1 +1,10 @@
-{"apps":[{"app_id":"app_219e54df-79c0-444f-a2d5-548f69307115","deploy_url":"https://github.com/galakhov/tg-channelposts-aggregator.git","name":"tg-aggregator","alias":"tg-aggregator"}]}
+{
+  "apps": [
+    {
+      "app_id": "app_219e54df-79c0-444f-a2d5-548f69307115",
+      "deploy_url": "https://github.com/galakhov/tg-channelposts-aggregator.git",
+      "name": "tg-aggregator",
+      "alias": "tg-aggregator"
+    }
+  ]
+}
