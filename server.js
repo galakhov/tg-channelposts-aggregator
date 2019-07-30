@@ -10,14 +10,18 @@ const express = require('express'),
   initBot = require('./bot/index'),
   router = express.Router()
 
+const mongoose = require('mongoose')
+// mongoose instance connection url connection
+mongoose.Promise = global.Promise
+
+let db_uri
 if (process.env.NODE_ENV === 'production') {
-  const MongoClient = require('mongodb').MongoClient
-  const uri = `mongodb+srv://${process.env.DB_USER}:${
-    process.env.DB_PASSWORD
-  }@${process.env.DB_HOST}.mongodb.net/${
-    process.env.DB_NAME
-  }?retryWrites=true&w=majority`
-  const client = new MongoClient(uri, { useNewUrlParser: true })
+  // const MongoClient = require('mongodb').MongoClient
+  db_uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
+    process.env.DB_HOST
+  }.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
+
+  /* const client = new MongoClient(uri, { useNewUrlParser: true })
   client.connect(err => {
     const collection = client
       .db(process.env.DB_NAME)
@@ -27,13 +31,12 @@ if (process.env.NODE_ENV === 'production') {
     if (err) {
       console.log('DB error: ', err)
     }
-  })
+  }) */
 } else {
-  const mongoose = require('mongoose')
-  // mongoose instance connection url connection
-  mongoose.Promise = global.Promise
-  mongoose.connect('mongodb://localhost/TelegramChannelDB')
+  db_uri = 'mongodb://localhost/TelegramChannelDB'
 }
+
+mongoose.connect(db_uri)
 
 // allow cors
 app.use(cors())
