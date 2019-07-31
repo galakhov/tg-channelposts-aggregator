@@ -13,9 +13,9 @@ const Detail = ({ post }) => {
   const courseContent = _get(post, 'preview.courseContents.text')
   let targetAudiences = _get(post, 'preview.courseContents.audiences')
   targetAudiences = targetAudiences
-    ? `<p class='detail-audience'>The course suits the best for:<br /><hr>${targetAudiences.join(
+    ? `<hr><p class='detail-audience'>The course suits the best for:<br /><hr>${targetAudiences.join(
       ', '
-    )}</p><hr>`
+    )}</p>`
     : ''
   const author = _get(post, 'preview.courseContents.author')
   // const date = _get(post, 'preview.courseContents.date')
@@ -39,6 +39,15 @@ const Detail = ({ post }) => {
             <a target="_blank" href={courseUrl} alt="title">
               Get the course!
             </a>
+          </div>
+          <div>
+            <h3>
+              {post.preview
+                ? post.preview.courseContents
+                  ? post.preview.courseContents.headline
+                  : ''
+                : ''}
+            </h3>
           </div>
           <div
             className={styles.main}
