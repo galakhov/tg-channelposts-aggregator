@@ -11,7 +11,8 @@ const express = require('express'),
 // ,router = express.Router()
 
 const mongoose = require('mongoose')
-mongoose.set('debug', true)
+// in case you need debugging
+// mongoose.set('debug', true)
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise
 
@@ -23,20 +24,6 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
   db_uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
     process.env.DB_HOST
   }/${process.env.DB_NAME}`
-  // .mongodb.net
-  // ?retryWrites=true&w=majority
-
-  /* const client = new MongoClient(uri, { useNewUrlParser: true })
-  client.connect(err => {
-    const collection = client
-      .db(process.env.DB_NAME)
-      .collection(process.env.DB_COLLECTION)
-    // perform actions on the collection object
-    client.close()
-    if (err) {
-      console.log('DB error: ', err)
-    }
-  }) */
 }
 console.log('db_uri:', db_uri)
 mongoose
@@ -91,12 +78,10 @@ const dashboard = require('./api/controllers/dashController')
 app.get('/api/v1/posts', dashboard.listAllPosts)
 app.use(express.static('client/build'))
 
-// routes(app) // register routes
+// register routes
+// routes(app)
 
 app.listen(port)
-// console.log('app.address', app.address())
-// console.log('app.address().address', app.address().address)
-// console.log('app.address().port', app.address().port)
 initBot()
 
 console.log(`TG Channel Dashboard API server started on: ${port}`)
