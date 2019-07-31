@@ -23,7 +23,7 @@
     "telegraf": "^3.16.4"
   },
   "scripts": {
-    "postinstall": "npm install pm2 -g",
+    "postinstall": "npm install pm2 mongodb -g",
     "start": "npm run serve:pm2",
     "dev:client": "cd client/ && node --inspect scripts/start.js",
     "dev:server": "nodemon server.js",

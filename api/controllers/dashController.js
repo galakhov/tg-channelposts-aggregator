@@ -5,7 +5,7 @@ const limitPerPage = 100
 const mongoose = require('mongoose'),
   Post = mongoose.model('Post')
 
-console.log('mongoose connected?', mongoose)
+mongoose.set('debug', true)
 
 const listAllPosts = (req, res) => {
   // console.log('listAllPosts res: ', res)
