@@ -49,14 +49,16 @@ const Card = ({
           tagsArray.map((tag, idx) =>
             tag !== 'untagged' ? (
               <li key={idx}>
-                tag && <a href="/">{tag}</a>
+                <a href="/">{tag}</a>
               </li>
             ) : (
               ''
             )
           )}
       </ul>
-      <div className={styles.cardNumber}>{nr ? `<p>- ${nr} -</p>` : ''}</div>
+      <div className={styles.cardNumber}>
+        <p>{nr ? `- ${nr} -` : ''}</p>
+      </div>
     </div>
   )
 }

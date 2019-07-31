@@ -71,7 +71,7 @@
     flex-direction: row-reverse;
     font-size: 11px;
     font-family: var(--consoleFont);
-    color: var(--mainColor);
+    color: var(--actionColor);
 
     li {
       padding: 0 5px;
