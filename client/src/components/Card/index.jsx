@@ -9,9 +9,18 @@ const createMarkup = text => {
 
 let tagsArray
 
-const Card = ({ _id, onCardClick, createdDate, img, text, headline, tags }) => {
+const Card = ({
+  _id,
+  onCardClick,
+  createdDate,
+  img,
+  text,
+  headline,
+  tags,
+  nr
+}) => {
   if (tags && typeof tags === 'string') {
-    this.tagsArray = tags.split(', ')
+    tagsArray = tags.split(', ')
   } else {
     tagsArray = tags
   }
@@ -30,7 +39,10 @@ const Card = ({ _id, onCardClick, createdDate, img, text, headline, tags }) => {
         className={styles.main}
         dangerouslySetInnerHTML={createMarkup(`<h2>${text}</h2>`)}
       />
-      <div dangerouslySetInnerHTML={createMarkup(`<h3>${headline}</h3>`)} />
+      <div
+        className={styles.headline}
+        dangerouslySetInnerHTML={createMarkup(`<h3>${headline}</h3>`)}
+      />
 
       <ul className={styles.tags}>
         {tagsArray &&
@@ -44,6 +56,7 @@ const Card = ({ _id, onCardClick, createdDate, img, text, headline, tags }) => {
             )
           )}
       </ul>
+      <div className={styles.cardNumber}>{nr ? `<p>- ${nr} -</p>` : ''}</div>
     </div>
   )
 }

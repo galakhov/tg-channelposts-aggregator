@@ -12,7 +12,7 @@ const Posts = ({ posts, openModal }) => (
     <div className="spinning-wheel">{posts.length === 0 && <Spinner />}</div>
     <StackGrid columnWidth={340} gutterWidth={40} gutterHeight={20}>
       {posts &&
-        posts.map(post => (
+        posts.map((post, index) => (
           <Card
             key={post._id}
             _id={post._id}
@@ -40,6 +40,7 @@ const Posts = ({ posts, openModal }) => (
                   : post.tags
                 : post.tags
             }
+            nr={index}
           />
         ))}
     </StackGrid>

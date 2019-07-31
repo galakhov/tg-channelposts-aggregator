@@ -78,8 +78,18 @@
     }
   }
 
+  .headline {
+  }
+
   h2,
   h3 {
     font-family: var(--sansFont);
+  }
+
+  .cardNumber {
+    position: relative;
+    margin: 7px auto;
+    font-family: var(--consoleFont);
+    color: rgb(0, 0, 0, 0.75);
   }
 }
