@@ -36,7 +36,9 @@ const Detail = ({ post }) => {
           </div>
           <div
             className={styles.main}
-            dangerouslySetInnerHTML={{ __html: getCleanText(post.raw.text) }}
+            dangerouslySetInnerHTML={{
+              __html: getCleanText(post.preview.courseContents.text)
+            }}
           />
         </div>
         <ul className={styles.tags}>
