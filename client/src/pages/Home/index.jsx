@@ -33,7 +33,7 @@ class Home extends React.Component {
           <Logo />
         </div>
         <h2 className={styles.intro}>Video Courses Aggregator</h2>
-        <h5 className={styles.subheadline}>Free Fresh Coupons</h5>
+        <h5 className={styles.subheadline}>50 Fresh Free Coupons</h5>
         {Posts({ posts, openModal })}
 
         <CardModal />

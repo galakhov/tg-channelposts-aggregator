@@ -7,6 +7,8 @@
   border-radius: 5px;
   box-shadow: 0 10px 30px rgba(100, 100, 100, 0.08),
     0 3px 8px rgba(0, 0, 0, 0.01);
+  height: auto;
+  max-height: 100%;
 
   &:hover {
     transform: translateY(-2px);
