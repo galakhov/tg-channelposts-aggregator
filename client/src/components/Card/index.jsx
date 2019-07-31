@@ -57,7 +57,7 @@ const Card = ({
           )}
       </ul>
       <div className={styles.cardNumber}>
-        <p>{nr ? `- ${nr} -` : ''}</p>
+        <p>{nr + 1 ? `- ${nr + 1} -` : ''}</p>
       </div>
     </div>
   )

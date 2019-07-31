@@ -27,6 +27,7 @@
   a {
     word-break: break-all;
     font-family: var(--consoleFont);
+    color: var(--actionColor);
     font-weight: 400;
     font-size: 12px;
     text-decoration: underline;
@@ -65,13 +66,13 @@
     position: absolute;
     display: flex;
     bottom: 5px;
-    right: 5px;
     padding: 5px;
     flex-wrap: wrap;
     flex-direction: row-reverse;
     font-size: 11px;
     font-family: var(--consoleFont);
-    color: var(--actionColor);
+    left: 10px;
+    padding: 5px 0px;
 
     li {
       padding: 0 5px;
@@ -91,5 +92,9 @@
     margin: 7px auto;
     font-family: var(--consoleFont);
     color: rgb(0, 0, 0, 0.75);
+
+    p {
+      text-align: center;
+    }
   }
 }
