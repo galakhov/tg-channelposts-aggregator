@@ -233,6 +233,8 @@ const addPost = async data => {
                     NewPost.preview.courseId = contents.id
                     NewPost.preview.courseUrl = contents.url
                     NewPost.preview.courseContents.text = contents.description
+                    NewPost.preview.courseContents.audiences =
+                      contents.audiences
                     NewPost.preview.courseContents.author = contents.authors
                     NewPost.preview.courseContents.date = contents.date
                     NewPost.preview.courseContents.title = contents.title

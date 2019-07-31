@@ -11,6 +11,12 @@ import styles from './Detail.css'
 const Detail = ({ post }) => {
   const imgSrc = _get(post, 'preview.courseContents.url')
   const courseContent = _get(post, 'preview.courseContents.text')
+  let targetAudiences = _get(post, 'preview.courseContents.audiences')
+  targetAudiences = targetAudiences
+    ? `<p>The course suits the best for:<br /><hr>${targetAudiences.join(
+      ', '
+    )}</p><hr>`
+    : ''
   const author = _get(post, 'preview.courseContents.author')
   // const date = _get(post, 'preview.courseContents.date')
   const lastUpdate = _get(post, 'preview.courseContents.date')
@@ -37,7 +43,7 @@ const Detail = ({ post }) => {
           <div
             className={styles.main}
             dangerouslySetInnerHTML={{
-              __html: getCleanText(post.preview.courseContents.text)
+              __html: getCleanText(targetAudiences)
             }}
           />
         </div>
