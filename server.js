@@ -22,7 +22,8 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
   // const MongoClient = require('mongodb').MongoClient
   db_uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
     process.env.DB_HOST
-  }`
+  }/${process.env.DB_NAME}`
+  // .mongodb.net
   // ?retryWrites=true&w=majority
 
   /* const client = new MongoClient(uri, { useNewUrlParser: true })
