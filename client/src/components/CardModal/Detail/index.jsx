@@ -35,7 +35,7 @@ const Detail = ({ post }) => {
           {imgSrc && (
             <img className={styles.leadImg} src={imgSrc} alt="lead-img" />
           )}
-          <div>
+          <div className={styles.link}>
             <a target="_blank" href={courseUrl} alt="title">
               Get the course!
             </a>
