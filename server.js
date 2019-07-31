@@ -11,6 +11,7 @@ const express = require('express'),
 // ,router = express.Router()
 
 const mongoose = require('mongoose')
+mongoose.set('debug', true)
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise
 
