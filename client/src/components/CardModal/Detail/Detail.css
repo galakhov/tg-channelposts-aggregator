@@ -6,6 +6,14 @@
     overflow: auto;
   }
 
+  .headline {
+    padding-top: 28px;
+
+    h3 {
+      font-size: 18px;
+    }
+  }
+
   .left {
     max-width: 100%;
     padding: 0px 10px 10px;
