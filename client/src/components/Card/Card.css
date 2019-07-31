@@ -2,7 +2,7 @@
   position: relative;
   width: inherit;
   background: var(--cardColor);
-  padding: 15px 15px 30px;
+  padding: 15px 15px 7px;
   cursor: pointer;
   border-radius: 5px;
   box-shadow: 0 10px 30px rgba(100, 100, 100, 0.08),
@@ -28,8 +28,8 @@
     word-break: break-all;
     font-family: var(--consoleFont);
     color: var(--actionColor);
-    font-weight: 400;
-    font-size: 12px;
+    font-weight: 500;
+    font-size: 13px;
     text-decoration: underline;
   }
   .leadImg {
@@ -63,19 +63,19 @@
     }
   }
   .tags {
-    position: absolute;
     display: flex;
-    bottom: 5px;
     padding: 5px;
     flex-wrap: wrap;
-    flex-direction: row-reverse;
-    font-size: 11px;
+    flex-direction: row;
     font-family: var(--consoleFont);
-    left: 10px;
     padding: 5px 0px;
 
     li {
       padding: 0 5px;
+
+      &:first {
+        padding-left: 0;
+      }
     }
   }
 
