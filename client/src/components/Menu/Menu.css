@@ -1,18 +1,22 @@
 .menu {
   margin: 0 auto;
   height: 60px;
-  box-shadow: 3px 3px 5px rgba(0,0,0,0.1);
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
   font-family: apercubold, sans-serif;
   font-size: 24px;
   font-weight: bold;
   background: #fff;
 
   .logo {
+    height: 26px;
+    overflow: hidden;
+    padding: 10px 15px;
     svg {
       width: 30px;
       height: 40px;
+      background-color: var(--titleColor);
+      margin-top: -12px;
     }
-    padding: 10px 15px;
   }
 
   ul {

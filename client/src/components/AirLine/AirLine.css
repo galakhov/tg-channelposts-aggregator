@@ -1,5 +1,5 @@
 :root {
-  --height: 50px;
+  --height: auto;
 }
 
 .container {
@@ -9,7 +9,7 @@
   right: 0;
   z-index: 9;
   transform: translateY(var(--height));
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 
   height: var(--height);
   background: white;

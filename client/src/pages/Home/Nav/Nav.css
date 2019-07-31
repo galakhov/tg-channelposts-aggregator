@@ -12,20 +12,20 @@
 
   text-align: center;
   font-size: 14px;
-  color: #fff;
+  color: var(--titleColor);
   width: var(--navWidth);
   max-width: calc(100vw);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  transition: transform .5s ease-in-out;
+  transition: transform 0.5s ease-in-out;
   transform: translateX(var(--hideWidth));
   &.open {
     transform: translateX(0);
   }
 
-  background-color: var(--darkBlue);
+  background-color: var(--panelColor);
   @media (--s) {
     background-color: transparent;
   }
@@ -66,7 +66,7 @@
   }
 }
 .bg {
-  background-color: #161616;
+  background-color: var(--pitchDark);
   overflow: auto;
   margin-left: var(--strip-width);
   height: 100%;
@@ -76,26 +76,26 @@
     h4 {
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-bottom: 20px
+      margin-bottom: 20px;
     }
     .type {
       padding: 7px;
       display: inline-block;
 
       .tag.blue {
-        background-color: #5100ff;
-        color: #fff;
+        background-color: var(--actionColor);
+        color: var(--titleColor);
       }
       .tag.blue::before {
-        border-right-color: #5100ff;
+        border-right-color: var(--actionColor);
       }
       .tag {
         cursor: pointer;
-        background-color: #fff;
+        background-color: var(--titleColor);
         display: inline-block;
         border-radius: 0 1px 1px 0;
         position: relative;
-        color: #000;
+        color: var(--dark);
         line-height: 14px;
         padding: 4px 4px 4px 8px;
         margin-left: 5px;
@@ -103,9 +103,9 @@
         transition: opacity 0.2s;
 
         span {
-          background: #eaeaea;
+          background: var(--titleColor);
           line-height: 10px;
-          color: #5100ff;
+          color: var(--actionColor);
           max-width: 26px;
           height: 12px;
           padding: 1px 5px 0 4px;
@@ -115,23 +115,23 @@
         }
       }
       .tag::before {
-        content: "";
+        content: '';
         position: absolute;
         left: -8px;
         top: 0;
         width: 0;
         height: 0;
         border-top: 11px solid transparent;
-        border-right: 8px solid #fff;
+        border-right: 8px solid var(--titleColor);
         border-bottom: 11px solid transparent;
       }
       .tag::after {
-        content: "";
+        content: '';
         position: absolute;
         width: 4px;
         height: 4px;
         border-radius: 2px;
-        background: #000;
+        background: var(--dark);
         left: 0;
         top: 9px;
       }

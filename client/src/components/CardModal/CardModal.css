@@ -1,7 +1,7 @@
 .container {
   position: relative;
   padding: 20px 30px;
-  @media(--s) {
+  @media (--s) {
     padding: 10px 0px;
   }
   max-width: 90vw;
@@ -12,11 +12,23 @@
 .close {
   position: absolute;
   cursor: pointer;
-  width: 20px;
-  height: 20px;
+  width: 33px;
+  height: 18px;
   padding-left: 5px;
-  top: -10px;
-  right: -10px;
+  top: -3px;
+  right: 39px;
+  @media (--xs) {
+    top: -7px;
+    right: 10px;
+  }
+  @media (--s) {
+    top: -7px;
+    right: 10px;
+  }
+  @media (--l) {
+    top: 8px;
+    right: 11px;
+  }
 }
 .edit {
   position: absolute;
@@ -25,5 +37,6 @@
   height: 20px;
   padding-left: 5px;
   bottom: -10px;
-  right: -10px;
+  right: 20px;
+  opacity: 0;
 }

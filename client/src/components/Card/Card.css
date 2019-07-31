@@ -1,7 +1,7 @@
 .card {
   position: relative;
   width: inherit;
-  background: white;
+  background: var(--cardColor);
   padding: 15px 15px 30px;
   cursor: pointer;
   border-radius: 5px;
@@ -36,6 +36,7 @@
     top: -10px;
     right: -10px;
     width: 90%;  */
+    height: 180px;
     pointer-events: none;
 
     /* opacity: 0; 
@@ -47,9 +48,13 @@
   }
 
   .breadcrumbs {
+    font-weight: 650;
+    padding-top: 5px;
+    color: rgb(0, 0, 0, 0.5);
+    font-family: var(--textFont);
   }
   .main {
-    padding: 10px;
+    padding: 10px 0px;
     font-size: 16px;
     a {
       color: var(--actionColor);
@@ -71,5 +76,10 @@
     li {
       padding: 0 5px;
     }
+  }
+
+  h2,
+  h3 {
+    font-family: var(--sansFont);
   }
 }

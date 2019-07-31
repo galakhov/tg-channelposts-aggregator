@@ -1,13 +1,14 @@
-@import "cssrecipes-defaults";
-@import "normalize.css";
-@import "reset-css";
+@import 'cssrecipes-defaults';
+@import 'normalize.css';
+@import 'reset-css';
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
 body {
-  background: #fffbf7;
+  background-color: var(--bgColor);
 
   color: var(--dark);
   line-height: 1.57;
@@ -36,7 +37,9 @@ hr {
 }
 
 /* form control */
-button, select, option {
+button,
+select,
+option {
   font-family: var(--sansFont);
 }
 
@@ -80,15 +83,15 @@ button::-moz-focus-inner {
   padding: 0;
 }
 
-input[type="radio"] {
+input[type='radio'] {
   appearance: none;
   background: none;
   outline: none;
   border: none;
 }
 
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }

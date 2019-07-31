@@ -9,7 +9,7 @@
 
     background-color: #fff;
     @media (--s) {
-      background-color: var(--mainColor);
+      background-color: var(--actionColor);
     }
   }
   .bar:last-child {

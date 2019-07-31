@@ -12,7 +12,7 @@ const filterByTags = (dash, dispatch) => {
     posts,
     post => _intersection(post.tags, tags).length > 0
   )
-  console.log('00000000000000', filtered)
+  console.log('these posts were filtered', filtered)
 }
 
 export const getPosts = () => dispatch => {

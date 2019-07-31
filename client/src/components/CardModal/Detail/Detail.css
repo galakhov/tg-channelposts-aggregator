@@ -7,57 +7,74 @@
   }
 
   .left {
+    max-width: 100%;
+    padding: 0px 10px 10px;
     @media (--l) {
+      padding-top: 10px;
       overflow: auto;
-      max-width: 360px;
+      max-width: 40%;
       padding-right: 15px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    max-width: 500px;
-    padding: 10px;
-
     .content {
       overflow: auto;
     }
 
     .main {
-      padding: 10px;
-      margin-bottom: 20px;
-      font-size: 13px;
+      padding: 10px 0;
+      margin-bottom: 0;
+      font-size: 16px;
       a {
         color: var(--actionColor);
         word-wrap: break-word;
         text-decoration: none;
       }
+
+      .detail-audience {
+        font-weight: 500;
+      }
     }
 
     .leadImg {
-      margin: 10px auto;
+      margin: 5px 0px 20px;
       display: block;
-      max-width: 100%;
+      width: 100%;
       padding: inherit;
+      @media (--l) {
+        margin: 10px 0px 20px;
+      }
     }
 
     .link {
-      padding: 10px 10px 0px 10px;
+      padding: 10px 0px 0px 0px;
+      height: 40px;
+      font-size: 16px;
     }
 
     .tags {
+      padding-left: 3px;
     }
   }
   .right {
-    max-width: 500px;
+    max-width: 100%;
     border-left: solid 1px var(--lineColor);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 20px;
+    padding-top: 7px;
+    font-size: 16px;
 
     @media (--l) {
+      max-width: 60%;
       overflow: auto;
       padding-left: 15px;
+      padding-top: 14px;
     }
     @media (--m) {
-      padding-top: 20px;
+      padding-top: 7px;
       border-left: none;
       border-top: solid 1px var(--lineColor);
     }
@@ -80,6 +97,7 @@
       h2 {
         font-size: 18px;
         font-weight: 600;
+        padding-bottom: 10px;
       }
 
       h3 {
@@ -130,8 +148,17 @@
   .right h3 a {
     color: var(--actionColor);
   }
+
+  .left a {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 500;
+    background-color: var(--actionBgColor);
+  }
+
   .right h3 {
     font-weight: bold;
-    font-size: 16px;
+    font-size: 18px;
+    padding-bottom: 10px;
   }
 }

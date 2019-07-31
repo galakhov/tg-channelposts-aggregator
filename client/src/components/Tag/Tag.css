@@ -1,57 +1,59 @@
 .container {
   padding: 7px;
   display: inline-block;
+  margin-right: 13px;
 
   .tag.yellow {
     background-color: var(--actionColor);
-    color: #fff;
+    color: var(--titleColor);
   }
   .tag.yellow::before {
     border-right-color: var(--actionColor);
   }
   .tag::after {
-    background: #fff!important;
+    background: var(--titleColor) !important;
   }
 
   .tag.blue {
-    background-color: #5100ff;
-    color: #fff;
+    background-color: var(--actionColor);
+    color: var(--titleColor);
   }
   .tag.blue::before {
-    border-right-color: #5100ff;
+    border-right-color: var(--actionColor);
   }
   .tag {
     cursor: pointer;
-    background-color: #fff;
+    background-color: var(--titleColor);
     display: inline-block;
-    border-radius: 0 1px 1px 0;
+    border-radius: 0px 8px 8px 0px !important;
     position: relative;
-    color: #000;
+    color: var(--dark);
     line-height: 14px;
     padding: 4px 4px 4px 8px;
     margin-left: 5px;
-    font-size: 11px;
+    font-size: 14px;
     transition: opacity 0.2s;
+    font-weight: 500;
   }
   .tag::before {
-    content: "";
+    content: '';
     position: absolute;
-    left: -8px;
+    left: -17px;
     top: 0;
     width: 0;
     height: 0;
-    border-top: 11px solid transparent;
-    border-right: 8px solid #fff;
-    border-bottom: 11px solid transparent;
+    border-top: 17px solid transparent;
+    border-right: 17px solid var(--titleColor);
+    border-bottom: 17px solid transparent;
   }
   .tag::after {
-    content: "";
+    content: '';
     position: absolute;
-    width: 4px;
-    height: 4px;
-    border-radius: 2px;
-    background: #333;
-    left: 0;
-    top: 9px;
+    width: 8px;
+    height: 8px;
+    border-radius: 6px;
+    background: var(--dark);
+    left: -1px;
+    top: 13px;
   }
 }
