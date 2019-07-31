@@ -4,6 +4,9 @@
   @media (--s) {
     padding: 10px 0px;
   }
+  @media (--l) {
+    padding: 20px 10px;
+  }
   max-width: 90vw;
 }
 .logout {
@@ -26,8 +29,8 @@
     right: 10px;
   }
   @media (--l) {
-    top: 8px;
-    right: 11px;
+    top: 1px;
+    right: -3px;
   }
 }
 .edit {

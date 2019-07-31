@@ -26,7 +26,7 @@
 
   a {
     word-break: break-all;
-    font-family: var(--consoleFont);
+    font-family: var(--sansFont);
     color: var(--actionColor);
     font-weight: 500;
     font-size: 13px;
@@ -73,7 +73,7 @@
     li {
       padding: 0 5px;
 
-      &:first {
+      &:first-child {
         padding-left: 0;
       }
     }
