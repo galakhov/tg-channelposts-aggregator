@@ -1,6 +1,6 @@
 .container {
   display: flex;
-  max-height: 86vh;
+  max-height: 76vh;
   @media (--m) {
     flex-direction: column;
     overflow: auto;
