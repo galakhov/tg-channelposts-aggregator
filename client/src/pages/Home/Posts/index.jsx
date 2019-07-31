@@ -4,12 +4,12 @@ import _get from 'lodash/get'
 
 import { getCleanText } from '~/utils'
 import Card from '~/components/Card'
-import Spinner from '~/assets/icons/spinner.svg'
+import Spinner from '~/assets/icons/spinning-wheel.svg'
 import styles from './Posts.css'
 
 const Posts = ({ posts, openModal }) => (
   <div className={styles.wrapper}>
-    <div>{posts.length === 0 && <Spinner />}</div>
+    <div className="spinning-wheel">{posts.length === 0 && <Spinner />}</div>
     <StackGrid columnWidth={340} gutterWidth={40} gutterHeight={20}>
       {posts &&
         posts.map(post => (

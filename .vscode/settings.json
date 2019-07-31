@@ -1,5 +1,6 @@
 {
-    "search.exclude": {
-        "**/build/static": true
-    }
+  "search.exclude": {
+    "**/build/static": true
+  },
+  "workbench.tree.indent": 30
 }

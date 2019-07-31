@@ -2,7 +2,12 @@
   font-family: var(--textFont);
   width: 100%;
 
-  @media(--s) {
+  @media (--s) {
     width: 100%;
+  }
+
+  .spinning-wheel {
+    position: relative;
+    margin: 30px auto;
   }
 }
