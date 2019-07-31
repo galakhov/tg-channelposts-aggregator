@@ -40,7 +40,7 @@ const Detail = ({ post }) => {
               Get the course!
             </a>
           </div>
-          <div className="headline">
+          <div className={styles.headline}>
             <h3>
               {post.preview
                 ? post.preview.courseContents
