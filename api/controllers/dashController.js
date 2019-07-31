@@ -42,6 +42,10 @@ const cleanUrl = url => {
   }
 
   console.log('-------- How cleaned url looks like:', cleanedUrl)
+  console.log(
+    '-------- Cleaned url will be parsed & added? ',
+    cleanedUrl.indexOf('udemy.com') !== -1
+  )
   return cleanedUrl
 }
 

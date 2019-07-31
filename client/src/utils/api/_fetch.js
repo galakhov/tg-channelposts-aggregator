@@ -17,7 +17,7 @@ const checkStatus = res => {
 
 const parseResponse = res => {
   return res.text().then(text => {
-    console.log('Getting response from the API: ', text)
+    // console.log('Getting response from the API: ', text)
     const headers = res.headers
     let data = null
     try {
