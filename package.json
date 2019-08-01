@@ -23,8 +23,8 @@
     "telegraf": "^3.16.4"
   },
   "scripts": {
-    "dev:client": "cd client/ && node --inspect scripts/start.js",
     "dev": "nodemon server.js",
+    "dev:client": "cd client/ && node --inspect scripts/start.js",
     "serve:simple": "nohup node server.js &",
     "serve:pm2": "pm2 startOrRestart pm2.config.js start server.js",
     "start": "npm run serve:pm2",
