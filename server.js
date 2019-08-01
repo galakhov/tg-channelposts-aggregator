@@ -21,9 +21,9 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
   db_uri = 'mongodb://localhost/TelegramChannelDB'
 } else {
   // const MongoClient = require('mongodb').MongoClient
-  db_uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${
-    process.env.DB_HOST
-  }/${process.env.DB_NAME}`
+  db_uri = `${process.env.DB_HOST_PREFIX}${process.env.DB_USER}:${
+    process.env.DB_PASSWORD
+  }@${process.env.DB_HOST}/${process.env.DB_NAME}`
 }
 console.log('db_uri:', db_uri)
 mongoose
