@@ -13,7 +13,6 @@ const express = require('express'),
 const mongoose = require('mongoose')
 // in case you need debugging
 // mongoose.set('debug', true)
-// mongoose instance connection url connection
 mongoose.Promise = global.Promise
 
 let db_uri
