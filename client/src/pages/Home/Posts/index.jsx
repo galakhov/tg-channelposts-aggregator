@@ -9,7 +9,9 @@ import styles from './Posts.css'
 
 const Posts = ({ posts, openModal }) => (
   <div className={styles.wrapper}>
-    <div className="spinning-wheel">{posts.length === 0 && <Spinner />}</div>
+    <div className="spinning-wheel">
+      {posts.length === 0 && <Spinner className={styles.spinner} />}
+    </div>
     <StackGrid columnWidth={340} gutterWidth={40} gutterHeight={20}>
       {posts &&
         posts.map((post, index) => (

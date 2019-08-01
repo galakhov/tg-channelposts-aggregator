@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="20px" height="20px" viewBox="0 0 20 20" style="enable-background:new 0 0 20 20;" xml:space="preserve">
+	 width="40px" height="40px" viewBox="-247.98 -247.98 495.99 540" style="enable-background:new 0 0 40 40;" xml:space="preserve">
 <g>
 	<g>
-		<g>
+		<g transform='translate(-247.98 -247.98)'>
 			<path d="M311.958,247.987c0-35.288-28.712-64-64-64c-35.288,0-64,28.712-64,64c0,35.288,28.712,64,64,64
 				C283.246,311.987,311.958,283.275,311.958,247.987z M199.958,247.987c0-26.472,21.528-48,48-48s48,21.528,48,48
 				c0,26.472-21.528,48-48,48S199.958,274.459,199.958,247.987z"/>
@@ -78,35 +78,6 @@
 				L403.862,310.603z"/>
 		</g>
 	</g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
+	<animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 10 10" to="360 10 10" begin="0" dur="0.83333s" repeatCount="indefinite" />
 </g>
 </svg>

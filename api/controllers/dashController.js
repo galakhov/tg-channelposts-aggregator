@@ -162,6 +162,27 @@ const startSmatrybroParser = async url => {
   }
 }
 
+const getFullDate = () => {
+  const date = new Date()
+  const dd = date.getUTCDate()
+  let mm = date.getMonth() + 1
+  mm = mm < 10 ? '0' + mm : mm
+  const yyyy = date.getFullYear()
+  const fullDate =
+    dd +
+    '. ' +
+    mm +
+    '. ' +
+    yyyy +
+    ' at ' +
+    date.getHours() +
+    ':' +
+    date.getMinutes() +
+    ':' +
+    date.getSeconds()
+  return fullDate
+}
+
 const addPost = async data => {
   try {
     const NewPost = new Post()
@@ -181,7 +202,7 @@ const addPost = async data => {
 
     if (!isThisAnAd && isSticker === '') {
       let url = ctlHelper.extractUrl(text)
-      console.log('-------- ADD_POST parsed urls:', url)
+      console.log(getFullDate + ' ADD_POST parsed urls:', url)
 
       if (url.indexOf('udemyoff.com') !== -1) {
         url = await startUdemyOffParser(url)
@@ -254,18 +275,18 @@ const addPost = async data => {
                             throw e
                           }
                         : console.log(
-                            '-------- ADD_POST course contents saved!'
+                            getFullDate + ' ADD_POST course contents saved!'
                           )
                     })
                   } else {
-                    console.error('-------- ADD_POST: ')
+                    console.error(getFullDate + ' ADD_POST: ')
                     // exit on Error: "Udemy page response with status 403" or other status than 200
                     throw 'Error connecting to the course platform.'
                   }
                 })
                 .catch(err =>
                   console.error(
-                    '-------- ADD_POST prepareUdemyCourseJSON: ',
+                    getFullDate + ' ADD_POST prepareUdemyCourseJSON: ',
                     err
                   )
                 ),
@@ -277,14 +298,14 @@ const addPost = async data => {
           throw new Error('The post is already in DB. Aborting.')
         }
       } catch (e) {
-        console.error('-------- ADD_POST: ', e)
+        console.error(getFullDate + ' ADD_POST: ', e)
       }
     } else {
-      console.error('-------- ADD_POST: Channel’s ad/sticker was blocked')
+      console.error(getFullDate + ' ADD_POST: Channel’s ad/sticker was blocked')
       // throw new Error('Ad Blocked. Aborting.')
     }
   } catch (e) {
-    console.error('-------- ADD_POST:')
+    console.error(getFullDate + ' ADD_POST:')
     throw e
   }
 }

@@ -12,16 +12,18 @@ class App extends React.Component {
     return (
       <div>
         <header>
-          <LoadingBar style={{ backgroundColor: colors.mainColor, height: '3px' }}/>
+          <LoadingBar
+            style={{
+              backgroundColor: colors.actionColor,
+              height: '5px'
+            }}
+          />
         </header>
         <Switch>
           {routes.map((route, key) => (
-            <Route
-              key={key}
-              {...route}
-            />
+            <Route key={key} {...route} />
           ))}
-          <Redirect from="*" to="/"/>
+          <Redirect from="*" to="/" />
         </Switch>
       </div>
     )

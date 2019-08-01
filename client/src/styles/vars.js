@@ -36,7 +36,7 @@ const colors = {
 
   buttonColor: '#08109f',
   buttonHoverColor: '#195BBF',
-  actionColor: '#f7527c', // #F5A623
+  actionColor: '#f7527c', // pink! // #F5A623
   actionBgColor: '#fcc3c6',
   actionHoverColor: '#f7530c', // #FEBD52
   lineColor: '#fffbf7', // #EEEEEE

@@ -6,8 +6,15 @@
     width: 100%;
   }
 
-  .spinning-wheel {
+  .spinner {
     position: relative;
     margin: 30px auto;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    path {
+      fill: var(--cardColor);
+      fill-opacity: 1;
+    }
   }
 }
