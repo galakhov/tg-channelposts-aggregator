@@ -23,7 +23,7 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
   // const MongoClient = require('mongodb').MongoClient
   db_uri = `${process.env.DB_HOST_PREFIX}${process.env.DB_USER}:${
     process.env.DB_PASSWORD
-  }@${process.env.DB_HOST}/${process.env.DB_NAME}`
+  }@${process.env.DB_HOST}/${process.env.DB_NAME}${process.env.DB_HOST_OPTS}`
 }
 console.log('db_uri:', db_uri)
 mongoose
