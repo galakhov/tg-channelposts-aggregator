@@ -202,7 +202,7 @@ const addPost = async data => {
 
     if (!isThisAnAd && isSticker === '') {
       let url = ctlHelper.extractUrl(text)
-      console.log(getFullDate + ' ADD_POST parsed urls:', url)
+      console.log(getFullDate() + ' ADD_POST parsed urls:', url)
 
       if (url.indexOf('udemyoff.com') !== -1) {
         url = await startUdemyOffParser(url)
@@ -275,18 +275,18 @@ const addPost = async data => {
                             throw e
                           }
                         : console.log(
-                            getFullDate + ' ADD_POST course contents saved!'
+                            getFullDate() + ' ADD_POST course contents saved!'
                           )
                     })
                   } else {
-                    console.error(getFullDate + ' ADD_POST: ')
+                    console.error(getFullDate() + ' ADD_POST: ')
                     // exit on Error: "Udemy page response with status 403" or other status than 200
                     throw 'Error connecting to the course platform.'
                   }
                 })
                 .catch(err =>
                   console.error(
-                    getFullDate + ' ADD_POST prepareUdemyCourseJSON: ',
+                    getFullDate() + ' ADD_POST prepareUdemyCourseJSON: ',
                     err
                   )
                 ),
@@ -298,14 +298,16 @@ const addPost = async data => {
           throw new Error('The post is already in DB. Aborting.')
         }
       } catch (e) {
-        console.error(getFullDate + ' ADD_POST: ', e)
+        console.error(getFullDate() + ' ADD_POST: ', e)
       }
     } else {
-      console.error(getFullDate + ' ADD_POST: Channel’s ad/sticker was blocked')
+      console.error(
+        getFullDate() + ' ADD_POST: Channel’s ad/sticker was blocked'
+      )
       // throw new Error('Ad Blocked. Aborting.')
     }
   } catch (e) {
-    console.error(getFullDate + ' ADD_POST:')
+    console.error(getFullDate() + ' ADD_POST:')
     throw e
   }
 }
