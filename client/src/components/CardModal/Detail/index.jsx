@@ -30,7 +30,7 @@ const Detail = ({ post }) => {
   const onTagClick = () => ({})
 
   const discounted = _get(post, 'preview.courseContents.discountInPercent')
-    ? `${_get(post, 'preview.courseContents.discountInPercent')}% `
+    ? `The ${_get(post, 'preview.courseContents.discountInPercent')}% `
     : ''
 
   const expirationDate = _get(
