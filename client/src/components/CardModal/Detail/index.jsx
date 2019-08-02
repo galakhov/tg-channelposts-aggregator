@@ -2,6 +2,7 @@ import React from 'react'
 // import ReactMarkdown from 'react-markdown'
 import _isEmpty from 'lodash/isEmpty'
 import _get from 'lodash/get'
+import _format from 'date-fns/format'
 
 // import { getCleanText, formatDate } from '~/utils'
 import { getCleanText } from '~/utils'
@@ -28,6 +29,24 @@ const Detail = ({ post }) => {
 
   const onTagClick = () => ({})
 
+  const discounted = _get(post, 'preview.courseContents.discountInPercent')
+    ? `${_get(post, 'preview.courseContents.discountInPercent')}% `
+    : ''
+
+  const expirationDate = _get(
+    post,
+    'preview.courseContents.discountExpirationDate'
+  )
+    ? _get(post, 'preview.courseContents.discountExpirationDate')
+    : null
+  const expiration =
+    expirationDate !== null
+      ? `${discounted}discount valid until ${_format(
+        new Date(expirationDate),
+        'DD.MM.YYYY HH:mm'
+      )}`
+      : ''
+
   return _isEmpty(post) ? null : (
     <div className={styles.container}>
       <div className={styles.left}>
@@ -36,6 +55,7 @@ const Detail = ({ post }) => {
             <img className={styles.leadImg} src={imgSrc} alt="lead-img" />
           )}
           <div className={styles.link}>
+            <div className={styles.expirationDateModal}>{expiration}</div>
             <a target="_blank" href={courseUrl} alt="title">
               Get the course!
             </a>

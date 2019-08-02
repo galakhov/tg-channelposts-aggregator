@@ -62,6 +62,12 @@
       font-size: 16px;
     }
 
+    .expirationDateModal {
+      font-family: var(--sansFont);
+      color: var(--actionColor);
+      float: right;
+    }
+
     .tags {
       padding-left: 3px;
     }
