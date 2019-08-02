@@ -31,11 +31,15 @@ const Card = ({
 
   const expiration =
     expirationDate !== null
-      ? `${discounted}discount valid until ${_format(
+      ? `${discounted}discount is valid until ${_format(
         new Date(expirationDate),
         'DD.MM.YYYY HH:mm:ss'
       )}`
       : ''
+
+  const addedOnDate = createdDate
+    ? `Coupon added on ${_format(new Date(createdDate), 'DD.MM.YYYY HH:mm')}`
+    : ''
 
   return (
     <div className={styles.card} onClick={() => onCardClick(_id)}>
@@ -46,9 +50,6 @@ const Card = ({
       )}
       <div className={styles.breadcrumbs}>
         <div className={styles.expirationDate}>{expiration}</div>
-        <div className={styles.addedDate}>
-          {_format(new Date(createdDate), 'DD.MM.YYYY HH:mm')}
-        </div>
       </div>
       <div
         className={styles.main}
@@ -71,6 +72,7 @@ const Card = ({
             )
           )}
       </ul>
+      <div className={styles.addedDate}>{addedOnDate}</div>
       <div className={styles.cardNumber}>
         <p>{nr + 1 ? `- ${nr + 1} -` : ''}</p>
       </div>
