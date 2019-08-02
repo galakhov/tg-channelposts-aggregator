@@ -115,6 +115,10 @@
         word-wrap: break-word;
       }
 
+      strong {
+        font-weight: 600;
+      }
+
       h1 {
         font-size: 24px;
         font-weight: 600;
