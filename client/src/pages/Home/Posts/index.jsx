@@ -32,9 +32,9 @@ const Posts = ({ posts, openModal }) => (
                 : null
             }
             listPrice={
-              post.preview.courseContents.initialPrice
+              post.preview.courseContents.initialPrice === 0
                 ? post.preview.courseContents.initialPrice
-                : null
+                : false
             }
             text={getCleanText(
               post.preview

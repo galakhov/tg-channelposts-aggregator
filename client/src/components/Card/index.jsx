@@ -37,7 +37,7 @@ const Card = ({
         'DD.MM.YYYY HH:mm'
       )}`
       : ''
-  const freeCourse = listPrice === 0 ? 'The course is FREE' : ''
+  const freeCourse = listPrice === 0 ? 'FREE course' : ''
 
   const addedOnDate = createdDate
     ? `Coupon added on ${_format(new Date(createdDate), 'DD.MM.YYYY HH:mm')}`
