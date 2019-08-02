@@ -37,7 +37,8 @@ const Card = ({
         'DD.MM.YYYY HH:mm'
       )}`
       : ''
-  const freeCourse = listPrice === 0 ? 'FREE course' : ''
+  const freeCourse =
+    listPrice === 0 ? 'FREE course' : `Coupon expired: ${listPrice}€`
 
   const addedOnDate = createdDate
     ? `Coupon added on ${_format(new Date(createdDate), 'DD.MM.YYYY HH:mm')}`
