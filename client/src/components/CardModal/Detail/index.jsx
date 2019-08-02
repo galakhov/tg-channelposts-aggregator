@@ -14,7 +14,7 @@ const Detail = ({ post }) => {
   const courseContent = _get(post, 'preview.courseContents.text')
   let targetAudiences = _get(post, 'preview.courseContents.audiences')
   targetAudiences = targetAudiences
-    ? `<hr><p class='detail-audience'>The course suits the best for:<br /><hr>${targetAudiences.join(
+    ? `<hr><p class='detail-audience'>The course is best suited to:<br />${targetAudiences.join(
       ', '
     )}</p>`
     : ''
