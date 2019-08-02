@@ -115,6 +115,7 @@ const Detail = ({ post }) => {
           <hr />
           {/* <ReactMarkdown source={courseContent} className={styles.course} /> */}
           <div
+            className={styles.courseContent}
             dangerouslySetInnerHTML={{ __html: unescapeHTML(courseContent) }}
           />
         </div>
