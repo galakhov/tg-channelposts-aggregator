@@ -59,14 +59,13 @@
 
     .link {
       padding: 10px 0px 0px 0px;
-      height: 40px;
       font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
       & a {
         width: 145px;
-        float: left;
-        display: table-cell;
-        vertical-align: middle;
       }
     }
 
@@ -74,12 +73,13 @@
       font-family: var(--sansFont);
       color: var(--actionColor);
       float: right;
-      width: calc(100% - 165px);
+      width: 100%;
       text-align: right;
-      line-height: 44px;
+      margin-bottom: 20px;
     }
 
     .tags {
+      margin-top: 15px;
       padding-left: 3px;
     }
   }
