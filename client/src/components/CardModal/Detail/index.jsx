@@ -9,6 +9,12 @@ import { getCleanText } from '~/utils'
 import Tag from '~/components/Tag'
 import styles from './Detail.css'
 
+const unescapeHTML = html => {
+  const escapeEl = document.createElement('textarea')
+  escapeEl.innerHTML = html
+  return escapeEl.textContent
+}
+
 const Detail = ({ post }) => {
   const imgSrc = _get(post, 'preview.courseContents.url')
   const courseContent = _get(post, 'preview.courseContents.text')
@@ -41,7 +47,7 @@ const Detail = ({ post }) => {
     : null
   const expiration =
     expirationDate !== null
-      ? `${discounted}discount code is valid until ${_format(
+      ? `${discounted}discount coupon code is valid until ${_format(
         new Date(expirationDate),
         'DD.MM.YYYY HH:mm'
       )}`
@@ -108,7 +114,9 @@ const Detail = ({ post }) => {
           )}
           <hr />
           {/* <ReactMarkdown source={courseContent} className={styles.course} /> */}
-          <div dangerouslySetInnerHTML={{ __html: courseContent }} />
+          <div
+            dangerouslySetInnerHTML={{ __html: unescapeHTML(courseContent) }}
+          />
         </div>
       )}
     </div>

@@ -32,7 +32,7 @@ const Card = ({
 
   const expiration =
     expirationDate !== null
-      ? `${discounted}discount valid until ${_format(
+      ? `${discounted}discount coupon until ${_format(
         new Date(expirationDate),
         'DD.MM.YYYY HH:mm'
       )}`
