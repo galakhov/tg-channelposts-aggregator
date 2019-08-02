@@ -41,7 +41,7 @@ const Detail = ({ post }) => {
     : null
   const expiration =
     expirationDate !== null
-      ? `${discounted}discount valid until ${_format(
+      ? `${discounted}discount code is valid until ${_format(
         new Date(expirationDate),
         'DD.MM.YYYY HH:mm'
       )}`

@@ -60,12 +60,21 @@
       padding: 10px 0px 0px 0px;
       height: 40px;
       font-size: 16px;
+
+      & a {
+        width: 145px;
+        float: left;
+        display: inline-block;
+      }
     }
 
     .expirationDateModal {
       font-family: var(--sansFont);
       color: var(--actionColor);
       float: right;
+      width: calc(100% - 165px);
+      text-align: right;
+      line-height: 44px;
     }
 
     .tags {
