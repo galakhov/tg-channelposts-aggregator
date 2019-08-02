@@ -19,13 +19,14 @@
   height: 18px;
   padding-left: 5px;
   top: -3px;
+  right: 16px;
   @media (--xs) {
     top: -7px;
     right: -14px;
   }
   @media (--s) {
     top: -7px;
-    right: 16px;
+    right: -14px;
   }
   @media (--l) {
     top: 1px;
