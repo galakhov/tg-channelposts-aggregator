@@ -20,6 +20,17 @@ const Posts = ({ posts, openModal }) => (
             _id={post._id}
             onCardClick={openModal}
             createdDate={post.created_date}
+            discount={
+              post.preview.courseContents.discountInPercent
+                ? post.preview.courseContents.discountInPercent
+                : null
+            }
+            expirationDate={
+              post.preview.courseContents &&
+              post.preview.courseContents.discountExpirationDate
+                ? post.preview.courseContents.discountExpirationDate
+                : null
+            }
             text={getCleanText(
               post.preview
                 ? post.preview.courseContents

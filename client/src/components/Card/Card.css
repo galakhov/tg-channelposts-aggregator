@@ -53,6 +53,14 @@
     padding-top: 5px;
     color: rgb(0, 0, 0, 0.5);
     font-family: var(--textFont);
+
+    .expirationDate {
+      float: left;
+    }
+
+    .addedDate {
+      float: right;
+    }
   }
   .main {
     padding: 10px 0px;

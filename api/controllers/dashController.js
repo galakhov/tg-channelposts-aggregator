@@ -247,9 +247,16 @@ const addPost = async data => {
                       contents.audiences
                     NewPost.preview.courseContents.author = contents.authors
                     NewPost.preview.courseContents.date = contents.date
+                    NewPost.preview.courseContents.discountInPercent =
+                      contents.discount
+                    NewPost.preview.courseContents.discountExpirationDate =
+                      contents.discountExpiration
+                    NewPost.preview.courseContents.currentPrice = contents.price
+                    NewPost.preview.courseContents.initialPrice =
+                      contents.fullPrice
                     NewPost.preview.courseContents.title = contents.title
                     NewPost.preview.courseContents.headline = contents.headline
-                    NewPost.preview.courseContents.description =
+                    NewPost.preview.courseContents.lectures =
                       contents.curriculum
                     NewPost.preview.courseContents.keywords = contents.topics.join(
                       ', '
