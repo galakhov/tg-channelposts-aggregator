@@ -13,7 +13,7 @@ const customStyles = {
     transform: 'translate(-50%, -50%)',
     backgroundColor: '#fffbf7',
     borderRadius: '17px',
-    padding: '20px 10px 20px 20px',
+    padding: '20px 10px 20px',
     margin: '0 10px 0 10px',
     width: '90vw',
     overflowX: 'hidden'
