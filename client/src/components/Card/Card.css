@@ -52,9 +52,10 @@
     font-weight: 600;
     padding-top: 5px;
     color: rgb(0, 0, 0, 0.5);
-    font-family: var(--textFont);
+    font-family: var(--sansFont);
 
-    .expirationDate {
+    & .expirationDate {
+      color: var(--actionColor);
     }
   }
 
