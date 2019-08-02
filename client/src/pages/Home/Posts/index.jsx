@@ -31,6 +31,11 @@ const Posts = ({ posts, openModal }) => (
                 ? post.preview.courseContents.discountExpirationDate
                 : null
             }
+            listPrice={
+              post.preview.courseContents.initialPrice
+                ? post.preview.courseContents.initialPrice
+                : null
+            }
             text={getCleanText(
               post.preview
                 ? post.preview.courseContents

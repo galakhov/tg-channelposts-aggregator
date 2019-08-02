@@ -15,6 +15,7 @@ const Card = ({
   createdDate,
   expirationDate,
   discount,
+  listPrice,
   img,
   text,
   headline,
@@ -36,6 +37,7 @@ const Card = ({
         'DD.MM.YYYY HH:mm'
       )}`
       : ''
+  const freeCourse = listPrice === 0 ? 'The course is FREE' : ''
 
   const addedOnDate = createdDate
     ? `Coupon added on ${_format(new Date(createdDate), 'DD.MM.YYYY HH:mm')}`
@@ -49,7 +51,7 @@ const Card = ({
         </div>
       )}
       <div className={styles.breadcrumbs}>
-        <div className={styles.expirationDate}>{expiration}</div>
+        <div className={styles.expirationDate}>{expiration || freeCourse}</div>
       </div>
       <div
         className={styles.main}

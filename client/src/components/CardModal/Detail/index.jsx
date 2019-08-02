@@ -46,6 +46,10 @@ const Detail = ({ post }) => {
         'DD.MM.YYYY HH:mm'
       )}`
       : ''
+  const freeCourse =
+    _get(post, 'preview.courseContents.initialPrice') === 0
+      ? 'The course is FREE of charge'
+      : ''
 
   return _isEmpty(post) ? null : (
     <div className={styles.container}>
@@ -55,7 +59,9 @@ const Detail = ({ post }) => {
             <img className={styles.leadImg} src={imgSrc} alt="lead-img" />
           )}
           <div className={styles.link}>
-            <div className={styles.expirationDateModal}>{expiration}</div>
+            <div className={styles.expirationDateModal}>
+              {expiration || freeCourse}
+            </div>
             <a target="_blank" href={courseUrl} alt="title">
               Get the course!
             </a>
