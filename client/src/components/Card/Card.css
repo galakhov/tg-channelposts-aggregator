@@ -55,11 +55,9 @@
     font-family: var(--textFont);
 
     .expirationDate {
-      float: left;
     }
 
     .addedDate {
-      float: right;
     }
   }
   .main {

@@ -27,16 +27,14 @@ const Card = ({
     tagsArray = tags
   }
 
+  const discounted = discount !== null ? `${discount}% ` : ''
+
   const expiration =
     expirationDate !== null
-      ? `Offer until ${_format(
+      ? `${discounted}discount valid until ${_format(
         new Date(expirationDate),
         'DD.MM.YYYY HH:mm:ss'
       )}`
-      : ''
-  const discounted =
-    discount !== null
-      ? `<div className={${styles.discount}}>${discount}</div>`
       : ''
 
   return (
@@ -47,11 +45,10 @@ const Card = ({
         </div>
       )}
       <div className={styles.breadcrumbs}>
-        {discounted}
+        <div className={styles.expirationDate}>{expiration}</div>
         <div className={styles.addedDate}>
           {_format(new Date(createdDate), 'DD.MM.YYYY HH:mm')}
         </div>
-        <div className={styles.expirationDate}>{expiration}</div>
       </div>
       <div
         className={styles.main}
