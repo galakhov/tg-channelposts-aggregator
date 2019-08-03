@@ -32,6 +32,11 @@ export default (state = initialState, action) => {
         ...state,
         tags: _uniq(state.tags.concat(action.tag))
       }
+    case ACTION_TYPES.REMOVE_TAG:
+      return {
+        ...state,
+        tags: state.tags.filter(tag => tag !== action.tag)
+      }
     case ACTION_TYPES.SET_CURRENT_ID:
       return {
         ...state,
