@@ -10,7 +10,9 @@ const filterByTags = (dash, dispatch) => {
   const { posts, tags } = dash
   const filtered = _filter(
     posts,
-    post => _intersection(post.tags, tags).length > 0
+    post =>
+      _intersection(post.preview.courseContents.keywords.split(', '), tags)
+        .length > 0
   )
   console.log('these posts were filtered', filtered)
 }
