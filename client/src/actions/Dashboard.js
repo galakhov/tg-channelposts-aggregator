@@ -8,13 +8,18 @@ import Dashboard from '~/utils/api/Dashboard'
 
 const filterByTags = (dash, dispatch) => {
   const { posts, tags } = dash
+  const tagsArray = tags.map(el => el.type)
+  console.log('tags in state', tags)
   const filtered = _filter(
     posts,
     post =>
-      _intersection(post.preview.courseContents.keywords.split(', '), tags)
+      _intersection(post.preview.courseContents.keywords.split(', '), tagsArray)
         .length > 0
   )
   console.log('these posts were filtered', filtered)
+  if (filtered.length > 0) {
+    return filtered
+  }
 }
 
 export const getPosts = () => dispatch => {
@@ -31,14 +36,27 @@ export const getPosts = () => dispatch => {
   })
 }
 
-export const addTag = tag => (dispatch, getState) => {
+export const getPostsByTag = tag => (dispatch, getState) => {
   dispatch({
     type: ACTION_TYPES.ADD_TAG,
     tag
   })
 
   const currentDash = getState().dashboard
-  filterByTags(currentDash, dispatch)
+
+  const filteredPosts = filterByTags(currentDash, dispatch)
+
+  currentDash.filteredPosts = filteredPosts
+  console.log('currentDash', currentDash)
+
+  return filteredPosts
+}
+
+export const setPosts = filteredPosts => dispatch => {
+  dispatch({
+    type: ACTION_TYPES.SET_POSTS,
+    filteredPosts
+  })
 }
 
 export const openModal = _id => dispatch => {

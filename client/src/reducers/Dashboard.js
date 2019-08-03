@@ -10,12 +10,25 @@ const initialState = {
   filteredPosts: []
 }
 
+const addTagFilter = (state, newTag) => {
+  const currentState = state.tags.map(t => t.type)
+  if (!currentState.includes(newTag.type)) {
+    return _uniq(state.tags.concat(newTag))
+  }
+  return state.tags
+}
+
 export default (state = initialState, action) => {
   switch (action.type) {
     case ACTION_TYPES.GET_POSTS:
       return {
         ...state,
         posts: action.data
+      }
+    case ACTION_TYPES.SET_POSTS:
+      return {
+        ...state,
+        filteredPosts: action.filteredPosts ? action.filteredPosts : []
       }
     case ACTION_TYPES.FETCHING:
       return {
@@ -30,7 +43,7 @@ export default (state = initialState, action) => {
     case ACTION_TYPES.ADD_TAG:
       return {
         ...state,
-        tags: _uniq(state.tags.concat(action.tag))
+        tags: addTagFilter(state, action.tag)
       }
     case ACTION_TYPES.REMOVE_TAG:
       return {

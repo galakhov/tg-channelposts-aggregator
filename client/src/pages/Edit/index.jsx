@@ -22,6 +22,7 @@ class Edit extends React.Component {
   componentDidMount () {
     this.props.getPosts()
   }
+
   render () {
     const { currentPost } = this.props
 

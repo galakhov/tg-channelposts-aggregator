@@ -4,7 +4,7 @@ import ClickOutside from 'react-click-outside'
 import _orderBy from 'lodash/orderBy'
 
 import { connect } from 'react-redux'
-import { addTag } from '~/actions/Dashboard'
+import { getPostsByTag, setPosts } from '~/actions/Dashboard'
 
 import ToggleButton from '~/components/ToggleButton'
 
@@ -15,7 +15,8 @@ class Nav extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      navOpened: false
+      navOpened: false,
+      filtered: []
     }
 
     this.toggleNav = () => {
@@ -24,7 +25,7 @@ class Nav extends React.Component {
     this.closeNav = () => {
       this.setState({ navOpened: false })
     }
-    this.getTypes = () => {
+    this.getTags = () => {
       const { posts } = this.props
 
       let allTypes = []
@@ -48,7 +49,14 @@ class Nav extends React.Component {
       return _orderBy(types, ['count'], ['desc'])
     }
     this.tagClickHandler = tag => {
-      this.props.addTag(tag)
+      const filteredPostsByTag = this.props.getPostsByTag(tag)
+      this.setState({ filtered: filteredPostsByTag })
+      this.props.setPosts(filteredPostsByTag)
+      console.log('state after filteredPostsByTag', this.state)
+    }
+    this.clearTags = () => {
+      this.setState({ filtered: [] })
+      this.props.setPosts([])
     }
   }
 
@@ -67,7 +75,7 @@ class Nav extends React.Component {
             <section>
               <h4>Filter By Tags</h4>
               <ul>
-                {this.getTypes().map((tag, idx) => (
+                {this.getTags().map((tag, idx) => (
                   <li
                     key={idx}
                     className={styles.type}
@@ -80,6 +88,11 @@ class Nav extends React.Component {
                   </li>
                 ))}
               </ul>
+              {this.state.filtered.length > 0 && (
+                <a className={styles.clearTag} onClick={() => this.clearTags()}>
+                  Clear Selected Tags
+                </a>
+              )}
             </section>
           </div>
         </div>
@@ -89,10 +102,14 @@ class Nav extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  filteredPosts: state.dashboard.posts
+  posts:
+    state.dashboard.filteredPosts && state.dashboard.filteredPosts.length > 0
+      ? state.dashboard.filteredPosts
+      : state.dashboard.posts
 })
 const mapDispatchToProps = {
-  addTag
+  getPostsByTag,
+  setPosts
 }
 
 export default connect(

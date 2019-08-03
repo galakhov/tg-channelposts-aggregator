@@ -71,8 +71,21 @@
   margin-left: var(--strip-width);
   height: 100%;
 
+  .clearTag {
+    color: var(--actionColor);
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: 500;
+    background-color: var(--actionBgColor);
+    cursor: pointer;
+  }
+
   section {
     padding: 15px;
+
+    ul {
+      padding-bottom: 20px;
+    }
     h4 {
       text-transform: uppercase;
       letter-spacing: 2px;

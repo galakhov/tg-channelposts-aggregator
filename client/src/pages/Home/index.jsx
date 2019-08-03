@@ -45,9 +45,15 @@ class Home extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  // posts: state.dashboard.posts,
-  isModalOpen: state.dashboard.isModalOpen,
-  posts: _orderBy(state.dashboard.posts, ['created_date'], ['desc'])
+  posts: _orderBy(
+    state.dashboard.filteredPosts && state.dashboard.filteredPosts.length > 0
+      ? state.dashboard.filteredPosts
+      : state.dashboard.posts,
+    ['created_date'],
+    ['desc']
+  ),
+  isModalOpen: state.dashboard.isModalOpen
+  // posts: state.dashboard.posts
 })
 const mapDispatchToProps = {
   openModal,
