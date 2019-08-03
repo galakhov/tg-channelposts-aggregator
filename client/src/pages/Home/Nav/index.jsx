@@ -29,7 +29,10 @@ class Nav extends React.Component {
 
       let allTypes = []
       posts.forEach(post => {
-        allTypes = allTypes.concat(post.tags)
+        // allTypes = allTypes.concat(post.tags)
+        allTypes = allTypes.concat(
+          post.preview.courseContents.keywords.split(', ')
+        )
       })
 
       let typeCounts = allTypes.reduce((prev, curr) => {
@@ -56,12 +59,13 @@ class Nav extends React.Component {
           <div className={styles.strip} onClick={this.toggleNav}>
             <ToggleButton showClose={this.state.navOpened} />
             <span className={styles.slogan}>
-              Aggregates video courses from various Telegram Channels.
+              Aggregates coupons for video courses from various Telegram
+              Channels.
             </span>
           </div>
           <div className={styles.bg}>
             <section>
-              <h4>Filter By Type</h4>
+              <h4>Filter By Tags</h4>
               <ul>
                 {this.getTypes().map((tag, idx) => (
                   <li
