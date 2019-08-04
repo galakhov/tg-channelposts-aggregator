@@ -14,59 +14,65 @@ const Posts = ({ posts, openModal }) => (
     </div>
     <StackGrid columnWidth={340} gutterWidth={40} gutterHeight={20}>
       {posts &&
-        posts.map((post, index) => (
-          <Card
-            key={post._id}
-            _id={post._id}
-            onCardClick={openModal}
-            createdDate={post.created_date}
-            discount={
-              post.preview.courseContents.discountInPercent
-                ? post.preview.courseContents.discountInPercent
-                : null
-            }
-            rating={
-              post.preview.courseContents.rating
-                ? post.preview.courseContents.rating
-                : null
-            }
-            studentsEnrolled={
-              post.preview.courseContents.enrolled
-                ? post.preview.courseContents.enrolled
-                : null
-            }
-            expirationDate={
-              post.preview.courseContents &&
-              post.preview.courseContents.discountExpirationDate
-                ? post.preview.courseContents.discountExpirationDate
-                : null
-            }
-            listPrice={post.preview.courseContents.initialPrice}
-            text={getCleanText(
-              post.preview
-                ? post.preview.courseContents
-                  ? post.preview.courseContents.title
+        posts.map((post, index) => {
+          console.log(
+            'courseContents.rating received: ',
+            post.preview.courseContents.rating
+          )
+          return (
+            <Card
+              key={post._id}
+              _id={post._id}
+              onCardClick={openModal}
+              createdDate={post.created_date}
+              discount={
+                post.preview.courseContents.discountInPercent
+                  ? post.preview.courseContents.discountInPercent
+                  : null
+              }
+              rating={
+                post.preview.courseContents.rating
+                  ? post.preview.courseContents.rating
+                  : null
+              }
+              studentsEnrolled={
+                post.preview.courseContents.enrolled
+                  ? post.preview.courseContents.enrolled
+                  : null
+              }
+              expirationDate={
+                post.preview.courseContents &&
+                post.preview.courseContents.discountExpirationDate
+                  ? post.preview.courseContents.discountExpirationDate
+                  : null
+              }
+              listPrice={post.preview.courseContents.initialPrice}
+              text={getCleanText(
+                post.preview
+                  ? post.preview.courseContents
+                    ? post.preview.courseContents.title
+                    : post.raw.text
                   : post.raw.text
-                : post.raw.text
-            )}
-            headline={
-              post.preview
-                ? post.preview.courseContents
-                  ? post.preview.courseContents.headline
+              )}
+              headline={
+                post.preview
+                  ? post.preview.courseContents
+                    ? post.preview.courseContents.headline
+                    : ''
                   : ''
-                : ''
-            }
-            img={_get(post, ['preview', 'courseContents', 'url'], '')}
-            tags={
-              post.preview
-                ? post.preview.courseContents
-                  ? post.preview.courseContents.keywords
+              }
+              img={_get(post, ['preview', 'courseContents', 'url'], '')}
+              tags={
+                post.preview
+                  ? post.preview.courseContents
+                    ? post.preview.courseContents.keywords
+                    : post.tags
                   : post.tags
-                : post.tags
-            }
-            nr={index}
-          />
-        ))}
+              }
+              nr={index}
+            />
+          )
+        })}
     </StackGrid>
   </div>
 )

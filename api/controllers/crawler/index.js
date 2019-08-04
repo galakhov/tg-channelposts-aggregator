@@ -112,6 +112,7 @@ class UdemyCrawler {
       .text()
       .trim()
 
+    console.log('rating crawler: ', Course.rating)
     /*
             Also consider other opened Udemy entry points:
             https://www.udemy.com/robots.txt
