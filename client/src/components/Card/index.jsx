@@ -74,9 +74,7 @@ const Card = ({
         )}
         <div className={styles.courseStats}>
           {courseStudentsNr !== null && (
-            <div className={styles.courseStudents}>
-              {courseStudentsNr[0]} students joined
-            </div>
+            <div className={styles.courseStudents}>{courseStudentsNr}</div>
           )}
           {courseRating !== null && courseRating !== '0.0' && (
             <div className={styles.courseRating}>Rating: {courseRating}/5</div>
