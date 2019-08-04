@@ -24,7 +24,7 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
     process.env.DB_PASSWORD
   }@${process.env.DB_HOST}/${process.env.DB_NAME}${process.env.DB_HOST_OPTS}`
 }
-console.log('db_uri:', db_uri)
+// console.log('db_uri:', db_uri)
 mongoose
   .connect(db_uri, {
     // https://stackoverflow.com/questions/48917591/fail-to-connect-mongoose-to-atlas/48917626#48917626

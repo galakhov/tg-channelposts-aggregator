@@ -57,6 +57,17 @@
     & .expirationDate {
       color: var(--actionColor);
     }
+
+    & .couponOff {
+      background-color: pink;
+      display: block;
+      width: 47%;
+      margin: 0 auto 6px auto;
+      text-align: center;
+      border-radius: 5px;
+      padding: 5px 0;
+      font-size: 18px;
+    }
   }
 
   .main {
@@ -68,6 +79,7 @@
     }
     h2 {
       font-weight: 600;
+      text-align: center;
     }
   }
   .tags {
@@ -76,7 +88,8 @@
     flex-wrap: wrap;
     flex-direction: row;
     font-family: var(--consoleFont);
-    padding: 10px 0 15px;
+    padding: 20px 0 10px;
+    justify-content: center;
 
     li {
       padding-right: 10px;
@@ -84,6 +97,7 @@
   }
 
   .headline {
+    text-align: center;
   }
 
   h2,
@@ -93,6 +107,8 @@
 
   .addedDate {
     text-align: center;
+    font-size: 12px;
+    color: var(--darkGrey);
   }
 
   .cardNumber {
@@ -100,7 +116,8 @@
     margin: 7px auto;
     font-family: var(--consoleFont);
     color: rgb(0, 0, 0, 0.75);
-
+    font-size: 12px;
+    color: var(--darkGrey);
     p {
       text-align: center;
     }

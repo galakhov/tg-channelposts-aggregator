@@ -28,18 +28,18 @@ const Card = ({
     tagsArray = tags
   }
 
-  const discounted = discount !== null ? `${discount}% ` : ''
+  const discounted = discount !== null ? `${discount}% OFF` : ''
 
   const expiration =
     expirationDate !== null
-      ? `${discounted}off code is valid until ${_format(
+      ? `Coupon code is valid until ${_format(
         new Date(expirationDate),
         'DD.MM.YYYY HH:mm'
       )}`
       : ''
   const freeCourse =
     listPrice === 0
-      ? 'FREE course'
+      ? 'FREE COURSE'
       : listPrice !== undefined
         ? `Coupon expired: ${listPrice}€`
         : ''
@@ -56,7 +56,16 @@ const Card = ({
         </div>
       )}
       <div className={styles.breadcrumbs}>
-        <div className={styles.expirationDate}>{expiration || freeCourse}</div>
+        {expirationDate !== null && (
+          <div className={styles.expirationDate}>
+            <div className={styles.couponOff}>{discounted}</div> {expiration}
+          </div>
+        )}
+        {expirationDate === null && (
+          <div className={styles.expirationDate}>
+            <div className={styles.couponOff}>{freeCourse}</div>
+          </div>
+        )}
       </div>
       <div
         className={styles.main}

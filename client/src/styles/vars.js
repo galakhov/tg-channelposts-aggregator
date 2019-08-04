@@ -48,6 +48,7 @@ const colors = {
   pitchDark: '#161616',
   blue: '#08109f',
   grey: '#BCBEBC',
+  darkGrey: '#999999',
   red: '#DB4437',
   green: '#25A42F'
 }
