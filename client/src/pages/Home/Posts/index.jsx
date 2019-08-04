@@ -70,5 +70,4 @@ const Posts = ({ posts, openModal }) => (
     </StackGrid>
   </div>
 )
-
 export default Posts

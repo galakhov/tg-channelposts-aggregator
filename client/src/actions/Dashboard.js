@@ -41,7 +41,6 @@ export const getPostsByTag = tag => (dispatch, getState) => {
     type: ACTION_TYPES.ADD_TAG,
     tag
   })
-
   const currentDash = getState().dashboard
   const filteredPosts = filterByTags(currentDash, dispatch)
   currentDash.filteredPosts = filteredPosts

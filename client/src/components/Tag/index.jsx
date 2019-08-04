@@ -9,5 +9,4 @@ const Tag = ({ text, onTagClick }) => (
     <a className={cx('tag', 'primaryColor')}>{text}</a>
   </li>
 )
-
 export default Tag

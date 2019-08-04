@@ -72,12 +72,12 @@ const Card = ({
           </div>
         )}
         <div className={styles.courseStats}>
-          {courseStudentsNr && (
+          {courseStudentsNr !== null && (
             <div className={styles.courseStudents}>
               {courseStudentsNr} students
             </div>
           )}
-          {courseRating && (
+          {courseRating !== null && (
             <div className={styles.courseRating}>{courseRating}/5</div>
           )}
         </div>

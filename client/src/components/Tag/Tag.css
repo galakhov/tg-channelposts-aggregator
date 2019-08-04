@@ -13,7 +13,6 @@
   .tag::after {
     background: var(--titleColor) !important;
   }
-
   .tag.blue {
     background-color: var(--actionColor);
     color: var(--titleColor);

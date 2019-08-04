@@ -123,9 +123,8 @@ class UdemyCrawler {
             Allow:/api-2.0/recommended-courses
             Allow:/api-2.0/structured-data
             Allow:/api-2.0/tags
-        */
-
-    /* Udemy query API:
+            
+            Udemy query API:
             https://www.udemy.com/api-2.0/course-landing-components/course_id/me/?components=
             
             topic_menu,description,purchase,redeem_coupon,introduction_asset,

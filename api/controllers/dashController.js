@@ -284,7 +284,7 @@ const addPost = async data => {
                     err
                   )
                 ),
-              timeoutBeforeNextRequest(3500)
+              timeoutBeforeNextRequest(3750)
             ])
             // udemyContents = parsedCourseContents
           }

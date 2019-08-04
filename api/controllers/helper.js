@@ -101,6 +101,7 @@ const isAd = text => {
   return false
 }
 
+exports.getFullDate = getFullDate
 exports.extractTags = extractTags
 exports.extractHashtags = extractHashtags
 exports.extractClutter = extractClutter
@@ -110,4 +111,3 @@ exports.prepareUdemyCourseJSON = prepareUdemyCourseJSON
 exports.parseUrl = parseUrl
 exports.isAd = isAd
 exports.replaceAll = replaceAll
-exports.getFullDate = getFullDate
