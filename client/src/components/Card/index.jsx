@@ -50,8 +50,8 @@ const Card = ({
     ? `Coupon added on ${_format(new Date(createdDate), 'DD.MM.YYYY HH:mm')}`
     : ''
 
-  const courseRating = rating || null
-  const courseStudentsNr = studentsEnrolled || null
+  const courseRating = rating !== null ? rating : null
+  const courseStudentsNr = studentsEnrolled !== null ? studentsEnrolled : null
 
   return (
     <div className={styles.card} onClick={() => onCardClick(_id)}>
@@ -74,7 +74,7 @@ const Card = ({
         <div className={styles.courseStats}>
           {courseStudentsNr !== null && (
             <div className={styles.courseStudents}>
-              {courseStudentsNr} students joined
+              {courseStudentsNr[0]} students joined
             </div>
           )}
           {courseRating !== null && courseRating !== '0.0' && (
