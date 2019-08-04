@@ -25,6 +25,16 @@ const Posts = ({ posts, openModal }) => (
                 ? post.preview.courseContents.discountInPercent
                 : null
             }
+            rating={
+              post.preview.courseContents.rating
+                ? post.preview.courseContents.rating
+                : null
+            }
+            studentsEnrolled={
+              post.preview.courseContents.enrolled
+                ? post.preview.courseContents.enrolled
+                : null
+            }
             expirationDate={
               post.preview.courseContents &&
               post.preview.courseContents.discountExpirationDate

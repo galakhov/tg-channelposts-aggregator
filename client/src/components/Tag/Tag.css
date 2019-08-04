@@ -3,11 +3,11 @@
   display: inline-block;
   margin-right: 13px;
 
-  .tag.yellow {
+  .tag.primaryColor {
     background-color: var(--actionColor);
     color: var(--titleColor);
   }
-  .tag.yellow::before {
+  .tag.primaryColor::before {
     border-right-color: var(--actionColor);
   }
   .tag::after {

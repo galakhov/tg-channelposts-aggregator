@@ -162,16 +162,6 @@ const startSmatrybroParser = async url => {
   }
 }
 
-const getFullDate = () => {
-  const date = new Date()
-  const dd = date.getUTCDate()
-  let mm = date.getMonth() + 1
-  mm = mm < 10 ? '0' + mm : mm
-  const yyyy = date.getFullYear()
-  const fullDate = `${dd}.${mm}.${yyyy} at ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
-  return fullDate
-}
-
 const addPost = async data => {
   try {
     const NewPost = new Post()
@@ -182,7 +172,8 @@ const addPost = async data => {
     if (text && text.length < 1) {
       text = _.get(data, 'caption', '')
       console.log(
-        '-------- ADD_POST: No text found. Getting caption instead',
+        ctlHelper.getFullDate() +
+          ' ADD_POST: No text found. Getting caption instead',
         text
       )
     }
@@ -191,7 +182,7 @@ const addPost = async data => {
 
     if (!isThisAnAd && isSticker === '') {
       let url = ctlHelper.extractUrl(text)
-      console.log(getFullDate() + ' ADD_POST parsed urls:', url)
+      console.log(ctlHelper.getFullDate() + ' ADD_POST parsed urls:', url)
 
       if (url.indexOf('udemyoff.com') !== -1) {
         url = await startUdemyOffParser(url)
@@ -256,6 +247,9 @@ const addPost = async data => {
                       contents.fullPrice
                     NewPost.preview.courseContents.title = contents.title
                     NewPost.preview.courseContents.headline = contents.headline
+                    NewPost.preview.courseContents.rating = contents.rating
+                    NewPost.preview.courseContents.enrolled =
+                      contents.enrolmentNumber
                     NewPost.preview.courseContents.lectures =
                       contents.curriculum
                     NewPost.preview.courseContents.keywords = contents.topics.join(
@@ -267,22 +261,26 @@ const addPost = async data => {
                     NewPost.save((e, post) => {
                       e
                         ? () => {
-                            console.error('-------- ADD_POST:')
+                            console.error(
+                              ctlHelper.getFullDate() + '-------- ADD_POST:'
+                            )
                             throw e
                           }
                         : console.log(
-                            getFullDate() + ' ADD_POST course contents saved!'
+                            ctlHelper.getFullDate() +
+                              ' ADD_POST course contents saved!'
                           )
                     })
                   } else {
-                    console.error(getFullDate() + ' ADD_POST: ')
+                    console.error(ctlHelper.getFullDate() + ' ADD_POST: ')
                     // exit on Error: "Udemy page response with status 403" or other status than 200
                     throw 'Error connecting to the course platform.'
                   }
                 })
                 .catch(err =>
                   console.error(
-                    getFullDate() + ' ADD_POST prepareUdemyCourseJSON: ',
+                    ctlHelper.getFullDate() +
+                      ' ADD_POST prepareUdemyCourseJSON: ',
                     err
                   )
                 ),
@@ -294,16 +292,16 @@ const addPost = async data => {
           throw new Error('The post is already in DB. Aborting.')
         }
       } catch (e) {
-        console.error(getFullDate() + ' ADD_POST: ', e)
+        console.error(ctlHelper.getFullDate() + ' ADD_POST: ', e)
       }
     } else {
       console.error(
-        getFullDate() + ' ADD_POST: Channel’s ad/sticker was blocked'
+        ctlHelper.getFullDate() + ' ADD_POST: Channel’s ad/sticker was blocked'
       )
       // throw new Error('Ad Blocked. Aborting.')
     }
   } catch (e) {
-    console.error(getFullDate() + ' ADD_POST:')
+    console.error(ctlHelper.getFullDate() + ' ADD_POST:')
     throw e
   }
 }

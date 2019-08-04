@@ -6,7 +6,7 @@ const cx = classnames.bind(styles)
 
 const Tag = ({ text, onTagClick }) => (
   <li className={styles.container} onClick={() => onTagClick(text)}>
-    <a className={cx('tag', 'yellow')}>{text}</a>
+    <a className={cx('tag', 'primaryColor')}>{text}</a>
   </li>
 )
 

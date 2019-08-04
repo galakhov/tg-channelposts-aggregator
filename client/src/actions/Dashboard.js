@@ -43,12 +43,8 @@ export const getPostsByTag = tag => (dispatch, getState) => {
   })
 
   const currentDash = getState().dashboard
-
   const filteredPosts = filterByTags(currentDash, dispatch)
-
   currentDash.filteredPosts = filteredPosts
-  console.log('currentDash', currentDash)
-
   return filteredPosts
 }
 

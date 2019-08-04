@@ -13,6 +13,8 @@ const Card = ({
   _id,
   onCardClick,
   createdDate,
+  rating,
+  studentsEnrolled,
   expirationDate,
   discount,
   listPrice,
@@ -39,7 +41,7 @@ const Card = ({
       : ''
   const freeCourse =
     listPrice === 0
-      ? 'FREE COURSE'
+      ? 'FREE'
       : listPrice !== undefined
         ? `Coupon expired: ${listPrice}€`
         : ''
@@ -47,6 +49,9 @@ const Card = ({
   const addedOnDate = createdDate
     ? `Coupon added on ${_format(new Date(createdDate), 'DD.MM.YYYY HH:mm')}`
     : ''
+
+  const courseRating = rating || ''
+  const courseStudentsNr = studentsEnrolled || ''
 
   return (
     <div className={styles.card} onClick={() => onCardClick(_id)}>
@@ -66,6 +71,16 @@ const Card = ({
             <div className={styles.couponOff}>{freeCourse}</div>
           </div>
         )}
+        <div className={styles.courseStats}>
+          {courseStudentsNr && (
+            <div className={styles.courseStudents}>
+              {courseStudentsNr} students
+            </div>
+          )}
+          {courseRating && (
+            <div className={styles.courseRating}>{courseRating}/5</div>
+          )}
+        </div>
       </div>
       <div
         className={styles.main}
@@ -80,9 +95,11 @@ const Card = ({
         {tagsArray &&
           tagsArray.map((tag, idx) =>
             tag !== 'untagged' ? (
-              <li key={idx}>
-                <a href="/">{tag}</a>
-              </li>
+              tagsArray.length === idx + 1 ? (
+                <li key={idx}>{`${tag}`}</li>
+              ) : (
+                <li className={styles.nextTag} key={idx}>{`${tag}, `}</li>
+              )
             ) : (
               ''
             )

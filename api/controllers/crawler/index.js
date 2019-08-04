@@ -97,6 +97,13 @@ class UdemyCrawler {
     Course.headline = $('.clp-lead__headline[data-purpose="lead-headline"]')
       .text()
       .trim()
+    Course.rating = $('.rate-count .tooltip-container span:first-child')
+      .text()
+      .trim()
+    Course.enrolmentNumber = $('[data-purpose="enrollment"]')
+      .text()
+      .trim()
+      .replace(' students enrolled', '')
     const metaJson = JSON.parse($('#schema_markup script').html())
     Course.image = metaJson[0].image
     Course.date = $(

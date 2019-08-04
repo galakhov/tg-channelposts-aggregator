@@ -13,10 +13,20 @@ const crawler = new UdemyCrawler({
   }
 })
 
+const getFullDate = () => {
+  const date = new Date()
+  const dd = date.getUTCDate()
+  let mm = date.getMonth() + 1
+  mm = mm < 10 ? '0' + mm : mm
+  const yyyy = date.getFullYear()
+  const fullDate = `${dd}.${mm}.${yyyy} at ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+  return fullDate
+}
+
 // TODO: refactor
 const parseUrl = async (url, paths = ['body a']) => {
   console.log(
-    '-------- parseUrl: parse the link from third-party site',
+    getFullDate() + ' parseUrl: parse the link from third-party site',
     'Starting...'
   )
   const urlParser = new UrlCrawler()
@@ -24,13 +34,13 @@ const parseUrl = async (url, paths = ['body a']) => {
 }
 
 const prepareUdemyCourseJSON = async url => {
-  console.log('-------- prepareUdemyCourseJSON', 'Starting...')
+  console.log(getFullDate() + ' prepareUdemyCourseJSON', 'Starting...')
   return crawler.execute(url, (err, content) => {
     if (err) {
       return console.error(err.message)
     }
     console.log(content)
-    console.log('-------- prepareUdemyCourseJSON: parsing finished...')
+    console.log(getFullDate() + ' prepareUdemyCourseJSON: parsing finished...')
     return content
   })
 }
@@ -100,3 +110,4 @@ exports.prepareUdemyCourseJSON = prepareUdemyCourseJSON
 exports.parseUrl = parseUrl
 exports.isAd = isAd
 exports.replaceAll = replaceAll
+exports.getFullDate = getFullDate
