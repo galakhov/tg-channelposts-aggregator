@@ -101,7 +101,9 @@ class UdemyCrawler {
       .text()
       .trim()
     Course.rating =
-      crawledRating.length > 3 ? crawledRating.substr(0, 3) : crawledRating
+      crawledRating.length > 3
+        ? crawledRating.trim().substr(0, 3)
+        : crawledRating
     const enrollmentNr = $('[data-purpose="enrollment"]')
       .text()
       .trim()
