@@ -15,10 +15,10 @@ const Posts = ({ posts, openModal }) => (
     <StackGrid columnWidth={340} gutterWidth={40} gutterHeight={20}>
       {posts &&
         posts.map((post, index) => {
-          console.log(
+          /* console.log(
             'courseContents.rating received: ',
             post.preview.courseContents.rating
-          )
+          ) */
           return (
             <Card
               key={post._id}

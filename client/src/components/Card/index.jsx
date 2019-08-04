@@ -50,7 +50,8 @@ const Card = ({
     ? `Coupon added on ${_format(new Date(createdDate), 'DD.MM.YYYY HH:mm')}`
     : ''
 
-  const courseRating = rating !== null ? rating : null
+  const courseRating =
+    rating !== null ? (rating.length > 3 ? rating.substr(0, 3) : rating) : null
   const courseStudentsNr = studentsEnrolled !== null ? studentsEnrolled : null
 
   return (

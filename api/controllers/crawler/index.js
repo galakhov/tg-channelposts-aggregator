@@ -101,7 +101,7 @@ class UdemyCrawler {
       .text()
       .trim()
     Course.rating =
-      crawledRating.length > 3 ? crawledRating.substr(0, 2) : crawledRating
+      crawledRating.length > 3 ? crawledRating.substr(0, 3) : crawledRating
     const enrollmentNr = $('[data-purpose="enrollment"]')
       .text()
       .trim()
@@ -114,7 +114,6 @@ class UdemyCrawler {
       .text()
       .trim()
 
-    console.log('rating crawler: ', Course.rating)
     /*
             Also consider other opened Udemy entry points:
             https://www.udemy.com/robots.txt
