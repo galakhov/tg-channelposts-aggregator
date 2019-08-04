@@ -249,7 +249,7 @@ const addPost = async data => {
                     NewPost.preview.courseContents.headline = contents.headline
                     NewPost.preview.courseContents.rating = contents.rating
                     NewPost.preview.courseContents.enrolled =
-                      contents.enrolmentNumber
+                      contents.enrollmentNumber
                     NewPost.preview.courseContents.lectures =
                       contents.curriculum
                     NewPost.preview.courseContents.keywords = contents.topics.join(

@@ -84,6 +84,7 @@
   }
 
   .main {
+    clear: both;
     padding: 10px 0px;
     font-size: 16px;
     a {
