@@ -109,6 +109,8 @@ class UdemyCrawler {
       .trim()
     const startEnrolledText = enrollmentNr.indexOf(' students enrolled', '')
     Course.enrollmentNumber = enrollmentNr.substr(startEnrolledText)
+    console.log('Course.enrollmentNumber', Course.enrollmentNumber)
+
     const metaJson = JSON.parse($('#schema_markup script').html())
     Course.image = metaJson[0].image
     Course.date = $(
