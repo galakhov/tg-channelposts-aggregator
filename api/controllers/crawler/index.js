@@ -107,7 +107,7 @@ class UdemyCrawler {
     const enrollmentNr = $('[data-purpose="enrollment"]')
       .text()
       .trim()
-    const startEnrolledText = enrollmentNr.indexOf(' students enrolled', '')
+    const startEnrolledText = enrollmentNr.indexOf(' students enrolled')
     Course.enrollmentNumber = enrollmentNr.substr(startEnrolledText)
     console.log('Course.enrollmentNumber', Course.enrollmentNumber)
 
