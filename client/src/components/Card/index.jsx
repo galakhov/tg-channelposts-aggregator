@@ -75,7 +75,7 @@ const Card = ({
         <div className={styles.courseStats}>
           {courseStudentsNr !== null && (
             <div className={styles.courseStudents}>
-              {courseStudentsNr.textContent.replace(' students enrolled', '')}
+              {courseStudentsNr.replace(' students enrolled', '')}
             </div>
           )}
           {courseRating !== null && courseRating !== '0.0' && (
