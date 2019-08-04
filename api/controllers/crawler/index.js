@@ -97,9 +97,11 @@ class UdemyCrawler {
     Course.headline = $('.clp-lead__headline[data-purpose="lead-headline"]')
       .text()
       .trim()
-    Course.rating = $('.rate-count .tooltip-container span:first-child')
+    const crawledRating = $('.rate-count .tooltip-container span:first-child')
       .text()
       .trim()
+    Course.rating =
+      crawledRating.length > 3 ? crawledRating.substr(0, 2) : crawledRating
     const enrollmentNr = $('[data-purpose="enrollment"]')
       .text()
       .trim()
