@@ -113,31 +113,48 @@ const startUdemyOffParser = async url => {
 
 const startRealDiscountParser = async (url, entities) => {
   try {
-    console.log('-------- entities', entities)
+    console.log(ctlHelper.getFullDate() + ' entities', entities)
+    // if there are any Post's entities from Telegram's Channel
     if (entities) {
+      // look for the url field in the DB itself: returns -1 if no match
       const foundUrlInDBAtIndex = entities.findIndex(entity =>
         entity.url ? entity.url.indexOf('udemy.com') !== -1 : false
       )
-      console.log('-------- real.dicount URL: ', foundUrlInDBAtIndex)
+      console.log(
+        ctlHelper.getFullDate() + ' real.dicount URL: ',
+        foundUrlInDBAtIndex
+      )
 
+      // if no udemy.com url was found in entities, start parsing
       if (foundUrlInDBAtIndex === -1) {
+        // curl -4 https://ift.tt/2Xv2ddp --> <body><a href="..."></a></body>
         const parsedUrl = await ctlHelper
           .parseUrl(url, ['body a'])
           .catch(err =>
-            console.error('-------- ADD_POST ctlHelper.parseUrl[body a]: ', err)
+            console.error(
+              ctlHelper.getFullDate() +
+                ' ADD_POST ctlHelper.parseUrl[body a]: ',
+              err
+            )
           )
         if (parsedUrl[0] && parsedUrl[0].length > 7) {
           url = parsedUrl[0]
-          console.log('-------- real.dicount url found', parsedUrl[0])
+          console.log(
+            ctlHelper.getFullDate() + ' real.dicount url found',
+            parsedUrl[0]
+          )
         }
       } else {
         url = entities[foundUrlInDBAtIndex].url
-        console.log('-------- real.dicount foundUrlInDBAtIndex', url)
+        console.log(
+          ctlHelper.getFullDate() + ' real.dicount foundUrlInDBAtIndex',
+          url
+        )
       }
     }
     return url
   } catch (err) {
-    console.error('-------- startRealDiscountParser', err)
+    console.error(ctlHelper.getFullDate() + ' startRealDiscountParser', err)
   }
 }
 
@@ -187,6 +204,7 @@ const addPost = async data => {
       if (url.indexOf('udemyoff.com') !== -1) {
         url = await startUdemyOffParser(url)
       } else if (url.indexOf('ift.tt/') !== -1) {
+        // get entities from the Post on Telegram's Channel
         const entities = _.get(data, 'entities', '')
         url = await startRealDiscountParser(url, entities)
       } else if (url.indexOf('smartybro.com') !== -1) {

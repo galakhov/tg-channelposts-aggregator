@@ -1,5 +1,6 @@
 const cheerio = require('cheerio')
 const request = require('sync-request')
+const normalizeUrl = require('normalize-url')
 
 class UrlCrawler {
   constructor(config) {
@@ -16,7 +17,7 @@ class UrlCrawler {
     }
   }
 
-  execute(url, pathsToCheck) {
+  execute(url, pathsToCheck = ['body a']) {
     const response = request('GET', url, {
       headers: {
         'User-Agent': this.config.headers['User-Agent']
@@ -40,8 +41,9 @@ class UrlCrawler {
         $(target).attr('href') ||
         $(target).attr('data-src') ||
         $(target).attr('src')
-      if (content) {
-        scrapedContent.push(content.trim())
+      if (content && content.indexOf('http') !== -1) {
+        const foundUrl = normalizeUrl(content.trim())
+        scrapedContent.push(foundUrl)
       }
       content = ''
     })
@@ -49,8 +51,6 @@ class UrlCrawler {
     console.log('-------- scrapedContent', scrapedContent)
 
     if (scrapedContent.length > 0) {
-      // href = $('#content .elementor-button-link').attr('href')
-      // eturn href.trim()
       return scrapedContent
     }
     return new Error("Couldn't parse the requested element(s).")

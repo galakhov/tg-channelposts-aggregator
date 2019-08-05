@@ -26,7 +26,7 @@ const getFullDate = () => {
 // TODO: refactor
 const parseUrl = async (url, paths = ['body a']) => {
   console.log(
-    getFullDate() + ' parseUrl: parse the link from third-party site',
+    getFullDate() + ' parseUrl: parsing of the link from the third-party site',
     'Starting...'
   )
   const urlParser = new UrlCrawler()
