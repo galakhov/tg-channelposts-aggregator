@@ -24,7 +24,7 @@ const getFullDate = () => {
 }
 
 // TODO: refactor
-const parseUrl = async (url, paths = ['body a']) => {
+const parseUrl = async (url, paths = ['a']) => {
   console.log(
     getFullDate() + ' parseUrl: parsing of the link from the third-party site',
     'Starting...'

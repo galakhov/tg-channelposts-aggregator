@@ -17,7 +17,7 @@ class UrlCrawler {
     }
   }
 
-  execute(url, pathsToCheck = ['body a']) {
+  execute(url, pathsToCheck = ['a']) {
     const response = request('GET', url, {
       headers: {
         'User-Agent': this.config.headers['User-Agent']
@@ -30,7 +30,7 @@ class UrlCrawler {
       )
     }
 
-    const $ = cheerio.load(response.getBody())
+    const $ = cheerio.load(response.getBody()) // entering the <body>
 
     let content = ''
     const scrapedContent = []

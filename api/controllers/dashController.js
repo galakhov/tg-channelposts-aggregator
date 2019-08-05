@@ -137,11 +137,11 @@ const startRealDiscountParser = async (url, entities) => {
         foundUrlInDBAtIndex
       )
 
-      // if no udemy.com url was found in entities, start parsing
+      // if no udemy.com url was found in entities, start plan B case
       if (foundUrlInDBAtIndex === -1) {
         // curl -4 https://ift.tt/2Xv2ddp --> <body><a href="..."></a></body>
         const parsedUrl = await ctlHelper
-          .parseUrl(url, ['body a'])
+          .parseUrl(url, ['a'])
           .then(foundUrl => {
             if (foundUrl[0] && foundUrl[0].length > 7) {
               url = foundUrl[0]
