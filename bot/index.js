@@ -29,12 +29,16 @@ const initBot = () => {
 
     if (ctx.update) {
       // console.log(ctx.update)
-      const { update } = ctx
+      const {
+        update: {
+          inline_query: { query = '' }
+        }
+      } = ctx
       try {
         console.log('TCL: initBot -> update', update)
-        const queryJSON = JSON.parse(update)
-        console.log('TCL: initBot -> queryJSON', queryJSON)
-        const query = queryJSON.inline_query.query
+        // const queryJSON = JSON.parse(update)
+        console.log('TCL: initBot -> inline_query', inline_query)
+        // const query = queryJSON.inline_query.query
         console.log('TCL: initBot -> query', query)
         // if (query === 'checkCoupons') {
         //   const runThirdPartyApi = new ThirdPartyCourses()
