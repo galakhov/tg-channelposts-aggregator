@@ -1,3 +1,5 @@
+const fetch = require('node-fetch')
+
 class ThirdPartyCourses {
   constructor(config) {
     this.config = config || {
@@ -48,7 +50,7 @@ class ThirdPartyCourses {
       }
     }
 
-    const coupons = await getCouponsNumber()
+    const coupons = getCouponsNumber()
     console.log('COUPONS CHECKED: ', coupons)
   }
 }

@@ -25,34 +25,33 @@ const initBot = () => {
   })
 
   bot.on(['inline_query'], ctx => {
-    const result = []
+    // const result = []
 
     if (ctx.update) {
-      // console.log(ctx.update)
+      console.log('ctx.update???', ctx.update)
       try {
-        const { update: { inline_query: { query = '' } = {} } = {} } = ctx
-        console.log('TCL: initBot -> update', update)
-        // const queryJSON = JSON.parse(update)
-        // console.log('TCL: initBot -> inline_query', inline_query)
-        // const query = queryJSON.inline_query.query
-        // console.log('TCL: initBot -> query', query)
-        // if (query === 'checkCoupons') {
-        //   const runThirdPartyApi = new ThirdPartyCourses()
-        //   runThirdPartyApi.execute()
-        // }
-        // dashboard.updatePost(update)
-        // ctx.telegram.answerInlineQuery(ctx.inlineQuery.id, result)
+        if (ctx.update) {
+          const { query = '' } = ctx.update ? ctx.update.inline_query : {}
+          console.log('TCL: initBot -> update query: ', query)
+          if (query === 'checkCoupons') {
+            const runThirdPartyApi = new ThirdPartyCourses()
+            runThirdPartyApi.execute()
+          }
+          // dashboard.updatePost(update)
+          // ctx.telegram.answerInlineQuery(ctx.inlineQuery.id, result)
 
-        /*
-          collection[] = [
-            "type" => "article",
-            "id" => "$i",
-            "title" => "$titles[$i]",
-            "message_text" => "$titles[$i]\n$snippets[$i]\n$urls[$i]",
-          ]
-        */
+          /*
+            collection[] = [
+              "type" => "article",
+              "id" => "$i",
+              "title" => "$titles[$i]",
+              "message_text" => "$titles[$i]\n$snippets[$i]\n$urls[$i]",
+            ]
+          */
+        }
       } catch (e) {
-        ctx.reply('// TG channel bot inline_query error', e)
+        // ctx.reply('// TG channel bot inline_query error', e)
+        console.log('ERROR: TG channel bot inline_query error', e)
       }
     }
   })
