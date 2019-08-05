@@ -29,7 +29,7 @@ class UrlCrawler {
         "Can't find the requested URL. Response code: " + response.statusCode
       )
     }
-
+    console.log(response.getBody())
     const $ = cheerio.load(response.getBody()) // entering the <body>
 
     let content = ''
@@ -42,6 +42,7 @@ class UrlCrawler {
         $(target).attr('data-src') ||
         $(target).attr('src')
       if (content && content.indexOf('http') !== -1) {
+        console.log('UrlCrawler -> found url:', content)
         const foundUrl = normalizeUrl(content.trim())
         scrapedContent.push(foundUrl)
       }
