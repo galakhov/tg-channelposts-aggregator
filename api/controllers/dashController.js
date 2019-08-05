@@ -165,6 +165,7 @@ const startRealDiscountParser = async (urlToParse, entities) => {
           ctlHelper.getFullDate() + ' real.dicount foundUrlInDBAtIndex',
           urlToParse
         )
+        return urlToParse
       }
     }
     return urlToParse
