@@ -61,11 +61,15 @@ const Card = ({
       .substring(0, startEnrolledText + 18)
       .replace(/(?:\\n\\n)/gm, '')
     // if (studentsEnrolledCleared !== '0')
-    console.log('studentsEnrolledCleared', studentsEnrolledCleared)
-    studentsEnrolledCleared = studentsEnrolledCleared.replace(
-      ' enrolled',
-      ' joined'
+    console.log(
+      'studentsEnrolledCleared before replacement',
+      studentsEnrolledCleared
     )
+    studentsEnrolledCleared = studentsEnrolledCleared.replace(
+      'students enrolled',
+      ''
+    )
+    studentsEnrolledCleared += ` students joined`
     console.log('courseStudentsNr: ', courseStudentsNr)
   }
 
