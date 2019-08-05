@@ -47,6 +47,12 @@ export const getPostsByTag = tag => (dispatch, getState) => {
   return filteredPosts
 }
 
+export const clearAllTags = () => dispatch => {
+  dispatch({
+    type: ACTION_TYPES.CLEAR_TAGS
+  })
+}
+
 export const setPosts = filteredPosts => dispatch => {
   dispatch({
     type: ACTION_TYPES.SET_POSTS,

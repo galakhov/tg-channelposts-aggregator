@@ -5,25 +5,25 @@ class ThirdPartyCourses {
     this.config = config || {
       // Get Daily courses (coupons & free)
       query: `query DAILY_COURSES_QUERY($myDate: DateTime) {
-    free: courses(
-      where: { isFree: true, updatedAt_gte: $myDate }
-      orderBy: createdAt_DESC
-    ) {
-      udemyId
-      }
-    coupons: coupons(
-       where: {
-         isValid: true
-         createdAt_gte: $myDate
-         discountValue_starts_with: "100%"
+        free: courses(
+        where: { isFree: true, updatedAt_gte: $myDate }
+        orderBy: createdAt_DESC
+        ) {
+        udemyId
         }
-       orderBy: createdAt_DESC
-      ) {
-        course {
-          udemyId
+        coupons: coupons(
+        where: {
+            isValid: true
+            createdAt_gte: $myDate
+            discountValue_starts_with: "100%"
+            }
+        orderBy: createdAt_DESC
+        ) {
+            course {
+            udemyId
+            }
         }
-      }
-    }`
+        }`
     }
   }
 
@@ -44,9 +44,14 @@ class ThirdPartyCourses {
       })
       const resJSON = await response.json()
 
-      if (resJSON.data.coupons) {
+      if (resJSON.data && resJSON.data.coupons) {
         console.log('resJSON.data.coupons', resJSON.data.coupons)
         return resJSON.data.coupons
+      } else {
+        console.log(
+          'TCL: ThirdPartyCourses -> getCouponsNumber -> resJSON',
+          resJSON
+        )
       }
     }
 

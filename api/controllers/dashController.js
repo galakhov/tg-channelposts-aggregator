@@ -262,7 +262,10 @@ const addPost = async data => {
           // crawl and parse contents
           // let udemyContents = 'No udemy course found'
 
-          if (url.indexOf('udemy.com') !== -1) {
+          if (
+            url.indexOf('https://www.udemy.com/') !== -1 ||
+            url.indexOf('https://udemy.com/') !== -1
+          ) {
             // do the parsing of udemy.com/course
 
             let [parsedCourseContents] = await Promise.all([
