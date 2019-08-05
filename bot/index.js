@@ -34,10 +34,10 @@ const initBot = () => {
         console.log('TCL: initBot -> update', update)
         const query = update.inline_query.query
         console.log('TCL: initBot -> query', query)
-        // if (query === 'checkCoupons') {
-        //   const runThirdPartyApi = new ThirdPartyCourses()
-        //   runThirdPartyApi.execute()
-        // }
+        if (query === 'checkCoupons') {
+          const runThirdPartyApi = new ThirdPartyCourses()
+          runThirdPartyApi.execute()
+        }
         // dashboard.updatePost(update)
         // ctx.telegram.answerInlineQuery(ctx.inlineQuery.id, result)
 
