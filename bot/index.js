@@ -29,8 +29,8 @@ const initBot = () => {
 
     if (ctx.update) {
       // console.log(ctx.update)
-      const { update: { inline_query: { query = '' } = {} } = {} } = ctx
       try {
+        const { update: { inline_query: { query = '' } = {} } = {} } = ctx
         console.log('TCL: initBot -> update', update)
         // const queryJSON = JSON.parse(update)
         console.log('TCL: initBot -> inline_query', inline_query)
