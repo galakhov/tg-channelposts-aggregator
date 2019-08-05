@@ -29,7 +29,7 @@ class ThirdPartyCourses {
 
   execute() {
     const getCouponsNumber = async (graphqlQuery = this.config.query) => {
-      const response = await fetch('https://comidoc.net/api', {
+      const response = await fetch('https://comidoc.net/graphql', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

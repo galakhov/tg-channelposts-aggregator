@@ -150,8 +150,8 @@ const startRealDiscountParser = async (urlToParse, entities) => {
               )
               return foundUrl[0]
             } else {
-              return foundUrl
               console.log('startRealDiscountParser -> urlToParse', urlToParse)
+              return foundUrl
             }
           })
           .catch(err => {
