@@ -26,8 +26,18 @@ const initBot = () => {
 
   bot.on(['inline_query'], ctx => {
     const result = []
-    console.log('Query clicked: ', ctx)
-    ctx.telegram.answerInlineQuery(ctx.inlineQuery.id, result)
+
+    if (ctx.update) {
+      console.log(ctx.update)
+      const { update } = ctx
+      try {
+        console.log('TCL: initBot -> update', update)
+        // dashboard.updatePost(update)
+        ctx.telegram.answerInlineQuery(ctx.inlineQuery.id, result)
+      } catch (e) {
+        ctx.reply('// TG channel bot inline_query error', e)
+      }
+    }
     /*
     collection[] = [
       "type" => "article",
@@ -36,7 +46,7 @@ const initBot = () => {
       "message_text" => "$titles[$i]\n$snippets[$i]\n$urls[$i]",
     ]
     */
-  }
+  })
 
   bot.on(['edited_channel_post'], ctx => {
     console.log('EDITING: ', ctx)
