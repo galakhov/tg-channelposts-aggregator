@@ -24,8 +24,7 @@ const listAllPosts = (req, res) => {
 
 const cleanUrl = url => {
   let cleanedUrl = url
-  console.log('-------- cleanedUrl', url)
-  console.log('-------- type of cleanedUrl', typeof url)
+  console.log(ctlHelper.getFullDate() + ' cleanedUrl', url)
   let posToEnd = url.indexOf('/?couponCode=')
   if (posToEnd === -1) {
     posToEnd = url.indexOf('/?&deal_code=')
@@ -34,16 +33,19 @@ const cleanUrl = url => {
     cleanedUrl = url.substr(0, posToEnd)
   }
   if (cleanedUrl && cleanedUrl.length > 5) {
-    // strip 'http(s)://' and the trailing slash in the end
+    // strip 'http(s)://' and the trailing slash in the end if any
     cleanedUrl = cleanedUrl.replace(/(^\w+:|^)\/\//, '')
     cleanedUrl = cleanedUrl.replace(/\/$/, '')
   } else {
     cleanedUrl = 0
   }
 
-  console.log('-------- How cleaned url looks like:', cleanedUrl)
   console.log(
-    '-------- Cleaned url will be parsed & added? ',
+    ctlHelper.getFullDate() + ' How cleaned url looks like:',
+    cleanedUrl
+  )
+  console.log(
+    ctlHelper.getFullDate() + ' Cleaned url will be parsed & added? ',
     cleanedUrl.indexOf('udemy.com') !== -1
   )
   return cleanedUrl
@@ -58,26 +60,27 @@ const isAlreadyInDB = cleanedUrl => {
       async (err, response) => {
         if (response !== null) {
           console.error(
-            '-------- This post was already added to DB before. Aborting.',
+            ctlHelper.getFullDate() +
+              ' This post was already added to DB before. Aborting.',
             cleanedUrl
           )
           isInDB = true
-          console.log('-------- isAlreadyInDB', isInDB)
+          console.log(ctlHelper.getFullDate() + ' isAlreadyInDB', isInDB)
           return isInDB
           // throw new Error('This post was already added to DB before. Aborting.')
         } else {
           if (err) {
-            console.error('-------- DB query error', err)
+            console.error(ctlHelper.getFullDate() + ' DB query error', err)
           }
           isInDB = false
-          console.log('-------- isAlreadyInDB', isInDB)
+          console.log(ctlHelper.getFullDate() + ' isAlreadyInDB', isInDB)
           return isInDB
         }
       }
     )
     // return isInDB
   }
-  console.error('-------- URL is invalid')
+  console.error(ctlHelper.getFullDate() + ' URL is invalid')
   return false
 }
 
@@ -98,16 +101,25 @@ const startUdemyOffParser = async url => {
   try {
     const udemyOff = await ctlHelper
       .parseUrl(url, ['#content .wp-block-button__link'])
-      .catch(err => console.error('-------- ADD_POST parseUdemyOff: ', err))
-    console.log('-------- ADD_POST udemyOff parsed', udemyOff[0])
+      .catch(err =>
+        console.error(
+          ctlHelper.getFullDate() + ' ADD_POST parseUdemyOff: ',
+          err
+        )
+      )
+    console.log(
+      ctlHelper.getFullDate() + ' ADD_POST udemyOff parsed',
+      udemyOff[0]
+    )
     url = udemyOff[0].indexOf('udemy.com') !== -1 ? udemyOff[0] : url
     console.log(
-      '-------- save the link from the third-party site. Finishing...'
+      ctlHelper.getFullDate() +
+        ' save the link from the third-party site. Finishing...'
     )
     console.log(url)
     return url
   } catch (err) {
-    console.error('-------- startUdemyOffParser', err)
+    console.error(ctlHelper.getFullDate() + ' startUdemyOffParser', err)
   }
 }
 
@@ -138,10 +150,10 @@ const startRealDiscountParser = async (url, entities) => {
             )
           )
         if (parsedUrl[0] && parsedUrl[0].length > 7) {
-          url = parsedUrl[0]
+          url = parsedUrl
           console.log(
             ctlHelper.getFullDate() + ' real.dicount url found',
-            parsedUrl[0]
+            parsedUrl
           )
         }
       } else {
@@ -167,7 +179,8 @@ const startSmatrybroParser = async url => {
       ])
       .catch(err =>
         console.error(
-          '-------- ADD_POST ctlHelper.parseUrl[.sing-cont .fasc-button]: ',
+          ctlHelper.getFullDate() +
+            ' ADD_POST ctlHelper.parseUrl[.sing-cont .fasc-button]: ',
           err
         )
       )
@@ -175,7 +188,7 @@ const startSmatrybroParser = async url => {
     // the eduonix.com urls are blocked (no parser yet)
     return url
   } catch (err) {
-    console.error('-------- startSmatrybroParser', err)
+    console.error(ctlHelper.getFullDate() + ' startSmatrybroParser', err)
   }
 }
 
@@ -280,13 +293,13 @@ const addPost = async data => {
                       e
                         ? () => {
                             console.error(
-                              ctlHelper.getFullDate() + '-------- ADD_POST:'
+                              ctlHelper.getFullDate() + ' ADD_POST:'
                             )
                             throw e
                           }
                         : console.log(
                             ctlHelper.getFullDate() +
-                              ' ADD_POST course contents saved!'
+                              ' ADD_POST course contents saved!\n\n\n\n\n'
                           )
                     })
                   } else {
