@@ -48,7 +48,8 @@ class ThirdPartyCourses {
       }
     }
 
-    const coupons = getCouponsNumber()
+    const coupons = await getCouponsNumber()
+    console.log('COUPONS CHECKED: ', coupons)
   }
 }
 

@@ -1,5 +1,5 @@
 const Telegraf = require('telegraf')
-
+const ThirdPartyCourses = require('../api/controllers/thirdpartyAPIController')
 const Post = require('../api/models/postModel'),
   dashboard = require('../api/controllers/dashController')
 
@@ -32,8 +32,12 @@ const initBot = () => {
       const { update } = ctx
       try {
         console.log('TCL: initBot -> update', update)
+        if (update.inline_query.query === 'checkCoupons') {
+          const runThirdPartyApi = new ThirdPartyCourses()
+          runThirdPartyApi.execute()
+        }
         // dashboard.updatePost(update)
-        ctx.telegram.answerInlineQuery(ctx.inlineQuery.id, result)
+        // ctx.telegram.answerInlineQuery(ctx.inlineQuery.id, result)
       } catch (e) {
         ctx.reply('// TG channel bot inline_query error', e)
       }
