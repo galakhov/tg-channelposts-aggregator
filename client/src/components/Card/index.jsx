@@ -54,6 +54,9 @@ const Card = ({
     rating !== null ? (rating.length > 3 ? rating.substr(0, 3) : rating) : null
   const courseStudentsNr = studentsEnrolled !== null ? studentsEnrolled : null
 
+  console.log('courseStudentsNr: ', courseStudentsNr)
+  // .indexOf(' students enrolled')
+
   return (
     <div className={styles.card} onClick={() => onCardClick(_id)}>
       {img && (
