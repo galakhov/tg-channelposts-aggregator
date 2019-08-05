@@ -38,18 +38,19 @@ const initBot = () => {
         }
         // dashboard.updatePost(update)
         // ctx.telegram.answerInlineQuery(ctx.inlineQuery.id, result)
+
+        /*
+          collection[] = [
+            "type" => "article",
+            "id" => "$i",
+            "title" => "$titles[$i]",
+            "message_text" => "$titles[$i]\n$snippets[$i]\n$urls[$i]",
+          ]
+        */
       } catch (e) {
         ctx.reply('// TG channel bot inline_query error', e)
       }
     }
-    /*
-    collection[] = [
-      "type" => "article",
-      "id" => "$i",
-      "title" => "$titles[$i]",
-      "message_text" => "$titles[$i]\n$snippets[$i]\n$urls[$i]",
-    ]
-    */
   })
 
   bot.on(['edited_channel_post'], ctx => {
