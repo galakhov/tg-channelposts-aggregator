@@ -4,7 +4,12 @@ import ClickOutside from 'react-click-outside'
 import _orderBy from 'lodash/orderBy'
 
 import { connect } from 'react-redux'
-import { getPostsByTag, setPosts, clearAllTags } from '~/actions/Dashboard'
+import {
+  getPosts,
+  getPostsByTag,
+  setPosts,
+  clearAllTags
+} from '~/actions/Dashboard'
 
 import ToggleButton from '~/components/ToggleButton'
 
@@ -55,9 +60,9 @@ class Nav extends React.Component {
       console.log('state after filteredPostsByTag', this.state)
     }
     this.clearTags = () => {
+      this.props.clearAllTags()
       this.setState({ filtered: [] })
-      this.props.setPosts([])
-      clearAllTags()
+      this.props.getPosts()
     }
   }
 
@@ -110,7 +115,9 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = {
   getPostsByTag,
-  setPosts
+  setPosts,
+  clearAllTags,
+  getPosts
 }
 
 export default connect(

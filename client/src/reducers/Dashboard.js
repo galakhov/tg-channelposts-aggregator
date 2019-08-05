@@ -45,11 +45,13 @@ export default (state = initialState, action) => {
         ...state,
         tags: addTagFilter(state, action.tag)
       }
-    case ACTION_TYPES.CLEAR_TAGS:
+    case ACTION_TYPES.CLEAR_TAGS: {
       return {
         ...state,
+        filteredPosts: [],
         tags: []
       }
+    }
     case ACTION_TYPES.REMOVE_TAG:
       return {
         ...state,
