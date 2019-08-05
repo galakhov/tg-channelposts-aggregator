@@ -62,9 +62,11 @@ const Card = ({
       .replace(/(?:\\n\\n)/gm, '')
     // if (studentsEnrolledCleared !== '0')
     console.log('studentsEnrolledCleared', studentsEnrolledCleared)
-    studentsEnrolledCleared += ` students joined`
+    studentsEnrolledCleared = studentsEnrolledCleared.replace(
+      ' enrolled',
+      ' joined'
+    )
     console.log('courseStudentsNr: ', courseStudentsNr)
-    // .indexOf(' students enrolled')
   }
 
   return (
