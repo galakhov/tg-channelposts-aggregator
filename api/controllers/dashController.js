@@ -148,7 +148,10 @@ const startRealDiscountParser = async (urlToParse, entities) => {
                 ctlHelper.getFullDate() + ' real.dicount url found',
                 foundUrl[0]
               )
-              urlToParse = foundUrl[0]
+              return foundUrl[0]
+            } else {
+              return foundUrl
+              console.log('startRealDiscountParser -> urlToParse', urlToParse)
             }
           })
           .catch(err => {
@@ -159,6 +162,7 @@ const startRealDiscountParser = async (urlToParse, entities) => {
             )
             return false
           })
+        return parsedUrl
       } else {
         urlToParse = entities[foundUrlInDBAtIndex].url
         console.log(
