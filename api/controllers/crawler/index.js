@@ -107,8 +107,14 @@ class UdemyCrawler {
     const enrollmentNr = $('[data-purpose="enrollment"]')
       .text()
       .trim()
+    console.log('enrollmentNr', enrollmentNr)
     const startEnrolledText = enrollmentNr.indexOf(' students enrolled')
-    Course.enrollmentNumber = enrollmentNr.replace(startEnrolledText, '')
+
+    // enrollmentNumber now looks like this:
+    // '21,87 students enrolled\n\n21,867 students enrolled'
+    // TODO: erase all after: 'students enrolled\n\n'
+
+    Course.enrollmentNumber = enrollmentNr.substring(0, startEnrolledText + 18)
     console.log('Course.enrollmentNumber', Course.enrollmentNumber)
 
     const metaJson = JSON.parse($('#schema_markup script').html())
