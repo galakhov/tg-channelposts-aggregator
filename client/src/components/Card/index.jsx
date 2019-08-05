@@ -81,16 +81,6 @@ const Card = ({
         </div>
       )}
       <div className={styles.breadcrumbs}>
-        {expirationDate !== null && (
-          <div className={styles.expirationDate}>
-            <div className={styles.couponOff}>{discounted}</div> {expiration}
-          </div>
-        )}
-        {expirationDate === null && (
-          <div className={styles.expirationDate}>
-            <div className={styles.couponOff}>{freeCourse}</div>
-          </div>
-        )}
         <div className={styles.courseStats}>
           {courseStudentsNr !== null && (
             <div className={styles.courseStudents}>
@@ -101,6 +91,16 @@ const Card = ({
             <div className={styles.courseRating}>Rating: {courseRating}/5</div>
           )}
         </div>
+        {expirationDate !== null && (
+          <div className={styles.expirationDate}>
+            <div className={styles.couponOff}>{discounted}</div> {expiration}
+          </div>
+        )}
+        {expirationDate === null && (
+          <div className={styles.expirationDate}>
+            <div className={styles.couponOff}>{freeCourse}</div>
+          </div>
+        )}
       </div>
       <div
         className={styles.main}

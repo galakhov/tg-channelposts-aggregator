@@ -57,6 +57,8 @@
     & .expirationDate {
       color: var(--actionColor);
       text-align: center;
+      clear: both;
+      padding-top: 3px;
     }
 
     & .couponOff {
