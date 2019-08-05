@@ -19,7 +19,7 @@ const getFullDate = () => {
   let mm = date.getMonth() + 1
   mm = mm < 10 ? '0' + mm : mm
   const yyyy = date.getFullYear()
-  const fullDate = `${dd}.${mm}.${yyyy} at ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getMilliseconds()}`
+  const fullDate = `${dd}.${mm}.${yyyy} at ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()}`
   return fullDate
 }
 

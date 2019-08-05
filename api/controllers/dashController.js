@@ -123,7 +123,7 @@ const startUdemyOffParser = async url => {
   }
 }
 
-const startRealDiscountParser = async (url, entities) => {
+const startRealDiscountParser = async (urlToParse, entities) => {
   try {
     console.log(ctlHelper.getFullDate() + ' entities', entities)
     // if there are any Post's entities from Telegram's Channel
@@ -144,31 +144,33 @@ const startRealDiscountParser = async (url, entities) => {
           .parseUrl(url, ['.deal-sidebar-box a'])
           .then(foundUrl => {
             if (foundUrl[0] && foundUrl[0].length > 7) {
-              url = foundUrl[0]
               console.log(
                 ctlHelper.getFullDate() + ' real.dicount url found',
                 foundUrl[0]
               )
+              urlToParse = foundUrl[0]
             }
           })
-          .catch(err =>
+          .catch(err => {
             console.error(
               ctlHelper.getFullDate() +
                 ' ADD_POST ctlHelper.parseUrl[body a]: ',
               err
             )
-          )
+            return false
+          })
       } else {
-        url = entities[foundUrlInDBAtIndex].url
+        urlToParse = entities[foundUrlInDBAtIndex].url
         console.log(
           ctlHelper.getFullDate() + ' real.dicount foundUrlInDBAtIndex',
-          url
+          urlToParse
         )
       }
     }
-    return url
+    return urlToParse
   } catch (err) {
     console.error(ctlHelper.getFullDate() + ' startRealDiscountParser', err)
+    return false
   }
 }
 

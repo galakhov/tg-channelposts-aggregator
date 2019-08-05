@@ -24,6 +24,20 @@ const initBot = () => {
     }
   })
 
+  bot.on(['inline_query'], ctx => {
+    const result = []
+    console.log('Query clicked: ', ctx)
+    ctx.telegram.answerInlineQuery(ctx.inlineQuery.id, result)
+    /*
+    collection[] = [
+      "type" => "article",
+      "id" => "$i",
+      "title" => "$titles[$i]",
+      "message_text" => "$titles[$i]\n$snippets[$i]\n$urls[$i]",
+    ]
+    */
+  }
+
   bot.on(['edited_channel_post'], ctx => {
     console.log('EDITING: ', ctx)
     if (ctx.update) {

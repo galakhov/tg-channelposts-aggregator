@@ -35,7 +35,7 @@ class UrlCrawler {
         decodeEntities: true
       }
     }) // loading the requested page (connsidering redirections, etc.)
-    console.log('response.getBody()', $.html())
+    // console.log('response.getBody()', $.html())
 
     let content = ''
     const scrapedContent = []
