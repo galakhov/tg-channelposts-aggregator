@@ -17,7 +17,7 @@ class UrlCrawler {
     }
   }
 
-  execute(url, pathsToCheck = ['a']) {
+  execute(url, pathsToCheck = ['body a']) {
     const response = request('GET', url, {
       headers: {
         'User-Agent': this.config.headers['User-Agent']
@@ -34,7 +34,7 @@ class UrlCrawler {
         normalizeWhitespace: true,
         decodeEntities: true
       }
-    }) // entering the <body>
+    }) // loading the requested page (connsidering redirections, etc.)
     console.log('response.getBody()', $.html())
 
     let content = ''

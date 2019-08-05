@@ -19,12 +19,12 @@ const getFullDate = () => {
   let mm = date.getMonth() + 1
   mm = mm < 10 ? '0' + mm : mm
   const yyyy = date.getFullYear()
-  const fullDate = `${dd}.${mm}.${yyyy} at ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+  const fullDate = `${dd}.${mm}.${yyyy} at ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} ${date.getMilliseconds()}`
   return fullDate
 }
 
 // TODO: refactor
-const parseUrl = async (url, paths = ['a']) => {
+const parseUrl = async (url, paths = ['body a']) => {
   console.log(
     getFullDate() + ' parseUrl: parsing of the link from the third-party site',
     'Starting...'

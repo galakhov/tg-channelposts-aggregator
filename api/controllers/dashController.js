@@ -141,7 +141,7 @@ const startRealDiscountParser = async (url, entities) => {
       if (foundUrlInDBAtIndex === -1) {
         // curl -4 https://ift.tt/2Xv2ddp --> <body><a href="..."></a></body>
         const parsedUrl = await ctlHelper
-          .parseUrl(url, ['a'])
+          .parseUrl(url, ['.deal-sidebar-box a'])
           .then(foundUrl => {
             if (foundUrl[0] && foundUrl[0].length > 7) {
               url = foundUrl[0]
