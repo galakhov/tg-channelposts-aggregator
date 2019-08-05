@@ -142,6 +142,15 @@ const startRealDiscountParser = async (url, entities) => {
         // curl -4 https://ift.tt/2Xv2ddp --> <body><a href="..."></a></body>
         const parsedUrl = await ctlHelper
           .parseUrl(url, ['body a'])
+          .then(foundUrl => {
+            if (foundUrl[0] && foundUrl[0].length > 7) {
+              url = foundUrl[0]
+              console.log(
+                ctlHelper.getFullDate() + ' real.dicount url found',
+                foundUrl[0]
+              )
+            }
+          })
           .catch(err =>
             console.error(
               ctlHelper.getFullDate() +
@@ -149,13 +158,6 @@ const startRealDiscountParser = async (url, entities) => {
               err
             )
           )
-        if (parsedUrl[0] && parsedUrl[0].length > 7) {
-          url = parsedUrl
-          console.log(
-            ctlHelper.getFullDate() + ' real.dicount url found',
-            parsedUrl
-          )
-        }
       } else {
         url = entities[foundUrlInDBAtIndex].url
         console.log(
