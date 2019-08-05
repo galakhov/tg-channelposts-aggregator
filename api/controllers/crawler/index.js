@@ -110,11 +110,9 @@ class UdemyCrawler {
     console.log('enrollmentNr', enrollmentNr)
     const startEnrolledText = enrollmentNr.indexOf(' students enrolled')
 
-    // enrollmentNumber now looks like this:
-    // '21,87 students enrolled\n\n21,867 students enrolled'
-    // TODO: erase all after: 'students enrolled\n\n'
-
-    Course.enrollmentNumber = enrollmentNr.substring(0, startEnrolledText + 18)
+    Course.enrollmentNumber = enrollmentNr
+      .substring(0, startEnrolledText + 18)
+      .replace(/(?:\\n\\n)/gm, '') // also remove double breaks: \n\n
     console.log('Course.enrollmentNumber', Course.enrollmentNumber)
 
     const metaJson = JSON.parse($('#schema_markup script').html())

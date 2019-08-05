@@ -54,8 +54,18 @@ const Card = ({
     rating !== null ? (rating.length > 3 ? rating.substr(0, 3) : rating) : null
   const courseStudentsNr = studentsEnrolled !== null ? studentsEnrolled : null
 
-  console.log('courseStudentsNr: ', courseStudentsNr)
-  // .indexOf(' students enrolled')
+  let studentsEnrolledCleared
+  if (courseStudentsNr) {
+    const startEnrolledText = courseStudentsNr.indexOf(' students enrolled')
+    studentsEnrolledCleared = studentsEnrolled
+      .substring(0, startEnrolledText + 18)
+      .replace(/(?:\\n\\n)/gm, '')
+    // if (studentsEnrolledCleared !== '0')
+    console.log('studentsEnrolledCleared', studentsEnrolledCleared)
+    studentsEnrolledCleared += ` students joined`
+    console.log('courseStudentsNr: ', courseStudentsNr)
+    // .indexOf(' students enrolled')
+  }
 
   return (
     <div className={styles.card} onClick={() => onCardClick(_id)}>
@@ -78,10 +88,7 @@ const Card = ({
         <div className={styles.courseStats}>
           {courseStudentsNr !== null && (
             <div className={styles.courseStudents}>
-              {courseStudentsNr.replace(
-                ' students enrolled',
-                ' students joined'
-              )}
+              {studentsEnrolledCleared}
             </div>
           )}
           {courseRating !== null && courseRating !== '0.0' && (
