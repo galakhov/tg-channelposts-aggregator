@@ -239,13 +239,13 @@ const affiliateParametersCleaner = urlToCheck => {
     console.log(
       ctlHelper.getFullDate() +
         ' How url without params looks like: ' +
-        couponCode !==
+        couponCode !=
         null && couponCode !== ''
         ? (urlToCheck += `?couponCode=${couponCode}`)
         : urlToCheck
     )
   }
-  return couponCode !== null && couponCode !== ''
+  return couponCode != null && couponCode !== ''
     ? (urlToCheck += `?couponCode=${couponCode}`)
     : urlToCheck
 }
