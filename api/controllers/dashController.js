@@ -212,17 +212,20 @@ const affiliateParametersCleaner = urlToCheck => {
   if (offset !== -1) {
     const objUrl = new urlTools.URL(normalizeUrl(urlToCheck))
     const couponCode = objUrl.searchParams.get('couponCode')
-    urlToCheck = `https://${objUrl.hostname}${
-      objUrl.pathname
-    }?couponCode=${couponCode}`
+    urlToCheck = `https://${objUrl.hostname}${objUrl.pathname}`
 
     console.log(
       ctlHelper.getFullDate() +
         'How url without params looks like: ' +
-        urlToCheck
+        couponCode !==
+        null
+        ? (urlToCheck += `?couponCode=${couponCode}`)
+        : urlToCheck
     )
   }
-  return urlToCheck
+  return couponCode !== null
+    ? (urlToCheck += `?couponCode=${couponCode}`)
+    : urlToCheck
 }
 
 const addPost = async data => {
@@ -326,7 +329,7 @@ const addPost = async data => {
                     )
                     NewPost.preview.courseContents.url = contents.image
 
-                    // save post only if the given url is valid and the contents were parsed
+                    // save post only if the given url is valid and the contents were properly parsed
                     NewPost.save((e, post) => {
                       e
                         ? () => {
@@ -337,7 +340,11 @@ const addPost = async data => {
                           }
                         : console.log(
                             ctlHelper.getFullDate() +
-                              ' ADD_POST course contents saved!\n\n\n\n\n'
+                              ` ADD_POST course contents saved! 👍
+                              
+
+                              
+                              `
                           )
                     })
                   } else {
