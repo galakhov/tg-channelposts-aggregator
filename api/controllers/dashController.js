@@ -42,6 +42,7 @@ const cleanUrl = url => {
     // strip 'http(s)://' and the trailing slash in the end if any
     cleanedUrl = cleanedUrl.replace(/(^\w+:|^)\/\//, '')
     cleanedUrl = cleanedUrl.replace(/\/$/, '')
+    cleanedUrl = cleanedUrl.replace(/www\./, '')
   } else {
     cleanedUrl = 0
   }
@@ -62,7 +63,7 @@ const isAlreadyInDB = cleanedUrl => {
   if (cleanedUrl !== 0) {
     let isInDB = true
     return Post.findOne(
-      { 'preview.url': { $regex: cleanedUrl, $options: 'i' } },
+      { 'preview.courseUrl': { $regex: cleanedUrl, $options: 'i' } },
       async (err, response) => {
         if (response !== null) {
           console.error(
@@ -403,7 +404,7 @@ const updatePost = ({ edited_channel_post: data }) => {
 
         // previews
         const url = ctlHelper.extractUrl(text)
-        existingPost.preview.url = url
+        existingPost.preview.url = url // consinder using courseUrl
         if (url) {
           const courseContents = await ctlHelper
             .prepareUdemyCourseJSON(url)
