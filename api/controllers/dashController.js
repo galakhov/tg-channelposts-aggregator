@@ -213,7 +213,7 @@ const affiliateParametersCleaner = urlToCheck => {
   let couponCode = null
   if (offset !== -1) {
     const objUrl = new urlTools.URL(normalizeUrl(urlToCheck))
-    couponCode = objUrl.searchParams.get('couponCode')
+    couponCode = objUrl.searchParams.get('couponCode') || null
     urlToCheck = `https://${objUrl.hostname}${objUrl.pathname}`
 
     console.log(
