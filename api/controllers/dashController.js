@@ -234,20 +234,17 @@ const affiliateParametersCleaner = urlToCheck => {
     couponCode = objUrl.searchParams.get('couponCode') || null
     urlToCheck = `https://${objUrl.hostname}${objUrl.pathname}`
 
-    console.log('affiliateParametersCleaner: couponCode', couponCode)
-
+    urlToCheck =
+      couponCode !== null && couponCode !== ''
+        ? (urlToCheck += `?couponCode=${couponCode}`)
+        : urlToCheck
     console.log(
       ctlHelper.getFullDate() +
         ' How url without params looks like: ' +
-        couponCode !=
-        null && couponCode !== ''
-        ? (urlToCheck += `?couponCode=${couponCode}`)
-        : urlToCheck
+        urlToCheck
     )
   }
-  return couponCode != null && couponCode !== ''
-    ? (urlToCheck += `?couponCode=${couponCode}`)
-    : urlToCheck
+  return urlToCheck
 }
 
 const addPost = async data => {
