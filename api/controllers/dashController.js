@@ -212,7 +212,9 @@ const affiliateParametersCleaner = urlToCheck => {
   if (offset !== -1) {
     const objUrl = new urlTools.URL(normalizeUrl(urlToCheck))
     const couponCode = objUrl.searchParams.get('couponCode')
-    urlToCheck = `${objUrl.hostname}${objUrl.pathname}?couponCode=${couponCode}`
+    urlToCheck = `https://${objUrl.hostname}${
+      objUrl.pathname
+    }?couponCode=${couponCode}`
 
     console.log(
       ctlHelper.getFullDate() +
