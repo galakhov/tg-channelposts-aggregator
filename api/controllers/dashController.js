@@ -1,5 +1,8 @@
 const _ = require('lodash')
 const ctlHelper = require('./helper')
+const normalizeUrl = require('normalize-url')
+const urlTools = require('url')
+
 const limitPerPage = 100
 
 const mongoose = require('mongoose'),
@@ -28,6 +31,9 @@ const cleanUrl = url => {
   let posToEnd = url.indexOf('/?couponCode=')
   if (posToEnd === -1) {
     posToEnd = url.indexOf('/?&deal_code=')
+  }
+  if (posToEnd === -1) {
+    posToEnd = url.indexOf('/?') // strict parameters cleaner
   }
   if (posToEnd !== -1) {
     cleanedUrl = url.substr(0, posToEnd)
@@ -201,6 +207,17 @@ const startSmatrybroParser = async url => {
   }
 }
 
+const affiliateParametersCleaner = urlToCheck => {
+  // https://udemy.com/blender-28-complete-beginners-guide-to-3d-modelling-a-scene/?LSNPUBID=VkwVKCHWj2A&couponCode=SKILLUPCORNER+.COM&deal_code=UDEAFFAS819&ranEAID=VkwVKCHWj2A&ranMID=39197&ranSiteID=VkwVKCHWj2A-wytzL2GPGDtiSyjkppLSfw
+  const offset = urlToCheck.indexOf('LSNPUBID=') || -1
+  if (offset !== -1) {
+    const objUrl = new urlTools.URL(normalizeUrl(urlToCheck))
+    const couponCode = objUrl.searchParams.get('couponCode')
+    urlToCheck = `${objUrl.hostname}${objUrl.pathname}?couponCode=${couponCode}`
+  }
+  return urlToCheck
+}
+
 const addPost = async data => {
   try {
     const NewPost = new Post()
@@ -243,6 +260,8 @@ const addPost = async data => {
           !isLinkAlreadyInDB &&
           !isThirdPartyLink(url)
         ) {
+          url = affiliateParametersCleaner(url)
+
           NewPost.preview.url = url
 
           NewPost.raw.text = ctlHelper.extractClutter(text)

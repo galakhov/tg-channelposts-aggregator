@@ -6,24 +6,32 @@ class ThirdPartyCourses {
       // Get Daily courses (coupons & free)
       query: `query DAILY_COURSES_QUERY($myDate: DateTime) {
         free: courses(
-        where: { isFree: true, updatedAt_gte: $myDate }
-        orderBy: createdAt_DESC
+          where: { isFree: true, updatedAt_gte: $myDate }
+          orderBy: createdAt_DESC
         ) {
-        udemyId
+          udemyId
+          cleanUrl
         }
         coupons: coupons(
-        where: {
-            isValid: true
-            createdAt_gte: $myDate
+          where: {
+            createdAt_gte: $myDate,
+            isValid: true,
             discountValue_starts_with: "100%"
-            }
-        orderBy: createdAt_DESC
+          }
+          orderBy: createdAt_DESC
         ) {
-            course {
+          course {
             udemyId
+            cleanUrl
+            coupon(where: { isValid: true, createdAt_gte: $myDate }) {
+              code
+              discountValue
+              createdAt
+              isValid
             }
+          }
         }
-        }`
+      }`
     }
   }
 
