@@ -234,6 +234,8 @@ const affiliateParametersCleaner = urlToCheck => {
     couponCode = objUrl.searchParams.get('couponCode') || null
     urlToCheck = `https://${objUrl.hostname}${objUrl.pathname}`
 
+    console.log('affiliateParametersCleaner: couponCode', couponCode)
+
     console.log(
       ctlHelper.getFullDate() +
         ' How url without params looks like: ' +
