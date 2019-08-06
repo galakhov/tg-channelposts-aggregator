@@ -13,16 +13,34 @@ const mongoose = require('mongoose'),
 const listAllPosts = (req, res) => {
   Post.find({}, (err, posts) => {
     if (err) {
-      // console.log('listAllPosts -> err:', err)
+      console.log('listAllPosts -> err:', err)
       res.send(err)
     }
-    // console.log('listAllPosts -> posts:', posts)
+    // const postsWithPagination = await Post.paginate({}, options);
+    console.log('listAllPosts -> posts:', posts)
     res.json(posts)
   })
-    .limit(limitPerPage)
     .sort({
       created_date: 'desc'
     })
+    .limit(limitPerPage)
+
+  // ;async (req, res) => {
+  //   try {
+  //     const { page, perPage } = req.query
+  //     const options = {
+  //       page: parseInt(page, 1) || 1,
+  //       limit: parseInt(perPage, 50) || 50
+  //     }
+  //     const postsWithPagination = await Post.paginate({}, options).sort({
+  //       created_date: 'desc'
+  //     })
+  //     return res.json(postsWithPagination)
+  //   } catch (err) {
+  //     console.error(err)
+  //     return res.status(500).send(err)
+  //   }
+  // }
 }
 
 const cleanUrl = url => {
@@ -218,14 +236,14 @@ const affiliateParametersCleaner = urlToCheck => {
 
     console.log(
       ctlHelper.getFullDate() +
-        'How url without params looks like: ' +
+        ' How url without params looks like: ' +
         couponCode !==
-        null
+        null && couponCode !== ''
         ? (urlToCheck += `?couponCode=${couponCode}`)
         : urlToCheck
     )
   }
-  return couponCode !== null
+  return couponCode !== null && couponCode !== ''
     ? (urlToCheck += `?couponCode=${couponCode}`)
     : urlToCheck
 }
