@@ -209,9 +209,10 @@ const startSmatrybroParser = async url => {
 
 const affiliateParametersCleaner = urlToCheck => {
   const offset = urlToCheck.indexOf('LSNPUBID=') || -1
+  let couponCode = null
   if (offset !== -1) {
     const objUrl = new urlTools.URL(normalizeUrl(urlToCheck))
-    const couponCode = objUrl.searchParams.get('couponCode')
+    couponCode = objUrl.searchParams.get('couponCode')
     urlToCheck = `https://${objUrl.hostname}${objUrl.pathname}`
 
     console.log(
