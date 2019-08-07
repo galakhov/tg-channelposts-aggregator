@@ -12,13 +12,13 @@
 - [normalize-url](https://www.npmjs.com/package/normalize-url)
 - @multifeed_edge_bot to aggregate and [redirect](https://github.com/galakhov/tg-channelposts-aggregator/tree/master/server) messages from a set of channels
 
-# Server Tools 🔧 / DB 🗄️
+# Server Tools 🔧 and DB 🗄️
 
 I suggest to use Robo 3T or similar tools to monitor your local MongoDB installation.
 
 For testing purposes you can use the free [MongoDB Atlas Cluster](https://docs.atlas.mongodb.com/reference/free-shared-limitations/#atlas-free-tier). Just follow [this](https://docs.atlas.mongodb.com/getting-started/#create-an-service-account) tutorial.
 
-# Architecture 🏗️🧱 / Required Puzzles 🧩
+# Architecture 🏗️🧱 and Required Puzzles 🧩
 
 ## Bot #1: Posts Collector 🤖
 

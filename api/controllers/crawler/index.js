@@ -192,8 +192,9 @@ class UdemyCrawler {
     if (jsonData.purchase.data.pricing_result.has_discount_saving) {
       Course.discount =
         jsonData.purchase.data.pricing_result.discount_percent_for_display
-      Course.discountExpiration =
-        jsonData.purchase.data.pricing_result.campaign.end_time
+      Course.discountExpiration = jsonData.purchase.data.pricing_result.campaign
+        ? jsonData.purchase.data.pricing_result.campaign.end_time
+        : null
     }
 
     return _cb(null, Course)

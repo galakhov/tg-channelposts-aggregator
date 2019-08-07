@@ -2,5 +2,6 @@
   "search.exclude": {
     "**/build/static": true
   },
-  "workbench.tree.indent": 30
+  "workbench.tree.indent": 30,
+  "editor.lineHeight": 25
 }
