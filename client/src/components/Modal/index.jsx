@@ -25,10 +25,13 @@ const Modal = ({ modalIsOpen, onRequestClose, children }) => (
     isOpen={modalIsOpen}
     style={customStyles}
     onRequestClose={onRequestClose}
-    contentLabel="Example"
+    contentLabel="Course Details"
+    appElement={document.getElementById('root')}
   >
     {children}
   </ReactModal>
 )
+
+// Modal.setAppElement(el)
 
 export default Modal

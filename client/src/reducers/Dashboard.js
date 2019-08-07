@@ -7,7 +7,8 @@ const initialState = {
   currentPostId: '',
   posts: [],
   tags: [],
-  filteredPosts: []
+  filteredPosts: [],
+  errorMessage: ''
 }
 
 const addTagFilter = (state, newTag) => {
@@ -25,7 +26,7 @@ export default (state = initialState, action) => {
         ...state,
         posts: action.data
       }
-    case ACTION_TYPES.SET_POSTS:
+    case ACTION_TYPES.SET_FILTERED_POSTS:
       return {
         ...state,
         filteredPosts: action.filteredPosts ? action.filteredPosts : []
@@ -39,6 +40,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isFetching: false
+      }
+    case ACTION_TYPES.FETCHING_FAILED:
+      return {
+        ...state,
+        isFetching: false,
+        errorMessage: action.err
       }
     case ACTION_TYPES.ADD_TAG:
       return {

@@ -26,7 +26,7 @@ class Home extends React.Component {
 
     const { posts, openModal } = this.props
     return (
-      <Page className={styles.container}>
+      <Page id="mainPage" className={styles.container}>
         <Nav posts={posts} />
         <AirLine />
         <div className={styles.logo}>

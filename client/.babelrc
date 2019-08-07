@@ -1,20 +1,18 @@
 {
-  "presets": [
-    ["env",  { modules: false }],
-    "stage-2",
-    "react"
-  ],
+  "presets": [["env", { "modules": false }], "stage-0", "react"],
   "plugins": [
     [
       "babel-plugin-root-import",
-      [{
-        "rootPathSuffix": "src",
-        "rootPathPrefix": "~"
-      },
-      {
-        "rootPathSuffix": "node_modules",
-        "rootPathPrefix": "η"
-      }]
+      [
+        {
+          "rootPathSuffix": "src",
+          "rootPathPrefix": "~"
+        },
+        {
+          "rootPathSuffix": "node_modules",
+          "rootPathPrefix": "η"
+        }
+      ]
     ]
   ]
 }

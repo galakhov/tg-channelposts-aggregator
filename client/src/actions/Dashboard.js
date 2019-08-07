@@ -6,7 +6,7 @@ import _intersection from 'lodash/intersection'
 import * as ACTION_TYPES from './types'
 import Dashboard from '~/utils/api/Dashboard'
 
-const filterByTags = (dash, dispatch) => {
+const filterByTags = dash => {
   const { posts, tags } = dash
   const tagsArray = tags.map(el => el.type)
   console.log('tags in state', tags)
@@ -26,13 +26,24 @@ export const getPosts = () => dispatch => {
   dispatch(showLoading())
   dispatch({ type: ACTION_TYPES.FETCHING })
 
-  Dashboard.Posts.get().then(({ data }) => {
-    dispatch(hideLoading())
-    dispatch({ type: ACTION_TYPES.FETCHING_END })
-    dispatch({
-      type: ACTION_TYPES.GET_POSTS,
-      data
+  Dashboard.Posts.get()
+    .then(({ data }) => {
+      dispatch(hideLoading())
+      dispatch({
+        type: ACTION_TYPES.GET_POSTS,
+        data
+      })
+      dispatch({ type: ACTION_TYPES.FETCHING_END })
     })
+    .catch(err => {
+      dispatch({ type: ACTION_TYPES.FETCHING_FAILED, err })
+    })
+}
+
+const setFilteredPosts = filteredPosts => dispatch => {
+  dispatch({
+    type: ACTION_TYPES.SET_FILTERED_POSTS,
+    filteredPosts
   })
 }
 
@@ -42,21 +53,15 @@ export const getPostsByTag = tag => (dispatch, getState) => {
     tag
   })
   const currentDash = getState().dashboard
-  const filteredPosts = filterByTags(currentDash, dispatch)
+  const filteredPosts = filterByTags(currentDash)
   currentDash.filteredPosts = filteredPosts
+  dispatch(setFilteredPosts(filteredPosts))
   return filteredPosts
 }
 
 export const clearAllTags = () => dispatch => {
   dispatch({
     type: ACTION_TYPES.CLEAR_TAGS
-  })
-}
-
-export const setPosts = filteredPosts => dispatch => {
-  dispatch({
-    type: ACTION_TYPES.SET_POSTS,
-    filteredPosts
   })
 }
 

@@ -10,7 +10,7 @@ import './styles/main.css'
 class App extends React.Component {
   render () {
     return (
-      <div>
+      <div id="mainApp">
         <header>
           <LoadingBar
             style={{

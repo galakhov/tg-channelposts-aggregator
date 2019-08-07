@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import {
   getPosts,
   getPostsByTag,
-  setPosts,
+  // setFilteredPosts,
   clearAllTags
 } from '~/actions/Dashboard'
 
@@ -54,15 +54,17 @@ class Nav extends React.Component {
       return _orderBy(types, ['count'], ['desc'])
     }
     this.tagClickHandler = tag => {
-      const filteredPostsByTag = this.props.getPostsByTag(tag)
-      this.setState({ filtered: filteredPostsByTag })
-      this.props.setPosts(filteredPostsByTag)
+      const { getPostsByTag } = this.props
+      const filteredPostsByTag = getPostsByTag(tag)
+      this.setState({ filtered: filteredPostsByTag }) // local state: seefiltered.length
+      // this.props.setFilteredPosts(filteredPostsByTag)
       console.log('state after filteredPostsByTag', this.state)
     }
     this.clearTags = () => {
-      this.props.clearAllTags()
+      const { clearAllTags, getPosts } = this.props
+      clearAllTags()
       this.setState({ filtered: [] })
-      this.props.getPosts()
+      getPosts()
     }
   }
 
@@ -115,7 +117,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = {
   getPostsByTag,
-  setPosts,
+  // setFilteredPosts,
   clearAllTags,
   getPosts
 }
