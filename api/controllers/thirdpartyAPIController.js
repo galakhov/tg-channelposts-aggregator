@@ -5,7 +5,7 @@ class ThirdPartyCourses {
   constructor(config) {
     this.config = config || {
       // Get Daily courses (coupons & free)
-      query: `getDailyCourses($myDate: DateTime) {
+      query: `query getDailyCourses($myDate: DateTime) {
             free: courses(
                 where: { isFree: true, updatedAt_gte: $myDate }
                 orderBy: createdAt_DESC
