@@ -6,6 +6,7 @@ const { SequentialTaskQueue } = require('sequential-task-queue')
 class ThirdPartyCourses {
   constructor(config) {
     this.config = config || {
+      jobs: null,
       // Get Daily courses (coupons & free)
       query: `query getDailyCourses($myDate: DateTime) {
             free: courses(
@@ -100,6 +101,9 @@ class ThirdPartyCourses {
                   ) {
                     const courseUrl = `https://udemy.com${urlWithoutParameters}`
                     freeCourses.push(courseUrl)
+                    if (this.jobs.running) {
+                      this.jobs.stop()
+                    }
                   }
                 })
                 .catch(err => {
@@ -128,6 +132,9 @@ class ThirdPartyCourses {
                       obj.course.coupon[0].code
                     }`
                     freeCoupons.push(freeCoupon)
+                    if (this.jobs.running) {
+                      this.jobs.stop()
+                    }
                   }
                 })
                 .catch(err => {
@@ -154,15 +161,28 @@ class ThirdPartyCourses {
     // https://www.npmjs.com/package/cron
     // https://github.com/kelektiv/node-cron
     const { CronJob } = require('cron')
-    new CronJob(
-      '* 45 * * * *', // every 45 minutes
+    this.jobs = new CronJob(
+      '*/25 * * * *', // every 45 minutes
       () => {
         this.execute()
+        // this.jobs.stop()
       },
       null,
-      true, // autostart?
+      false, // autostart?
       'Europe/Amsterdam'
     )
+    this.jobs.start()
+    console.log(
+      '\n-------- Planning automation: cron will run on the following dates:\n'
+    )
+    this.jobs.nextDates(10).forEach(d => {
+      const date = JSON.stringify(d)
+        .replace(/T/, ' ')
+        .replace(/\.000Z/, ' UTC+2')
+      // console.log('TCL: automate -> date', date)
+      console.log('--------', ctlHelper.getFullDate(new Date(date)) + '\n')
+    })
+    console.log('-------- etc.\n\n')
   }
 }
 

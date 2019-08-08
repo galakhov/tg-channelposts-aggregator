@@ -75,8 +75,8 @@ const crawler = new UdemyCrawler({
   }
 })
 
-const getFullDate = () => {
-  const date = new Date()
+const getFullDate = (d = new Date()) => {
+  const date = d
   const dd = date.getUTCDate()
   let mm = date.getMonth() + 1
   mm = mm < 10 ? '0' + mm : mm

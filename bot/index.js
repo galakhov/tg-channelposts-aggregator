@@ -1,12 +1,12 @@
 const Telegraf = require('telegraf')
 const ThirdPartyCourses = require('../api/controllers/thirdpartyAPIController')
-const Post = require('../api/models/postModel'),
-  dashboard = require('../api/controllers/dashController')
+const Post = require('../api/models/postModel')
+const dashboard = require('../api/controllers/dashController')
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
 const initBot = () => {
-  console.log('-------- initBot')
+  console.log('\n\n-------- initBot\n')
   bot.start(ctx => {
     // console.log('started: ', ctx.from.id)
     ctx.reply('Hello! I have started!')
@@ -70,7 +70,12 @@ const initBot = () => {
   })
 
   bot.startPolling()
-  console.log('-------- Bot polling')
+  console.log('-------- Bot polling\n')
+
+  // start the cron job
+  console.log(`\n-------- Starting Cron Job`)
+  const runThirdPartyApi = new ThirdPartyCourses()
+  runThirdPartyApi.automate()
 }
 
 module.exports = initBot
