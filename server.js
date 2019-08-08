@@ -1,4 +1,5 @@
 const dotenv = require('dotenv')
+const ThirdPartyCourses = require('./api/controllers/thirdpartyAPIController')
 dotenv.config()
 
 require('./data/mongoose.connector')
@@ -68,6 +69,10 @@ app.use(express.static('client/build'))
 
 app.listen(port)
 initBot()
+
+// start the cron job
+const runThirdPartyApi = new ThirdPartyCourses()
+runThirdPartyApi.automate()
 
 console.log(`TG Channel Dashboard API server started on: ${port}`)
 

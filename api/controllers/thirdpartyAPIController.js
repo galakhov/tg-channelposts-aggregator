@@ -44,31 +44,33 @@ class ThirdPartyCourses {
   }
 
   addToQueue(urlsArray) {
-    // https://github.com/BalassaMarton/sequential-task-queue#readme
-    const queue = new SequentialTaskQueue()
-    urlsArray.forEach(url => {
-      if (
-        url.indexOf('https://www.udemy.com/') !== -1 ||
-        url.indexOf('https://udemy.com/') !== -1
-      ) {
-        queue.push(() => {
-          return new Promise(resolve => {
-            setTimeout(() => {
-              ctlHelper.parseAndSaveCourse(url)
-              resolve()
-            }, 5000)
+    if (urlsArray && urlsArray.length > 0) {
+      // https://github.com/BalassaMarton/sequential-task-queue#readme
+      const queue = new SequentialTaskQueue()
+      urlsArray.forEach(url => {
+        if (
+          url.indexOf('https://www.udemy.com/') !== -1 ||
+          url.indexOf('https://udemy.com/') !== -1
+        ) {
+          queue.push(() => {
+            return new Promise(resolve => {
+              setTimeout(() => {
+                ctlHelper.parseAndSaveCourse(url)
+                resolve()
+              }, 5000)
+            })
+              .then(r => {
+                console.log(
+                  'Course added to queue to be parsed and saved: ' + url
+                )
+              })
+              .catch(e => {
+                console.log('Error: ', e)
+              })
           })
-            .then(r => {
-              console.log(
-                'Course added to queue to be parsed and saved: ' + url
-              )
-            })
-            .catch(e => {
-              console.log('Error: ', e)
-            })
-        })
-      }
-    })
+        }
+      })
+    }
   }
 
   execute() {
@@ -82,8 +84,6 @@ class ThirdPartyCourses {
       request('https://comidoc.net/api', graphqlQuery, variables)
         .then(data => {
           if (data && data.free) {
-            // console.log(JSON.stringify(data.free, undefined, 4))
-
             JSON.parse(JSON.stringify(data.free)).forEach(course => {
               const urlWithoutParameters = course.cleanUrl
               console.log(
@@ -94,16 +94,11 @@ class ThirdPartyCourses {
                 .isAlreadyInDB(urlWithoutParameters)
                 .then(result => {
                   if (
-                    // If the course link isn't in DB, continue...
+                    // If the course link isn't already in DB, continue...
                     typeof result !== 'undefined' &&
                     !result
                   ) {
                     const courseUrl = `https://udemy.com${urlWithoutParameters}`
-                    // console.log(
-                    //   'This free course can be added to DB: ',
-                    //   courseUrl
-                    // )
-                    // console.log('freeCourse', courseUrl)
                     freeCourses.push(courseUrl)
                   }
                 })
@@ -113,14 +108,12 @@ class ThirdPartyCourses {
             })
             setTimeout(() => {
               console.log('ThirdPartyCourses -> freeCourses', freeCourses)
+              // prepare & save the post
               this.addToQueue(freeCourses)
             }, 10000)
           }
+
           if (data && data.coupons) {
-            // console.log(
-            //   'data.coupons',
-            //   JSON.stringify(data.coupons, undefined, 4)
-            // )
             JSON.parse(JSON.stringify(data.coupons)).forEach(obj => {
               const urlWithoutParameters = obj.course.cleanUrl
               ctlHelper
@@ -134,13 +127,7 @@ class ThirdPartyCourses {
                     const freeCoupon = `https://udemy.com${urlWithoutParameters}?couponCode=${
                       obj.course.coupon[0].code
                     }`
-                    // console.log(
-                    //   'This course coupon can be added to DB: ' + freeCoupon
-                    // ).then(res => {
-                    // console.log('freeCoupon', freeCoupon)
                     freeCoupons.push(freeCoupon)
-
-                    // prepare & save the post
                   }
                 })
                 .catch(err => {
@@ -149,25 +136,14 @@ class ThirdPartyCourses {
             })
             setTimeout(() => {
               console.log('ThirdPartyCourses -> freeCoupons', freeCoupons)
+              // prepare & save the post
               this.addToQueue(freeCoupons)
             }, 10000)
           }
         })
-        .then(res => {
-          // prepare & save the post
-          // ctlHelper.parseAndSaveCourse(url)
-        })
         .catch(err => {
           console.log('GraphQL response errors: ', err)
         })
-
-      /*
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json'
-            }
-        */
     }
 
     const coupons = getCouponsNumber()
@@ -176,9 +152,10 @@ class ThirdPartyCourses {
 
   automate() {
     // https://www.npmjs.com/package/cron
+    // https://github.com/kelektiv/node-cron
     const { CronJob } = require('cron')
     new CronJob(
-      '* 35 * * * *',
+      '* 45 * * * *', // every 45 minutes
       () => {
         this.execute()
       },

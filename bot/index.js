@@ -32,7 +32,7 @@ const initBot = () => {
       try {
         if (ctx.update) {
           const { query = '' } = ctx.update ? ctx.update.inline_query : {}
-          console.log('TCL: initBot -> update query: ', query)
+          console.log('initBot -> update query: ', query)
           if (query === 'checkCoupons') {
             const runThirdPartyApi = new ThirdPartyCourses()
             runThirdPartyApi.execute()
