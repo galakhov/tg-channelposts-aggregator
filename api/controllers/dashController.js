@@ -296,7 +296,7 @@ const addPost = async data => {
             url.indexOf('https://udemy.com/') !== -1
           ) {
             // do the parsing of udemy.com/course
-
+            setTimeout(() => { // delay the next call to the third-party api
             let [parsedCourseContents] = await Promise.all([
               ctlHelper
                 .prepareUdemyCourseJSON(url)
@@ -334,7 +334,8 @@ const addPost = async data => {
                       e
                         ? () => {
                             console.error(
-                              ctlHelper.getFullDate() + ' ADD_POST:'
+                              ctlHelper.getFullDate() +
+                                ' ADD_POST: couldn’t save into DB'
                             )
                             throw e
                           }
@@ -359,9 +360,10 @@ const addPost = async data => {
                       ' ADD_POST prepareUdemyCourseJSON: ',
                     err
                   )
-                )
-              // timeoutBeforeNextRequest(3750)
+                ),
+              timeoutBeforeNextRequest(3750)
             ])
+          }, 3500)
             // udemyContents = parsedCourseContents
           }
         } else {
