@@ -367,7 +367,7 @@ const addPost = async data => {
                   ),
                 timeoutBeforeNextRequest(3750)
               ])
-            }, 3500)
+            }, 3750)
             // udemyContents = parsedCourseContents
           }
         } else {
