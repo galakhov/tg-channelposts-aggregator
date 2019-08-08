@@ -7,7 +7,7 @@ class ThirdPartyCourses {
       // Get Daily courses (coupons & free)
       query: `query getDailyCourses($myDate: DateTime) {
             free: courses(
-                where: { isFree: true, updatedAt_gte: $myDate }
+                where: { isFree: true, createdAt_gte: $myDate }
                 orderBy: createdAt_DESC
             ) {
                 udemyId
