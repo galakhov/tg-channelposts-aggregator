@@ -42,7 +42,6 @@ class ThirdPartyCourses {
   }
 
   execute() {
-    const ctlHelper = require('./helper')
     const getCouponsNumber = async (graphqlQuery = this.config.query) => {
       const variables = {
         myDate: new Date().toISOString().split('T')[0]
@@ -51,25 +50,31 @@ class ThirdPartyCourses {
       // see docs at: https://github.com/prisma/graphql-request
       request('https://comidoc.net/api', graphqlQuery, variables)
         .then(data => {
+          const ctlHelper = require('./helper')
           if (data && data.free) {
             console.log(JSON.stringify(data.free, undefined, 4))
 
-            Object.entries(data.free).forEach(course => {
+            Object.entries(JSON.stringify(data.free)).forEach(course => {
               const urlWithoutParameters = course.cleanUrl
-              ctlHelper.isAlreadyInDB(urlWithoutParameters).then(result => {
-                if (
-                  // If the course link isn't in DB, continue...
-                  typeof result !== 'undefined' &&
-                  !result
-                ) {
-                  console.log(
-                    'This free course can be added to DB: ',
-                    `https://udemy.com${urlWithoutParameters}`
-                  )
+              ctlHelper
+                .isAlreadyInDB(urlWithoutParameters)
+                .then(result => {
+                  if (
+                    // If the course link isn't in DB, continue...
+                    typeof result !== 'undefined' &&
+                    !result
+                  ) {
+                    console.log(
+                      'This free course can be added to DB: ',
+                      `https://udemy.com${urlWithoutParameters}`
+                    )
 
-                  // prepare & save the post
-                }
-              })
+                    // prepare & save the post
+                  }
+                })
+                .catch(err => {
+                  console.log('data.free response errors: ', err)
+                })
             })
           }
           if (data && data.coupons) {
@@ -78,24 +83,29 @@ class ThirdPartyCourses {
               JSON.stringify(data.coupons, undefined, 4)
             )
 
-            Object.entries(JSON.parse(data.coupons)).forEach(obj => {
+            Object.entries(JSON.stringify(data.coupons)).forEach(obj => {
               const urlWithoutParameters = obj.course.cleanUrl
-              ctlHelper.isAlreadyInDB(urlWithoutParameters).then(result => {
-                if (
-                  // If the course link isn't in DB, continue...
-                  typeof result !== 'undefined' &&
-                  !result
-                ) {
-                  console.log(
-                    'This course coupon can be added to DB: ',
-                    `https://udemy.com${urlWithoutParameters}?couponCode=${
-                      obj.course.coupon.code
-                    }`
-                  )
+              ctlHelper
+                .isAlreadyInDB(urlWithoutParameters)
+                .then(result => {
+                  if (
+                    // If the course link isn't in DB, continue...
+                    typeof result !== 'undefined' &&
+                    !result
+                  ) {
+                    console.log(
+                      'This course coupon can be added to DB: ',
+                      `https://udemy.com${urlWithoutParameters}?couponCode=${
+                        obj.course.coupon.code
+                      }`
+                    )
 
-                  // prepare & save the post
-                }
-              })
+                    // prepare & save the post
+                  }
+                })
+                .catch(err => {
+                  console.log('data.coupons response errors: ', err)
+                })
             })
           }
         })
