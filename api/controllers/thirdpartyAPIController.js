@@ -62,7 +62,7 @@ class ThirdPartyCourses {
             })
               .then(r => {
                 console.log(
-                  'Course added to queue to be parsed and saved: ' + url
+                  'Course added to the queue to be parsed and saved: ' + url
                 )
               })
               .catch(e => {
@@ -71,9 +71,9 @@ class ThirdPartyCourses {
           })
           queue.wait().then(() => {
             // the last step in every queue is to cancel the running cron job
-            if (this.jobs.running) {
-              this.jobs.stop()
-            }
+            // if (this.jobs.running) {
+            //   this.jobs.stop()
+            // }
           })
         }
       })
@@ -151,7 +151,7 @@ class ThirdPartyCourses {
               console.log('ThirdPartyCourses -> freeCoupons', freeCoupons)
               // prepare & save the post
               this.addToQueue(freeCoupons)
-            }, 10000)
+            }, 15000)
           }
         })
         .catch(err => {
