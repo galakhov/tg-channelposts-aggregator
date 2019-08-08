@@ -76,6 +76,20 @@ class ThirdPartyCourses {
     const coupons = getCouponsNumber()
     console.log('COUPONS CHECKER EXECUTED: ', coupons)
   }
+
+  automate() {
+    // https://www.npmjs.com/package/cron
+    const { CronJob } = require('cron')
+    new CronJob(
+      '* 30 * * * *',
+      () => {
+        this.execute()
+      },
+      null,
+      true, // autostart?
+      'Europe/Amsterdam'
+    )
+  }
 }
 
 module.exports = ThirdPartyCourses
