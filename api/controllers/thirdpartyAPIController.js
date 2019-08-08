@@ -100,7 +100,7 @@ class ThirdPartyCourses {
                     console.log(
                       'This course coupon can be added to DB: ',
                       `https://udemy.com${urlWithoutParameters}?couponCode=${
-                        obj.course.coupon.code
+                        obj.course.coupon[0].code
                       }`
                     )
 
