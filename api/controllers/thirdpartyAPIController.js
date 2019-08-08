@@ -1,70 +1,77 @@
-const fetch = require('node-fetch')
+// const fetch = require('node-fetch')
+const { request } = require('graphql-request')
 
 class ThirdPartyCourses {
   constructor(config) {
     this.config = config || {
       // Get Daily courses (coupons & free)
-      query: `query DAILY_COURSES_QUERY($myDate: DateTime) {
-        free: courses(
-          where: { isFree: true, updatedAt_gte: $myDate }
-          orderBy: createdAt_DESC
-        ) {
-          udemyId
-          cleanUrl
-        }
-        coupons: coupons(
-          where: {
-            createdAt_gte: $myDate,
-            isValid: true,
-            discountValue_starts_with: "100%"
-          }
-          orderBy: createdAt_DESC
-        ) {
-          course {
-            udemyId
-            cleanUrl
-            coupon(where: { isValid: true, createdAt_gte: $myDate }) {
-              code
-              discountValue
-              createdAt
-              isValid
+      query: `getDailyCourses($myDate: DateTime) {
+            free: courses(
+                where: { isFree: true, updatedAt_gte: $myDate }
+                orderBy: createdAt_DESC
+            ) {
+                udemyId
+                cleanUrl
+                createdAt
             }
-          }
-        }
-      }`
+            coupons: coupons(
+                where: {
+                    isValid: true
+                    createdAt_gte: $myDate
+                    discountValue_starts_with: "100%"
+                }
+                orderBy: createdAt_DESC
+            ) {
+                course {
+                        udemyId
+                        cleanUrl
+                        createdAt
+                        updatedAt
+                        coupon(
+                            where: { isValid: true, createdAt_gte: $myDate }
+                            orderBy: createdAt_DESC
+                        ) {
+                            code
+                            discountValue
+                            createdAt
+                        }
+                    }
+            }
+        }`
     }
   }
 
   execute() {
     const getCouponsNumber = async (graphqlQuery = this.config.query) => {
-      const response = await fetch('https://comidoc.net/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify({
-          graphqlQuery,
-          variables: {
-            myDate: new Date().toISOString().split('T')[0]
+      const variables = {
+        myDate: new Date('2019-08-07').toISOString().split('T')[0]
+      }
+
+      request('https://comidoc.net/api', graphqlQuery, variables)
+        .then(data => {
+          console.log(data)
+          // data.json()
+          if (data && data.coupons) {
+            console.log('resJSON.data.coupons', resJSON.data.coupons)
+            return resJSON.data.coupons
           }
         })
-      })
-      const resJSON = await response.json()
+        .catch(err => {
+          console.log(err.response.errors) // GraphQL response errors
+          console.log(err.response.data) // Response data if available
+        })
 
-      if (resJSON.data && resJSON.data.coupons) {
-        console.log('resJSON.data.coupons', resJSON.data.coupons)
-        return resJSON.data.coupons
-      } else {
-        console.log(
-          'TCL: ThirdPartyCourses -> getCouponsNumber -> resJSON',
-          resJSON
-        )
-      }
+      /*
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+            }
+        */
     }
 
     const coupons = getCouponsNumber()
-    console.log('COUPONS CHECKED: ', coupons)
+    console.log('COUPONS CHECKER EXECUTED: ', coupons)
   }
 }
 
