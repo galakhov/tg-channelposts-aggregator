@@ -120,7 +120,7 @@ const startUdemyOffParser = async url => {
     url = udemyOff[0].indexOf('udemy.com') !== -1 ? udemyOff[0] : url
     console.log(
       ctlHelper.getFullDate() +
-        ' save the link from the third-party site. Finishing...'
+        ' Saving the link from the third-party site. Finishing...'
     )
     console.log(url)
     return url
@@ -359,8 +359,8 @@ const addPost = async data => {
                       ' ADD_POST prepareUdemyCourseJSON: ',
                     err
                   )
-                ),
-              timeoutBeforeNextRequest(3750)
+                )
+              // timeoutBeforeNextRequest(3750)
             ])
             // udemyContents = parsedCourseContents
           }
