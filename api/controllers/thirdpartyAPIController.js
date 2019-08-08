@@ -168,7 +168,7 @@ class ThirdPartyCourses {
     // https://github.com/kelektiv/node-cron
     const { CronJob } = require('cron')
     this.jobs = new CronJob(
-      '*/25 * * * *', // every 45 minutes
+      '*/30 * * * *', // every 30 minutes
       () => {
         this.execute()
         // this.jobs.stop()
