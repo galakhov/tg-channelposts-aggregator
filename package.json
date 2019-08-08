@@ -27,6 +27,7 @@
     "normalize-url": "^3.3.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
+    "sequential-task-queue": "^1.2.1",
     "sync-request": "^6.1.0",
     "telegraf": "^3.16.4"
   },

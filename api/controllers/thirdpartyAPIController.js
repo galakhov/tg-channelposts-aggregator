@@ -1,5 +1,7 @@
 // const fetch = require('node-fetch')
 const { request } = require('graphql-request')
+const ctlHelper = require('./helper')
+const { SequentialTaskQueue } = require('sequential-task-queue')
 
 class ThirdPartyCourses {
   constructor(config) {
@@ -41,6 +43,34 @@ class ThirdPartyCourses {
     }
   }
 
+  addToQueue(urlsArray) {
+    // https://github.com/BalassaMarton/sequential-task-queue#readme
+    const queue = new SequentialTaskQueue()
+    urlsArray.forEach(url => {
+      if (
+        url.indexOf('https://www.udemy.com/') !== -1 ||
+        url.indexOf('https://udemy.com/') !== -1
+      ) {
+        queue.push(() => {
+          return new Promise(resolve => {
+            setTimeout(() => {
+              ctlHelper.parseAndSaveCourse(url)
+              resolve()
+            }, 5000)
+          })
+            .then(r => {
+              console.log(
+                'Course added to queue to be parsed and saved: ' + url
+              )
+            })
+            .catch(e => {
+              console.log('Error: ', e)
+            })
+        })
+      }
+    })
+  }
+
   execute() {
     const getCouponsNumber = async (graphqlQuery = this.config.query) => {
       const variables = {
@@ -51,7 +81,6 @@ class ThirdPartyCourses {
       // see docs at: https://github.com/prisma/graphql-request
       request('https://comidoc.net/api', graphqlQuery, variables)
         .then(data => {
-          const ctlHelper = require('./helper')
           if (data && data.free) {
             // console.log(JSON.stringify(data.free, undefined, 4))
 
@@ -84,22 +113,7 @@ class ThirdPartyCourses {
             })
             setTimeout(() => {
               console.log('ThirdPartyCourses -> freeCourses', freeCourses)
-              freeCourses.forEach(url => {
-                if (
-                  url.indexOf('https://www.udemy.com/') !== -1 ||
-                  url.indexOf('https://udemy.com/') !== -1
-                ) {
-                  setTimeout(() => {
-                    return new Promise((resolve, reject) => {
-                      ctlHelper.parseAndSaveCourse(url)
-                      // err => {
-                      //   if (err) reject(err)
-                      //   else resolve(ctlHelper.parseAndSaveCourse(url))
-                      // }
-                    })
-                  }, 4000)
-                }
-              })
+              this.addToQueue(freeCourses)
             }, 10000)
           }
           if (data && data.coupons) {
@@ -135,6 +149,7 @@ class ThirdPartyCourses {
             })
             setTimeout(() => {
               console.log('ThirdPartyCourses -> freeCoupons', freeCoupons)
+              this.addToQueue(freeCoupons)
             }, 10000)
           }
         })
