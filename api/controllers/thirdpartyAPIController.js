@@ -47,20 +47,21 @@ class ThirdPartyCourses {
         myDate: new Date().toISOString().split('T')[0]
       }
 
+      // see docs at: https://github.com/prisma/graphql-request
       request('https://comidoc.net/api', graphqlQuery, variables)
-        .then(response => response.json())
         .then(data => {
           if (data && data.free) {
-            console.log(data.free)
+            console.log(JSON.stringify(data.free, undefined, 4))
           }
-          // data.json()
           if (data && data.coupons) {
-            console.log('data.coupons', data.coupons)
-            // return data.coupons
+            console.log(
+              'data.coupons',
+              JSON.stringify(data.coupons, undefined, 4)
+            )
           }
         })
         .catch(err => {
-          console.log('GraphQL response errors: ', err) // GraphQL response errors
+          console.log('GraphQL response errors: ', err)
         })
 
       /*
