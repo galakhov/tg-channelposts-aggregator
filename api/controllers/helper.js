@@ -7,6 +7,29 @@ const mongoose = require('mongoose'),
 // const nodeMercuryParser = require('node-mercury-parser')
 // nodeMercuryParser.init(process.env.MERCURY_PARSER_KEY)
 
+const parseAndSaveCourse = url => {
+  setTimeout(() => {
+    // delay the next call to the third-party api
+    prepareUdemyCourseJSON(url)
+      .then(contents => {
+        if (contents) {
+          populateUdemyCourseDate(contents).then(result => {
+            console.log(getFullDate() + ' contentsSaved ', result)
+          })
+        } else {
+          console.error(
+            getFullDate() + ' ADD_POST: contents were not parsed yet.'
+          )
+          // exit on Error: "Udemy page response with status 403" or other status than 200
+          throw 'Error connecting to the course platform.'
+        }
+      })
+      .catch(err =>
+        console.error(getFullDate() + ' ADD_POST prepareUdemyCourseJSON: ', err)
+      )
+  }, 3750)
+}
+
 const isAlreadyInDB = cleanedUrl => {
   // exit on duplicates
   if (cleanedUrl !== 0) {
@@ -194,3 +217,4 @@ exports.parseUrl = parseUrl
 exports.isAd = isAd
 exports.replaceAll = replaceAll
 exports.isAlreadyInDB = isAlreadyInDB
+exports.parseAndSaveCourse = parseAndSaveCourse

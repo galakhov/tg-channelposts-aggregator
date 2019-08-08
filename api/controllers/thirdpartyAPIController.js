@@ -52,8 +52,8 @@ class ThirdPartyCourses {
         .then(data => {
           const ctlHelper = require('./helper')
           if (data && data.free) {
-            console.log(JSON.stringify(data.free, undefined, 4))
-
+            // console.log(JSON.stringify(data.free, undefined, 4))
+            const freeCourses = []
             JSON.parse(JSON.stringify(data.free)).forEach(course => {
               const urlWithoutParameters = course.cleanUrl
               console.log(
@@ -68,25 +68,29 @@ class ThirdPartyCourses {
                     typeof result !== 'undefined' &&
                     !result
                   ) {
-                    console.log(
-                      'This free course can be added to DB: ',
-                      `https://udemy.com${urlWithoutParameters}`
-                    )
-
-                    // prepare & save the post
+                    const courseUrl = `https://udemy.com${urlWithoutParameters}`
+                    // console.log(
+                    //   'This free course can be added to DB: ',
+                    //   courseUrl
+                    // )
+                    freeCourses.push(courseUrl)
                   }
                 })
                 .catch(err => {
                   console.log('data.free response errors: ', err)
                 })
             })
+            console.log('ThirdPartyCourses -> freeCourses', freeCourses)
+
+            // prepare & save the post
+            // ctlHelper.parseAndSaveCourse(url)
           }
           if (data && data.coupons) {
-            console.log(
-              'data.coupons',
-              JSON.stringify(data.coupons, undefined, 4)
-            )
-
+            // console.log(
+            //   'data.coupons',
+            //   JSON.stringify(data.coupons, undefined, 4)
+            // )
+            const freeCoupons = []
             JSON.parse(JSON.stringify(data.coupons)).forEach(obj => {
               const urlWithoutParameters = obj.course.cleanUrl
               ctlHelper
@@ -97,12 +101,13 @@ class ThirdPartyCourses {
                     typeof result !== 'undefined' &&
                     !result
                   ) {
-                    console.log(
-                      'This course coupon can be added to DB: ',
-                      `https://udemy.com${urlWithoutParameters}?couponCode=${
-                        obj.course.coupon[0].code
-                      }`
-                    )
+                    const freeCoupon = `https://udemy.com${urlWithoutParameters}?couponCode=${
+                      obj.course.coupon[0].code
+                    }`
+                    // console.log(
+                    //   'This course coupon can be added to DB: ' + freeCoupon
+                    // )
+                    freeCoupons.push(freeCoupon)
 
                     // prepare & save the post
                   }
@@ -111,6 +116,11 @@ class ThirdPartyCourses {
                   console.log('data.coupons response errors: ', err)
                 })
             })
+            freeCoupons
+            console.log('ThirdPartyCourses -> freeCoupons', freeCoupons)
+
+            // prepare & save the post
+            // ctlHelper.parseAndSaveCourse(url)
           }
         })
         .catch(err => {

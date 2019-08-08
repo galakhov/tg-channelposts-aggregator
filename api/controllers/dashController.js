@@ -261,36 +261,8 @@ const addPost = async data => {
             url.indexOf('https://www.udemy.com/') !== -1 ||
             url.indexOf('https://udemy.com/') !== -1
           ) {
-            // do the parsing of udemy.com/course
-            setTimeout(() => {
-              // delay the next call to the third-party api
-              ctlHelper
-                .prepareUdemyCourseJSON(url)
-                .then(contents => {
-                  if (contents) {
-                    ctlHelper.populateUdemyCourseDate(contents).then(result => {
-                      console.log(
-                        ctlHelper.getFullDate() + ' contentsSaved ',
-                        result
-                      )
-                    })
-                  } else {
-                    console.error(
-                      ctlHelper.getFullDate() +
-                        ' ADD_POST: contents were not parsed yet.'
-                    )
-                    // exit on Error: "Udemy page response with status 403" or other status than 200
-                    throw 'Error connecting to the course platform.'
-                  }
-                })
-                .catch(err =>
-                  console.error(
-                    ctlHelper.getFullDate() +
-                      ' ADD_POST prepareUdemyCourseJSON: ',
-                    err
-                  )
-                )
-            }, 3750)
+            // do the parsing of a udemy course
+            ctlHelper.parseAndSaveCourse(url)
             // udemyContents = parsedCourseContents
           }
         } else {
