@@ -51,8 +51,8 @@ const Posts = ({ posts, openModal }) => (
                 post.preview
                   ? post.preview.courseContents
                     ? post.preview.courseContents.title
-                    : post.raw.text
-                  : post.raw.text
+                    : 'Udemy Course'
+                  : 'Udemy Course'
               )}
               headline={
                 post.preview

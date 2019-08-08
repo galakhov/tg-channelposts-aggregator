@@ -28,7 +28,7 @@ class ThirdPartyCourses {
                         createdAt
                         updatedAt
                         coupon(
-                            where: { isValid: true, createdAt_gte: $myDate }
+                            where: { isValid: true, updatedAt_gte: $myDate }
                             orderBy: createdAt_DESC
                         ) {
                             code
@@ -42,6 +42,7 @@ class ThirdPartyCourses {
   }
 
   execute() {
+    const ctlHelper = require('./helper')
     const getCouponsNumber = async (graphqlQuery = this.config.query) => {
       const variables = {
         myDate: new Date().toISOString().split('T')[0]
@@ -52,12 +53,50 @@ class ThirdPartyCourses {
         .then(data => {
           if (data && data.free) {
             console.log(JSON.stringify(data.free, undefined, 4))
+
+            JSON.parse(data.free).forEach(course => {
+              const urlWithoutParameters = course.cleanUrl
+              ctlHelper.isAlreadyInDB(urlWithoutParameters).then(result => {
+                if (
+                  // If the course link isn't in DB, continue...
+                  typeof result !== 'undefined' &&
+                  !result
+                ) {
+                  console.log(
+                    'This free course can be added to DB: ',
+                    `https://udemy.com${urlWithoutParameters}`
+                  )
+
+                  // prepare & save the post
+                }
+              })
+            })
           }
           if (data && data.coupons) {
             console.log(
               'data.coupons',
               JSON.stringify(data.coupons, undefined, 4)
             )
+
+            JSON.parse(data.coupons).forEach(obj => {
+              const urlWithoutParameters = obj.course.cleanUrl
+              ctlHelper.isAlreadyInDB(urlWithoutParameters).then(result => {
+                if (
+                  // If the course link isn't in DB, continue...
+                  typeof result !== 'undefined' &&
+                  !result
+                ) {
+                  console.log(
+                    'This course coupon can be added to DB: ',
+                    `https://udemy.com${urlWithoutParameters}?couponCode=${
+                      obj.course.coupon.code
+                    }`
+                  )
+
+                  // prepare & save the post
+                }
+              })
+            })
           }
         })
         .catch(err => {
@@ -81,7 +120,7 @@ class ThirdPartyCourses {
     // https://www.npmjs.com/package/cron
     const { CronJob } = require('cron')
     new CronJob(
-      '* 30 * * * *',
+      '* 35 * * * *',
       () => {
         this.execute()
       },

@@ -2,8 +2,43 @@ const getUrls = require('get-urls')
 const cleanMark = require('clean-mark')
 const UdemyCrawler = require('./crawler')
 const UrlCrawler = require('./urlParser')
+const mongoose = require('mongoose'),
+  Post = mongoose.model('Post')
 // const nodeMercuryParser = require('node-mercury-parser')
 // nodeMercuryParser.init(process.env.MERCURY_PARSER_KEY)
+
+const isAlreadyInDB = cleanedUrl => {
+  // exit on duplicates
+  if (cleanedUrl !== 0) {
+    let isInDB = true
+    return Post.findOne(
+      { 'preview.courseUrl': { $regex: cleanedUrl, $options: 'i' } },
+      async (err, response) => {
+        if (response !== null) {
+          console.error(
+            ctlHelper.getFullDate() +
+              ' This post was already added to DB before. Aborting.',
+            cleanedUrl
+          )
+          isInDB = true
+          console.log(ctlHelper.getFullDate() + ' isAlreadyInDB', isInDB)
+          return isInDB
+          // throw new Error('This post was already added to DB before. Aborting.')
+        } else {
+          if (err) {
+            console.error(ctlHelper.getFullDate() + ' DB query error', err)
+          }
+          isInDB = false
+          console.log(ctlHelper.getFullDate() + ' isAlreadyInDB', isInDB)
+          return isInDB
+        }
+      }
+    )
+    // return isInDB
+  }
+  console.error(ctlHelper.getFullDate() + ' URL is invalid')
+  return false
+}
 
 const crawler = new UdemyCrawler({
   headers: {
@@ -42,6 +77,53 @@ const prepareUdemyCourseJSON = async url => {
     console.log(content)
     console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished...')
     return content
+  })
+}
+
+const populateUdemyCourseDate = async contents => {
+  console.log(getFullDate() + ' populateUdemyCourseDate ', 'Starting...')
+  const NewPost = new Post()
+  NewPost.preview.courseContents = {}
+  NewPost.preview.courseId = contents.id
+  NewPost.preview.courseUrl = contents.url
+  NewPost.preview.courseContents.text = contents.description
+  NewPost.preview.courseContents.audiences = contents.audiences
+  NewPost.preview.courseContents.author = contents.authors
+  NewPost.preview.courseContents.date = contents.date
+  NewPost.preview.courseContents.discountInPercent = contents.discount
+  NewPost.preview.courseContents.discountExpirationDate =
+    contents.discountExpiration
+  NewPost.preview.courseContents.currentPrice = contents.price
+  NewPost.preview.courseContents.initialPrice = contents.fullPrice
+  NewPost.preview.courseContents.title = contents.title
+  NewPost.preview.courseContents.headline = contents.headline
+  NewPost.preview.courseContents.enrolled = contents.enrollmentNumber
+  NewPost.preview.courseContents.rating = contents.rating
+  NewPost.preview.courseContents.lectures = contents.curriculum
+  NewPost.preview.courseContents.keywords = contents.topics.join(', ')
+  NewPost.preview.courseContents.url = contents.image
+
+  // save post only if the given url is valid and the contents were properly parsed
+  NewPost.save((e, post) => {
+    e
+      ? () => {
+          console.error(
+            ctlHelper.getFullDate() +
+              ' ADD_POST: contents couldn’t be saved into DB'
+          )
+          throw e
+        }
+      : () => {
+          console.log(
+            ctlHelper.getFullDate() +
+              ` ADD_POST: course contents saved! 👍
+                              
+
+                              
+            `
+          )
+          return true
+        }
   })
 }
 
@@ -108,6 +190,8 @@ exports.extractClutter = extractClutter
 exports.extractUrl = extractUrl
 exports.preparePreviewMark = preparePreviewMark
 exports.prepareUdemyCourseJSON = prepareUdemyCourseJSON
+exports.populateUdemyCourseDate = populateUdemyCourseDate
 exports.parseUrl = parseUrl
 exports.isAd = isAd
 exports.replaceAll = replaceAll
+exports.isAlreadyInDB = isAlreadyInDB

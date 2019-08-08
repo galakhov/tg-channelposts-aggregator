@@ -57,39 +57,6 @@ const cleanUrl = url => {
   return cleanedUrl
 }
 
-const isAlreadyInDB = cleanedUrl => {
-  // exit on duplicates
-  if (cleanedUrl !== 0) {
-    let isInDB = true
-    return Post.findOne(
-      { 'preview.courseUrl': { $regex: cleanedUrl, $options: 'i' } },
-      async (err, response) => {
-        if (response !== null) {
-          console.error(
-            ctlHelper.getFullDate() +
-              ' This post was already added to DB before. Aborting.',
-            cleanedUrl
-          )
-          isInDB = true
-          console.log(ctlHelper.getFullDate() + ' isAlreadyInDB', isInDB)
-          return isInDB
-          // throw new Error('This post was already added to DB before. Aborting.')
-        } else {
-          if (err) {
-            console.error(ctlHelper.getFullDate() + ' DB query error', err)
-          }
-          isInDB = false
-          console.log(ctlHelper.getFullDate() + ' isAlreadyInDB', isInDB)
-          return isInDB
-        }
-      }
-    )
-    // return isInDB
-  }
-  console.error(ctlHelper.getFullDate() + ' URL is invalid')
-  return false
-}
-
 const isThirdPartyLink = url => {
   const nonOriginalUdemyLink =
     url.indexOf('udemyoff.com') !== -1 ||
@@ -230,10 +197,6 @@ const affiliateParametersCleaner = urlToCheck => {
 
 const addPost = async data => {
   try {
-    const NewPost = new Post()
-    NewPost.raw = data
-    NewPost.message_id = data.message_id
-
     let text = _.get(data, 'text', '') || _.get(data, 'caption', '')
     if (text && text.length < 1) {
       text = _.get(data, 'caption', '')
@@ -247,6 +210,7 @@ const addPost = async data => {
     const isThisAnAd = ctlHelper.isAd(text)
 
     if (!isThisAnAd && isSticker === '') {
+      // grab url from the channel's post
       let url = ctlHelper.extractUrl(text)
       console.log(ctlHelper.getFullDate() + ' ADD_POST parsed urls:', url)
 
@@ -263,7 +227,9 @@ const addPost = async data => {
       try {
         const urlWithoutParameters = cleanUrl(url)
         // exit the process if duplicates exist in DB
-        let isLinkAlreadyInDB = await isAlreadyInDB(urlWithoutParameters)
+        let isLinkAlreadyInDB = await ctlHelper.isAlreadyInDB(
+          urlWithoutParameters
+        )
         if (
           // If the course link isn't in DB, continue...
           typeof isLinkAlreadyInDB !== 'undefined' &&
@@ -272,25 +238,25 @@ const addPost = async data => {
         ) {
           url = affiliateParametersCleaner(url)
 
-          NewPost.preview.url = url
+          // NewPost.raw = data
+          // NewPost.message_id = data.message_id
+          // NewPost.preview.url = url
 
-          NewPost.raw.text = ctlHelper.extractClutter(text)
+          // NewPost.raw.text = ctlHelper.extractClutter(text)
 
-          const chat = _.get(data, 'chat', {})
-          NewPost.username = chat.username
-          if (chat.type !== 'channel') {
-            NewPost.username = chat.username
-          } else {
-            NewPost.username = chat.title
-          }
-          NewPost.chat_id = chat.id
+          // const chat = _.get(data, 'chat', {})
+          // NewPost.username = chat.username
+          // if (chat.type !== 'channel') {
+          //   NewPost.username = chat.username
+          // } else {
+          //   NewPost.username = chat.title
+          // }
+          // NewPost.chat_id = chat.id
 
-          const tags = ctlHelper.extractHashtags(text)
-          NewPost.tags = tags
+          // const tags = ctlHelper.extractHashtags(text)
+          // NewPost.tags = tags
 
           // crawl and parse contents
-          // let udemyContents = 'No udemy course found'
-
           if (
             url.indexOf('https://www.udemy.com/') !== -1 ||
             url.indexOf('https://udemy.com/') !== -1
@@ -302,54 +268,17 @@ const addPost = async data => {
                 .prepareUdemyCourseJSON(url)
                 .then(contents => {
                   if (contents) {
-                    NewPost.preview.courseContents = {}
-                    NewPost.preview.courseId = contents.id
-                    NewPost.preview.courseUrl = contents.url
-                    NewPost.preview.courseContents.text = contents.description
-                    NewPost.preview.courseContents.audiences =
-                      contents.audiences
-                    NewPost.preview.courseContents.author = contents.authors
-                    NewPost.preview.courseContents.date = contents.date
-                    NewPost.preview.courseContents.discountInPercent =
-                      contents.discount
-                    NewPost.preview.courseContents.discountExpirationDate =
-                      contents.discountExpiration
-                    NewPost.preview.courseContents.currentPrice = contents.price
-                    NewPost.preview.courseContents.initialPrice =
-                      contents.fullPrice
-                    NewPost.preview.courseContents.title = contents.title
-                    NewPost.preview.courseContents.headline = contents.headline
-                    NewPost.preview.courseContents.enrolled =
-                      contents.enrollmentNumber
-                    NewPost.preview.courseContents.rating = contents.rating
-                    NewPost.preview.courseContents.lectures =
-                      contents.curriculum
-                    NewPost.preview.courseContents.keywords = contents.topics.join(
-                      ', '
-                    )
-                    NewPost.preview.courseContents.url = contents.image
-
-                    // save post only if the given url is valid and the contents were properly parsed
-                    NewPost.save((e, post) => {
-                      e
-                        ? () => {
-                            console.error(
-                              ctlHelper.getFullDate() +
-                                ' ADD_POST: couldn’t save into DB'
-                            )
-                            throw e
-                          }
-                        : console.log(
-                            ctlHelper.getFullDate() +
-                              ` ADD_POST course contents saved! 👍
-                              
-
-                              
-                              `
-                          )
+                    ctlHelper.populateUdemyCourseDate(contents).then(result => {
+                      console.log(
+                        ctlHelper.getFullDate() + ' contentsSaved ',
+                        result
+                      )
                     })
                   } else {
-                    console.error(ctlHelper.getFullDate() + ' ADD_POST: ')
+                    console.error(
+                      ctlHelper.getFullDate() +
+                        ' ADD_POST: contents were not parsed yet.'
+                    )
                     // exit on Error: "Udemy page response with status 403" or other status than 200
                     throw 'Error connecting to the course platform.'
                   }

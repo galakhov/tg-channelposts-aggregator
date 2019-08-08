@@ -27,7 +27,7 @@ const Detail = ({ post }) => {
   const author = _get(post, 'preview.courseContents.author')
   // const date = _get(post, 'preview.courseContents.date')
   const lastUpdate = _get(post, 'preview.courseContents.date')
-  const courseUrl = _get(post, 'preview.courseUrl') || _get(post, 'preview.url')
+  const courseUrl = _get(post, 'preview.courseUrl') // || _get(post, 'preview.url')
   let keywords = _get(post, 'preview.courseContents.keywords')
   if (keywords) {
     keywords = keywords.split(', ')
