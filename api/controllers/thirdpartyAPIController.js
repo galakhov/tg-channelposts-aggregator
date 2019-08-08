@@ -28,7 +28,7 @@ class ThirdPartyCourses {
                         createdAt
                         updatedAt
                         coupon(
-                            where: { isValid: true, updatedAt_gte: $myDate }
+                            where: { isValid: true, createdAt_gte: $myDate }
                             orderBy: createdAt_DESC
                         ) {
                             code
