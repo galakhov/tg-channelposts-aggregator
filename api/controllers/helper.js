@@ -34,22 +34,15 @@ const parseUrl = async (url, paths = ['body a']) => {
 }
 
 const prepareUdemyCourseJSON = async url => {
-  setTimeout(() => {
-    console.log(
-      getFullDate() + ' prepareUdemyCourseJSON Crawling',
-      'Starting...'
-    )
-    return crawler.execute(url, (err, content) => {
-      if (err) {
-        return console.error(err.message)
-      }
-      console.log(content)
-      console.log(
-        getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished...'
-      )
-      return content
-    })
-  }, 2750)
+  console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling', 'Starting...')
+  return crawler.execute(url, (err, content) => {
+    if (err) {
+      return console.error(err.message)
+    }
+    console.log(content)
+    console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished...')
+    return content
+  })
 }
 
 const extractTags = text => {
