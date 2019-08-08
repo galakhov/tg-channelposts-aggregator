@@ -93,10 +93,6 @@ class ThirdPartyCourses {
           if (data && data.free) {
             JSON.parse(JSON.stringify(data.free)).forEach(course => {
               const urlWithoutParameters = course.cleanUrl
-              console.log(
-                'ThirdPartyCourses -> urlWithoutParameters',
-                urlWithoutParameters
-              )
               ctlHelper
                 .isAlreadyInDB(urlWithoutParameters)
                 .then(result => {
