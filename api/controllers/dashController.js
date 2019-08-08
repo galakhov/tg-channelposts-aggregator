@@ -40,8 +40,8 @@ const cleanUrl = url => {
   if (cleanedUrl && cleanedUrl.length > 5) {
     // strip 'http(s)://' and the trailing slash in the end if any
     cleanedUrl = cleanedUrl.replace(/(^\w+:|^)\/\//, '')
-    cleanedUrl = cleanedUrl.replace(/\/$/, '')
     cleanedUrl = cleanedUrl.replace(/www\./, '')
+    cleanedUrl = cleanedUrl.replace(/\/$/, '')
   } else {
     cleanedUrl = 0
   }

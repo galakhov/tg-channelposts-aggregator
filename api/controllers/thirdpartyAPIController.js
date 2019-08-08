@@ -46,14 +46,15 @@ class ThirdPartyCourses {
       const variables = {
         myDate: new Date().toISOString().split('T')[0]
       }
-
+      const freeCourses = [],
+        freeCoupons = []
       // see docs at: https://github.com/prisma/graphql-request
       request('https://comidoc.net/api', graphqlQuery, variables)
         .then(data => {
           const ctlHelper = require('./helper')
           if (data && data.free) {
             // console.log(JSON.stringify(data.free, undefined, 4))
-            const freeCourses = []
+
             JSON.parse(JSON.stringify(data.free)).forEach(course => {
               const urlWithoutParameters = course.cleanUrl
               console.log(
@@ -73,6 +74,7 @@ class ThirdPartyCourses {
                     //   'This free course can be added to DB: ',
                     //   courseUrl
                     // )
+                    // console.log('freeCourse', courseUrl)
                     freeCourses.push(courseUrl)
                   }
                 })
@@ -80,17 +82,31 @@ class ThirdPartyCourses {
                   console.log('data.free response errors: ', err)
                 })
             })
-            console.log('ThirdPartyCourses -> freeCourses', freeCourses)
-
-            // prepare & save the post
-            // ctlHelper.parseAndSaveCourse(url)
+            setTimeout(() => {
+              console.log('ThirdPartyCourses -> freeCourses', freeCourses)
+              freeCourses.forEach(url => {
+                if (
+                  url.indexOf('https://www.udemy.com/') !== -1 ||
+                  url.indexOf('https://udemy.com/') !== -1
+                ) {
+                  setTimeout(() => {
+                    return new Promise((resolve, reject) => {
+                      ctlHelper.parseAndSaveCourse(url)
+                      // err => {
+                      //   if (err) reject(err)
+                      //   else resolve(ctlHelper.parseAndSaveCourse(url))
+                      // }
+                    })
+                  }, 4000)
+                }
+              })
+            }, 10000)
           }
           if (data && data.coupons) {
             // console.log(
             //   'data.coupons',
             //   JSON.stringify(data.coupons, undefined, 4)
             // )
-            const freeCoupons = []
             JSON.parse(JSON.stringify(data.coupons)).forEach(obj => {
               const urlWithoutParameters = obj.course.cleanUrl
               ctlHelper
@@ -106,7 +122,8 @@ class ThirdPartyCourses {
                     }`
                     // console.log(
                     //   'This course coupon can be added to DB: ' + freeCoupon
-                    // )
+                    // ).then(res => {
+                    // console.log('freeCoupon', freeCoupon)
                     freeCoupons.push(freeCoupon)
 
                     // prepare & save the post
@@ -116,12 +133,14 @@ class ThirdPartyCourses {
                   console.log('data.coupons response errors: ', err)
                 })
             })
-            freeCoupons
-            console.log('ThirdPartyCourses -> freeCoupons', freeCoupons)
-
-            // prepare & save the post
-            // ctlHelper.parseAndSaveCourse(url)
+            setTimeout(() => {
+              console.log('ThirdPartyCourses -> freeCoupons', freeCoupons)
+            }, 10000)
           }
+        })
+        .then(res => {
+          // prepare & save the post
+          // ctlHelper.parseAndSaveCourse(url)
         })
         .catch(err => {
           console.log('GraphQL response errors: ', err)

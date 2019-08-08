@@ -13,9 +13,13 @@ const parseAndSaveCourse = url => {
     prepareUdemyCourseJSON(url)
       .then(contents => {
         if (contents) {
-          populateUdemyCourseDate(contents).then(result => {
-            console.log(getFullDate() + ' contentsSaved ', result)
-          })
+          let contentsSaved
+
+          contentsSaved = populateUdemyCourseDate(contents)
+
+          setTimeout(() => {
+            console.log(getFullDate() + ' contentsSaved ', contentsSaved)
+          }, 1000)
         } else {
           console.error(
             getFullDate() + ' ADD_POST: contents were not parsed yet.'
@@ -127,26 +131,13 @@ const populateUdemyCourseDate = async contents => {
   NewPost.preview.courseContents.url = contents.image
 
   // save post only if the given url is valid and the contents were properly parsed
-  NewPost.save((e, post) => {
-    e
-      ? () => {
-          console.error(
-            getFullDate() + ' ADD_POST: contents couldn’t be saved into DB'
-          )
-          throw e
-        }
-      : () => {
-          console.log(
-            getFullDate() +
-              ` ADD_POST: course contents saved! 👍
-                              
-
-                              
-            `
-          )
-          return true
-        }
+  const postStatus = NewPost.save().then(post => {
+    return post
+      ? getFullDate() +
+          ` ADD_POST: course contents saved! 👍 POST ID: ${post._id}`
+      : getFullDate() + ' ADD_POST: contents couldn’t be saved into DB: ' + post
   })
+  return postStatus
 }
 
 const extractTags = text => {

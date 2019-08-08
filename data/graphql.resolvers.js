@@ -22,7 +22,7 @@ const resolvers = {
 
       newFriend.id = newFriend._id
 
-      return new Promise((resolve, object) => {
+      return new Promise((resolve, reject) => {
         newFriend.save(err => {
           if (err) reject(err)
           else resolve(newFriend)
