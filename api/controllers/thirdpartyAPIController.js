@@ -48,17 +48,19 @@ class ThirdPartyCourses {
       }
 
       request('https://comidoc.net/api', graphqlQuery, variables)
+        .then(response => response.json())
         .then(data => {
-          console.log(data)
+          if (data && data.free) {
+            console.log(data.free)
+          }
           // data.json()
           if (data && data.coupons) {
-            console.log('resJSON.data.coupons', resJSON.data.coupons)
-            return resJSON.data.coupons
+            console.log('data.coupons', data.coupons)
+            // return data.coupons
           }
         })
         .catch(err => {
-          console.log(err.response.errors) // GraphQL response errors
-          console.log(err.response.data) // Response data if available
+          console.log('GraphQL response errors: ', err) // GraphQL response errors
         })
 
       /*
