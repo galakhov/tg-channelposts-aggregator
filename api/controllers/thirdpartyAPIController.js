@@ -69,6 +69,12 @@ class ThirdPartyCourses {
                 console.log('Error: ', e)
               })
           })
+          queue.wait().then(() => {
+            // the last step in every queue is to cancel the running cron job
+            if (this.jobs.running) {
+              this.jobs.stop()
+            }
+          })
         }
       })
     }
@@ -101,9 +107,9 @@ class ThirdPartyCourses {
                   ) {
                     const courseUrl = `https://udemy.com${urlWithoutParameters}`
                     freeCourses.push(courseUrl)
-                    if (this.jobs.running) {
-                      this.jobs.stop()
-                    }
+                    // if (this.jobs.running) {
+                    //   this.jobs.stop()
+                    // }
                   }
                 })
                 .catch(err => {
@@ -132,9 +138,9 @@ class ThirdPartyCourses {
                       obj.course.coupon[0].code
                     }`
                     freeCoupons.push(freeCoupon)
-                    if (this.jobs.running) {
-                      this.jobs.stop()
-                    }
+                    // if (this.jobs.running) {
+                    //   this.jobs.stop()
+                    // }
                   }
                 })
                 .catch(err => {
