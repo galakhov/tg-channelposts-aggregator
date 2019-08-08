@@ -16,27 +16,27 @@ const isAlreadyInDB = cleanedUrl => {
       async (err, response) => {
         if (response !== null) {
           console.error(
-            ctlHelper.getFullDate() +
+            getFullDate() +
               ' This post was already added to DB before. Aborting.',
             cleanedUrl
           )
           isInDB = true
-          console.log(ctlHelper.getFullDate() + ' isAlreadyInDB', isInDB)
+          console.log(getFullDate() + ' isAlreadyInDB', isInDB)
           return isInDB
           // throw new Error('This post was already added to DB before. Aborting.')
         } else {
           if (err) {
-            console.error(ctlHelper.getFullDate() + ' DB query error', err)
+            console.error(getFullDate() + ' DB query error', err)
           }
           isInDB = false
-          console.log(ctlHelper.getFullDate() + ' isAlreadyInDB', isInDB)
+          console.log(getFullDate() + ' isAlreadyInDB', isInDB)
           return isInDB
         }
       }
     )
     // return isInDB
   }
-  console.error(ctlHelper.getFullDate() + ' URL is invalid')
+  console.error(getFullDate() + ' URL is invalid')
   return false
 }
 
@@ -108,14 +108,13 @@ const populateUdemyCourseDate = async contents => {
     e
       ? () => {
           console.error(
-            ctlHelper.getFullDate() +
-              ' ADD_POST: contents couldn’t be saved into DB'
+            getFullDate() + ' ADD_POST: contents couldn’t be saved into DB'
           )
           throw e
         }
       : () => {
           console.log(
-            ctlHelper.getFullDate() +
+            getFullDate() +
               ` ADD_POST: course contents saved! 👍
                               
 
