@@ -44,7 +44,7 @@ class ThirdPartyCourses {
   execute() {
     const getCouponsNumber = async (graphqlQuery = this.config.query) => {
       const variables = {
-        myDate: new Date('2019-08-07').toISOString().split('T')[0]
+        myDate: new Date().toISOString().split('T')[0]
       }
 
       request('https://comidoc.net/api', graphqlQuery, variables)

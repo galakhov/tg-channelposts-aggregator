@@ -296,74 +296,78 @@ const addPost = async data => {
             url.indexOf('https://udemy.com/') !== -1
           ) {
             // do the parsing of udemy.com/course
-            setTimeout(() => { // delay the next call to the third-party api
-            let [parsedCourseContents] = await Promise.all([
-              ctlHelper
-                .prepareUdemyCourseJSON(url)
-                .then(contents => {
-                  if (contents) {
-                    NewPost.preview.courseContents = {}
-                    NewPost.preview.courseId = contents.id
-                    NewPost.preview.courseUrl = contents.url
-                    NewPost.preview.courseContents.text = contents.description
-                    NewPost.preview.courseContents.audiences =
-                      contents.audiences
-                    NewPost.preview.courseContents.author = contents.authors
-                    NewPost.preview.courseContents.date = contents.date
-                    NewPost.preview.courseContents.discountInPercent =
-                      contents.discount
-                    NewPost.preview.courseContents.discountExpirationDate =
-                      contents.discountExpiration
-                    NewPost.preview.courseContents.currentPrice = contents.price
-                    NewPost.preview.courseContents.initialPrice =
-                      contents.fullPrice
-                    NewPost.preview.courseContents.title = contents.title
-                    NewPost.preview.courseContents.headline = contents.headline
-                    NewPost.preview.courseContents.enrolled =
-                      contents.enrollmentNumber
-                    NewPost.preview.courseContents.rating = contents.rating
-                    NewPost.preview.courseContents.lectures =
-                      contents.curriculum
-                    NewPost.preview.courseContents.keywords = contents.topics.join(
-                      ', '
-                    )
-                    NewPost.preview.courseContents.url = contents.image
+            setTimeout(() => {
+              // delay the next call to the third-party api
+              let [parsedCourseContents] = Promise.all([
+                timeoutBeforeNextRequest(3750),
+                ctlHelper
+                  .prepareUdemyCourseJSON(url)
+                  .then(contents => {
+                    if (contents) {
+                      NewPost.preview.courseContents = {}
+                      NewPost.preview.courseId = contents.id
+                      NewPost.preview.courseUrl = contents.url
+                      NewPost.preview.courseContents.text = contents.description
+                      NewPost.preview.courseContents.audiences =
+                        contents.audiences
+                      NewPost.preview.courseContents.author = contents.authors
+                      NewPost.preview.courseContents.date = contents.date
+                      NewPost.preview.courseContents.discountInPercent =
+                        contents.discount
+                      NewPost.preview.courseContents.discountExpirationDate =
+                        contents.discountExpiration
+                      NewPost.preview.courseContents.currentPrice =
+                        contents.price
+                      NewPost.preview.courseContents.initialPrice =
+                        contents.fullPrice
+                      NewPost.preview.courseContents.title = contents.title
+                      NewPost.preview.courseContents.headline =
+                        contents.headline
+                      NewPost.preview.courseContents.enrolled =
+                        contents.enrollmentNumber
+                      NewPost.preview.courseContents.rating = contents.rating
+                      NewPost.preview.courseContents.lectures =
+                        contents.curriculum
+                      NewPost.preview.courseContents.keywords = contents.topics.join(
+                        ', '
+                      )
+                      NewPost.preview.courseContents.url = contents.image
 
-                    // save post only if the given url is valid and the contents were properly parsed
-                    NewPost.save((e, post) => {
-                      e
-                        ? () => {
-                            console.error(
+                      // save post only if the given url is valid and the contents were properly parsed
+                      NewPost.save((e, post) => {
+                        e
+                          ? () => {
+                              console.error(
+                                ctlHelper.getFullDate() +
+                                  ' ADD_POST: couldn’t save into DB'
+                              )
+                              throw e
+                            }
+                          : console.log(
                               ctlHelper.getFullDate() +
-                                ' ADD_POST: couldn’t save into DB'
-                            )
-                            throw e
-                          }
-                        : console.log(
-                            ctlHelper.getFullDate() +
-                              ` ADD_POST course contents saved! 👍
+                                ` ADD_POST course contents saved! 👍
                               
 
                               
                               `
-                          )
-                    })
-                  } else {
-                    console.error(ctlHelper.getFullDate() + ' ADD_POST: ')
-                    // exit on Error: "Udemy page response with status 403" or other status than 200
-                    throw 'Error connecting to the course platform.'
-                  }
-                })
-                .catch(err =>
-                  console.error(
-                    ctlHelper.getFullDate() +
-                      ' ADD_POST prepareUdemyCourseJSON: ',
-                    err
-                  )
-                ),
-              timeoutBeforeNextRequest(3750)
-            ])
-          }, 3500)
+                            )
+                      })
+                    } else {
+                      console.error(ctlHelper.getFullDate() + ' ADD_POST: ')
+                      // exit on Error: "Udemy page response with status 403" or other status than 200
+                      throw 'Error connecting to the course platform.'
+                    }
+                  })
+                  .catch(err =>
+                    console.error(
+                      ctlHelper.getFullDate() +
+                        ' ADD_POST prepareUdemyCourseJSON: ',
+                      err
+                    )
+                  ),
+                timeoutBeforeNextRequest(3750)
+              ])
+            }, 3500)
             // udemyContents = parsedCourseContents
           }
         } else {
