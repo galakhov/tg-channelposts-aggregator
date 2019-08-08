@@ -54,7 +54,7 @@ class ThirdPartyCourses {
           if (data && data.free) {
             console.log(JSON.stringify(data.free, undefined, 4))
 
-            JSON.parse(data.free).forEach(course => {
+            Object.entries(data.free).forEach(course => {
               const urlWithoutParameters = course.cleanUrl
               ctlHelper.isAlreadyInDB(urlWithoutParameters).then(result => {
                 if (
@@ -78,7 +78,7 @@ class ThirdPartyCourses {
               JSON.stringify(data.coupons, undefined, 4)
             )
 
-            JSON.parse(data.coupons).forEach(obj => {
+            Object.entries(JSON.parse(data.coupons)).forEach(obj => {
               const urlWithoutParameters = obj.course.cleanUrl
               ctlHelper.isAlreadyInDB(urlWithoutParameters).then(result => {
                 if (
