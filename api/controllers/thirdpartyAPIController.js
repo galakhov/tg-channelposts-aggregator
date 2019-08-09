@@ -62,7 +62,10 @@ class ThirdPartyCourses {
             })
               .then(r => {
                 console.log(
-                  'Course added to the queue to be parsed and saved: ' + url
+                  ctlHelper.getFullDate() +
+                    'Course added to the queue to be parsed and saved:\n' +
+                    url +
+                    '\n\n'
                 )
               })
               .catch(e => {
@@ -105,7 +108,7 @@ class ThirdPartyCourses {
                     !result
                   ) {
                     const courseUrl = `https://www.udemy.com${urlWithoutParameters}`
-                    freeCoursesIds.push([courseId, ' ' + courseUrl])
+                    freeCoursesIds.push(['\n' + courseId, ' ' + courseUrl])
                     freeCourses.push(courseUrl)
                     // if (this.jobs.running) {
                     //   this.jobs.stop()
@@ -119,7 +122,7 @@ class ThirdPartyCourses {
             setTimeout(() => {
               console.log(
                 'ThirdPartyCourses -> freeCourses\n',
-                freeCoursesIds + '\n\n'
+                freeCoursesIds + '\n\n\n'
               )
               // prepare & save the post
               this.addToQueue(freeCourses)
@@ -141,7 +144,7 @@ class ThirdPartyCourses {
                     const freeCoupon = `https://www.udemy.com${urlWithoutParameters}?couponCode=${
                       obj.course.coupon[0].code
                     }`
-                    freeCouponsIds.push([courseId, ' ' + freeCoupon])
+                    freeCouponsIds.push(['\n' + courseId, ' ' + freeCoupon])
                     freeCoupons.push(freeCoupon)
                     // if (this.jobs.running) {
                     //   this.jobs.stop()
@@ -155,7 +158,7 @@ class ThirdPartyCourses {
             setTimeout(() => {
               console.log(
                 'ThirdPartyCourses -> freeCoupons\n',
-                freeCouponsIds + '\n\n'
+                freeCouponsIds + '\n\n\n'
               )
               // prepare & save the post
               this.addToQueue(freeCoupons)
