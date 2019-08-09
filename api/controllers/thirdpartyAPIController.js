@@ -86,22 +86,26 @@ class ThirdPartyCourses {
         myDate: new Date().toISOString().split('T')[0]
       }
       const freeCourses = [],
-        freeCoupons = []
+        freeCoursesIds = [],
+        freeCoupons = [],
+        freeCouponsIds = []
       // see docs at: https://github.com/prisma/graphql-request
       request('https://comidoc.net/api', graphqlQuery, variables)
         .then(data => {
           if (data && data.free) {
             JSON.parse(JSON.stringify(data.free)).forEach(course => {
               const urlWithoutParameters = course.cleanUrl
+              const courseId = course.udemyId
               ctlHelper
                 .isAlreadyInDB(urlWithoutParameters)
                 .then(result => {
                   if (
-                    // If the course link isn't already in DB, continue...
+                    // If the course's link isn't already in DB, continue...
                     typeof result !== 'undefined' &&
                     !result
                   ) {
                     const courseUrl = `https://udemy.com${urlWithoutParameters}`
+                    freeCoursesIds.push([courseId, courseUrl])
                     freeCourses.push(courseUrl)
                     // if (this.jobs.running) {
                     //   this.jobs.stop()
@@ -113,7 +117,10 @@ class ThirdPartyCourses {
                 })
             })
             setTimeout(() => {
-              console.log('ThirdPartyCourses -> freeCourses', freeCourses)
+              console.log(
+                'ThirdPartyCourses -> freeCourses\n',
+                freeCoursesIds + '\n\n'
+              )
               // prepare & save the post
               this.addToQueue(freeCourses)
             }, 10000)
@@ -122,6 +129,7 @@ class ThirdPartyCourses {
           if (data && data.coupons) {
             JSON.parse(JSON.stringify(data.coupons)).forEach(obj => {
               const urlWithoutParameters = obj.course.cleanUrl
+              const courseId = obj.course.udemyId
               ctlHelper
                 .isAlreadyInDB(urlWithoutParameters)
                 .then(result => {
@@ -133,6 +141,7 @@ class ThirdPartyCourses {
                     const freeCoupon = `https://udemy.com${urlWithoutParameters}?couponCode=${
                       obj.course.coupon[0].code
                     }`
+                    freeCouponsIds.push([courseId, courseUrl])
                     freeCoupons.push(freeCoupon)
                     // if (this.jobs.running) {
                     //   this.jobs.stop()
@@ -144,7 +153,10 @@ class ThirdPartyCourses {
                 })
             })
             setTimeout(() => {
-              console.log('ThirdPartyCourses -> freeCoupons', freeCoupons)
+              console.log(
+                'ThirdPartyCourses -> freeCoupons\n',
+                freeCouponsIds + '\n\n'
+              )
               // prepare & save the post
               this.addToQueue(freeCoupons)
             }, 15000)
