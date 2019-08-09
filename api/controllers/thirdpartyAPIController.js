@@ -105,7 +105,7 @@ class ThirdPartyCourses {
                     !result
                   ) {
                     const courseUrl = `https://udemy.com${urlWithoutParameters}`
-                    freeCoursesIds.push([courseId, ` ${courseUrl}`])
+                    freeCoursesIds.push([courseId, ' ' + courseUrl])
                     freeCourses.push(courseUrl)
                     // if (this.jobs.running) {
                     //   this.jobs.stop()
@@ -141,7 +141,7 @@ class ThirdPartyCourses {
                     const freeCoupon = `https://udemy.com${urlWithoutParameters}?couponCode=${
                       obj.course.coupon[0].code
                     }`
-                    freeCouponsIds.push([courseId, ` ${freeCoupon}`])
+                    freeCouponsIds.push([courseId, ' ' + freeCoupon])
                     freeCoupons.push(freeCoupon)
                     // if (this.jobs.running) {
                     //   this.jobs.stop()
