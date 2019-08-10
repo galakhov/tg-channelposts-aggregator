@@ -77,11 +77,11 @@ const crawler = new UdemyCrawler({
 
 const getFullDate = (d = new Date()) => {
   const date = d
-  const dd = date.getUTCDate()+
+  const dd = date.getUTCDate()
   let mm = date.getMonth() + 1
   mm = mm < 10 ? '0' + mm : mm
   const yyyy = date.getFullYear()
-  const hours = date.getHours()+2
+  const hours = date.getHours() + 2
   const fullDate = `${dd}.${mm}.${yyyy} at ${hours}:${date.getMinutes()}:${date.getSeconds()}:${date.getMilliseconds()}`
   return fullDate
 }
