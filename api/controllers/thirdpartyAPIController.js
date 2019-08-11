@@ -56,14 +56,9 @@ class ThirdPartyCourses {
           queue.push(() => {
             return new Promise(resolve => {
               console.log(
-                '\n' +
-                  ctlHelper.getFullDate() +
-                  ' parseAndSaveCourse:\n' +
-                  'COURSE_ID: ' +
-                  url[0] +
-                  'URL: ' +
-                  url[1] +
-                  '\n\n'
+                `\n\n${ctlHelper.getFullDate()} parseAndSaveCourse:\nCOURSE ID: ${
+                  url[0]
+                }\nCOURSE URL: ${url[1]}\n\n`
               )
               setTimeout(() => {
                 ctlHelper.parseAndSaveCourse(url[1], url[0])
@@ -181,7 +176,7 @@ class ThirdPartyCourses {
     // https://github.com/kelektiv/node-cron
     const { CronJob } = require('cron')
     this.jobs = new CronJob(
-      '*/6 * * * *', // every 30th minute
+      '*/30 * * * *', // every 30th minute
       () => {
         this.execute()
         // this.jobs.stop()

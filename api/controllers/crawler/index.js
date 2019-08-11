@@ -95,8 +95,7 @@ class UdemyCrawler {
     const $ = cheerio.load(resLandingPage.getBody())
 
     // id, title, headline, image
-    Course.id = this.courseId || $('body#udemy').attr('data-clp-course-id')
-    console.log('======== UdemyCrawler -> execute -> Course.id', Course.id)
+    Course.id = this.courseId || $('body').attr('data-clp-course-id')
     Course.title = $('.clp-lead__title[data-purpose="lead-title"]')
       .text()
       .trim()
