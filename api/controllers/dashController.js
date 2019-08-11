@@ -263,7 +263,6 @@ const addPost = async data => {
           ) {
             // do the parsing of a udemy course
             ctlHelper.parseAndSaveCourse(url)
-            // udemyContents = parsedCourseContents
           }
         } else {
           throw new Error('The post is already in DB. Aborting.')

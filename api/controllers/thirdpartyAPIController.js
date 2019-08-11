@@ -121,7 +121,7 @@ class ThirdPartyCourses {
             })
             setTimeout(() => {
               console.log(
-                'ThirdPartyCourses -> freeCourses\n',
+                '\nThirdPartyCourses -> freeCourses\n',
                 freeCoursesIds + '\n\n\n'
               )
               // prepare & save the post
@@ -157,7 +157,7 @@ class ThirdPartyCourses {
             })
             setTimeout(() => {
               console.log(
-                'ThirdPartyCourses -> freeCoupons\n',
+                '\nThirdPartyCourses -> freeCoupons\n',
                 freeCouponsIds + '\n\n\n'
               )
               // prepare & save the post

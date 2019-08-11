@@ -42,7 +42,7 @@ const isAlreadyInDB = cleanedUrl => {
       { 'preview.courseUrl': { $regex: cleanedUrl, $options: 'i' } },
       async (err, response) => {
         if (response !== null) {
-          console.error(
+          console.warn(
             getFullDate() +
               ' This post was already added to DB before. Aborting.',
             cleanedUrl
@@ -102,7 +102,7 @@ const prepareUdemyCourseJSON = async url => {
     if (err) {
       return console.error(err.message)
     }
-    console.log(content)
+    // console.log(content)
     console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished...')
     return content
   })

@@ -18,7 +18,11 @@ lib-cov
 coverage
 
 # DB dumps
+conf/
 dump/
+logs/
+pipeline.js
+monstache.config.toml
 
 # nyc test coverage
 .nyc_output
