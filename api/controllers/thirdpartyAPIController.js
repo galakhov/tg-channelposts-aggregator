@@ -50,13 +50,13 @@ class ThirdPartyCourses {
       const queue = new SequentialTaskQueue()
       urlsArray.forEach(url => {
         if (
-          url.indexOf('https://www.udemy.com/') !== -1 ||
-          url.indexOf('https://udemy.com/') !== -1
+          url[1].indexOf('https://www.udemy.com/') !== -1 ||
+          url[1].indexOf('https://udemy.com/') !== -1
         ) {
           queue.push(() => {
             return new Promise(resolve => {
               setTimeout(() => {
-                ctlHelper.parseAndSaveCourse(url)
+                ctlHelper.parseAndSaveCourse(url[1], url[0])
                 resolve()
               }, 5000)
             })
@@ -108,11 +108,7 @@ class ThirdPartyCourses {
                     !result
                   ) {
                     const courseUrl = `https://www.udemy.com${urlWithoutParameters}`
-                    freeCoursesIds.push(['\n' + courseId, ' ' + courseUrl])
-                    freeCourses.push(courseUrl)
-                    // if (this.jobs.running) {
-                    //   this.jobs.stop()
-                    // }
+                    freeCoursesIds.push([courseId, courseUrl])
                   }
                 })
                 .catch(err => {
@@ -125,7 +121,7 @@ class ThirdPartyCourses {
                 freeCoursesIds + '\n\n\n'
               )
               // prepare & save the post
-              this.addToQueue(freeCourses)
+              this.addToQueue(freeCoursesIds)
             }, 10000)
           }
 
@@ -144,11 +140,7 @@ class ThirdPartyCourses {
                     const freeCoupon = `https://www.udemy.com${urlWithoutParameters}?couponCode=${
                       obj.course.coupon[0].code
                     }`
-                    freeCouponsIds.push(['\n' + courseId, ' ' + freeCoupon])
-                    freeCoupons.push(freeCoupon)
-                    // if (this.jobs.running) {
-                    //   this.jobs.stop()
-                    // }
+                    freeCouponsIds.push([courseId, freeCoupon])
                   }
                 })
                 .catch(err => {
@@ -161,7 +153,7 @@ class ThirdPartyCourses {
                 freeCouponsIds + '\n\n\n'
               )
               // prepare & save the post
-              this.addToQueue(freeCoupons)
+              this.addToQueue(freeCouponsIds)
             }, 15000)
           }
         })
@@ -179,7 +171,7 @@ class ThirdPartyCourses {
     // https://github.com/kelektiv/node-cron
     const { CronJob } = require('cron')
     this.jobs = new CronJob(
-      '*/30 * * * *', // every 30 minutes
+      '*/6 * * * *', // every 30th minute
       () => {
         this.execute()
         // this.jobs.stop()
@@ -206,8 +198,8 @@ class ThirdPartyCourses {
         newDate.getUTCMinutes(),
         newDate.getUTCSeconds()
       )
-      const now = ctlHelper.getFullDate(new Date(utcDate))
-      console.log(`-------- ${now}`)
+      const nextDate = ctlHelper.getFullDate(new Date(utcDate))
+      console.log(`-------- ${nextDate}`)
     })
     console.log('-------- etc.\n\n')
   }

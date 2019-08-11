@@ -7,10 +7,10 @@ const mongoose = require('mongoose'),
 // const nodeMercuryParser = require('node-mercury-parser')
 // nodeMercuryParser.init(process.env.MERCURY_PARSER_KEY)
 
-const parseAndSaveCourse = url => {
+const parseAndSaveCourse = (url, courseId = null) => {
   setTimeout(() => {
     // delay the next call to the third-party api
-    prepareUdemyCourseJSON(url)
+    prepareUdemyCourseJSON(url, courseId)
       .then(contents => {
         if (contents) {
           let contentsSaved
@@ -67,29 +67,26 @@ const isAlreadyInDB = cleanedUrl => {
   return false
 }
 
-const crawler = new UdemyCrawler({
-  headers: {
-    'User-Agent':
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-    'upgrade-insecure-requests': 1
-  }
-})
-
 const getFullDate = (d = new Date()) => {
   const date = d // typeof d === 'string' ? new Date(d) : d
   const dd = date.getUTCDate()
   let mm = date.getUTCMonth() + 1
   mm = mm < 10 ? `0${mm}` : mm
   const yyyy = date.getUTCFullYear()
-  const hh = date.getUTCHours() + 2
-  const hours = hh.toString().length < 2 ? `0${hh}` : hh
-  const min = date.getUTCMinutes()
-  const minutes = min.toString().length < 2 ? `0${min}` : min
-  const sec = date.getUTCSeconds()
-  const seconds = sec.toString().length < 2 ? `0${sec}` : sec
-  const msec = date.getUTCMilliseconds()
-  const mseconds = msec.toString().length < 2 ? `00${msec}` : msec
-  const fullDate = `${dd}.${mm}.${yyyy} at ${hours}:${minutes}:${seconds}:${mseconds}`
+  let hh = date.getUTCHours() + 2
+  hh = hh.toString().length < 2 ? `0${hh}` : hh
+  let min = date.getUTCMinutes()
+  min = min.toString().length < 2 ? `0${min}` : min
+  let sec = date.getUTCSeconds()
+  sec = sec.toString().length < 2 ? `0${sec}` : sec
+  let msec = date.getUTCMilliseconds()
+  msec =
+    msec.toString().length > 1 && msec.toString().length < 3
+      ? `0${msec}`
+      : msec.toString().length < 2
+      ? `00${msec}`
+      : msec
+  const fullDate = `${dd}.${mm}.${yyyy} at ${hh}:${min}:${sec}:${msec}`
   return fullDate
 }
 
@@ -103,7 +100,8 @@ const parseUrl = async (url, paths = ['body a']) => {
   return urlParser.execute(url, paths)
 }
 
-const prepareUdemyCourseJSON = async url => {
+const prepareUdemyCourseJSON = async (url, courseId) => {
+  const crawler = new UdemyCrawler('', courseId)
   console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling', 'Starting...')
   return crawler.execute(url, (err, content) => {
     if (err) {

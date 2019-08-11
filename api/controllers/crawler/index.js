@@ -10,7 +10,7 @@ const normalizeUrl = _interopDefault(require('normalize-url'))
 const url = require('url')
 
 class UdemyCrawler {
-  constructor(config) {
+  constructor(config, courseId = null) {
     this.config = config || {
       headers: {
         'User-Agent':
@@ -80,9 +80,13 @@ class UdemyCrawler {
     })
 
     if (resLandingPage.statusCode !== 200) {
+      console.log(
+        '======== UdemyCrawler -> execute -> resLandingPage',
+        resLandingPage
+      )
       return _cb(
         new Error(
-          'Udemy page response with status ' + resLandingPage.statusCode
+          'Udemy page responded with status ' + resLandingPage.statusCode
         )
       )
     }
@@ -90,7 +94,8 @@ class UdemyCrawler {
     const $ = cheerio.load(resLandingPage.getBody())
 
     // id, title, headline, image
-    Course.id = $('body#udemy').attr('data-clp-course-id')
+    Course.id = this.courseId || $('body#udemy').attr('data-clp-course-id')
+    console.log('======== UdemyCrawler -> execute -> Course.id', Course.id)
     Course.title = $('.clp-lead__title[data-purpose="lead-title"]')
       .text()
       .trim()
@@ -161,7 +166,7 @@ class UdemyCrawler {
 
     if (resApi.statusCode !== 200) {
       return _cb(
-        new Error('Udemy API page response with status ' + resApi.statusCode)
+        new Error('Udemy API page responded with status ' + resApi.statusCode)
       )
     }
 
