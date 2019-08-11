@@ -22,6 +22,7 @@ class UdemyCrawler {
         'Cache-Control': 'max-age=0'
       }
     }
+    this.courseId = courseId
   }
 
   _getApiUrl(id, components = []) {

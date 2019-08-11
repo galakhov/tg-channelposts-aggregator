@@ -56,11 +56,13 @@ class ThirdPartyCourses {
           queue.push(() => {
             return new Promise(resolve => {
               console.log(
-                ctlHelper.getFullDate() +
-                  ' parseAndSaveCourse:\nURL: ' +
-                  url[1] +
-                  '\nCOURSE_ID: ' +
+                '\n' +
+                  ctlHelper.getFullDate() +
+                  ' parseAndSaveCourse:\n' +
+                  'COURSE_ID: ' +
                   url[0] +
+                  'URL: ' +
+                  url[1] +
                   '\n\n'
               )
               setTimeout(() => {
@@ -126,7 +128,7 @@ class ThirdPartyCourses {
             setTimeout(() => {
               console.log(
                 '\nThirdPartyCourses -> freeCourses\n',
-                freeCoursesIds + '\n\n\n'
+                freeCoursesIds.join('\n') + '\n\n\n'
               )
               // prepare & save the post
               this.addToQueue(freeCoursesIds)
@@ -158,7 +160,7 @@ class ThirdPartyCourses {
             setTimeout(() => {
               console.log(
                 '\nThirdPartyCourses -> freeCoupons\n',
-                freeCouponsIds + '\n\n\n'
+                freeCouponsIds.join('\n') + '\n\n\n'
               )
               // prepare & save the post
               this.addToQueue(freeCouponsIds)
