@@ -194,10 +194,20 @@ class ThirdPartyCourses {
     )
     this.jobs.nextDates(10).forEach(d => {
       const date = JSON.stringify(d)
+        .replace(/-/g, '/')
         .replace(/T/, ' ')
-        .replace(/\.000Z/, '')
-      const now = ctlHelper.getFullDate(new Date(date))
-      console.log('--------', ctlHelper.getFullDate(now) + '\n')
+        .replace(/Z/, '+00:00')
+      const newDate = new Date(date)
+      const utcDate = Date.UTC(
+        newDate.getUTCFullYear(),
+        newDate.getUTCMonth(),
+        newDate.getUTCDate(),
+        newDate.getUTCHours(),
+        newDate.getUTCMinutes(),
+        newDate.getUTCSeconds()
+      )
+      const now = ctlHelper.getFullDate(new Date(utcDate))
+      console.log(`-------- ${now}`)
     })
     console.log('-------- etc.\n\n')
   }
