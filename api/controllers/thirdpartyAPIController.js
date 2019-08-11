@@ -55,6 +55,14 @@ class ThirdPartyCourses {
         ) {
           queue.push(() => {
             return new Promise(resolve => {
+              console.log(
+                ctlHelper.getFullDate() +
+                  ' parseAndSaveCourse:\nURL: ' +
+                  url[1] +
+                  '\nCOURSE_ID: ' +
+                  url[0] +
+                  '\n\n'
+              )
               setTimeout(() => {
                 ctlHelper.parseAndSaveCourse(url[1], url[0])
                 resolve()
@@ -63,7 +71,7 @@ class ThirdPartyCourses {
               .then(r => {
                 console.log(
                   ctlHelper.getFullDate() +
-                    'Course added to the queue to be parsed and saved:\n' +
+                    ' Following course added to the queue for parsing:\n' +
                     url +
                     '\n\n'
                 )
