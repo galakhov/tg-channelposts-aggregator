@@ -195,9 +195,9 @@ class ThirdPartyCourses {
     this.jobs.nextDates(10).forEach(d => {
       const date = JSON.stringify(d)
         .replace(/T/, ' ')
-        .replace(/\.000Z/, ' UTC+2')
-      // console.log('TCL: automate -> date', date)
-      console.log('--------', ctlHelper.getFullDate(new Date(date)) + '\n')
+        .replace(/\.000Z/, '')
+      const now = ctlHelper.getFullDate(new Date(date))
+      console.log('--------', ctlHelper.getFullDate(now) + '\n')
     })
     console.log('-------- etc.\n\n')
   }
