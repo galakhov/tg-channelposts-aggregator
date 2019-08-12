@@ -21,6 +21,10 @@ warn = "/logs/monstache/warn.log"
 error = "/logs/monstache/error.log"
 trace = "/logs/monstache/trace.log"
 
+# [[script]]
+# namespace = "telegramchanneldb.posts"
+# path = "./monstache.posts.js"
+
 #[[script]]
 #namespace = "not.applied"
 #script = """

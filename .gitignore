@@ -1,9 +1,9 @@
 # Logs
-logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+logs/monstache/
 
 # Runtime data
 pids
@@ -20,7 +20,6 @@ coverage
 # DB dumps
 conf/
 dump/
-logs/
 pipeline.js
 monstache.config.toml
 

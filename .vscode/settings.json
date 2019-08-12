@@ -3,5 +3,8 @@
     "**/build/static": true
   },
   "workbench.tree.indent": 30,
-  "editor.lineHeight": 25
+  "editor.lineHeight": 25,
+  "editor.fontLigatures": true,
+  "editor.fontWeight": "400",
+  "editor.fontFamily": "FiraCode-Retina"
 }

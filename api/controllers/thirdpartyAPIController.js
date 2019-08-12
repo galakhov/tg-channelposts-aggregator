@@ -55,11 +55,11 @@ class ThirdPartyCourses {
         ) {
           queue.push(() => {
             return new Promise(resolve => {
-              console.log(
-                `\n\n${ctlHelper.getFullDate()} parseAndSaveCourse:\nCOURSE ID: ${
-                  url[0]
-                }\nCOURSE URL: ${url[1]}\n\n`
-              )
+              // console.log(
+              //   `\n\n${ctlHelper.getFullDate()} parseAndSaveCourse:\nCOURSE ID: ${
+              //     url[0]
+              //   }\nCOURSE URL: ${url[1]}\n\n`
+              // )
               setTimeout(() => {
                 ctlHelper.parseAndSaveCourse(url[1], url[0])
                 resolve()
@@ -123,7 +123,7 @@ class ThirdPartyCourses {
             setTimeout(() => {
               console.log(
                 '\nThirdPartyCourses -> freeCourses\n',
-                freeCoursesIds.join('\n') + '\n\n\n'
+                freeCoursesIds.join('\n') + '\n\n'
               )
               // prepare & save the post
               this.addToQueue(freeCoursesIds)
@@ -155,7 +155,7 @@ class ThirdPartyCourses {
             setTimeout(() => {
               console.log(
                 '\nThirdPartyCourses -> freeCoupons\n',
-                freeCouponsIds.join('\n') + '\n\n\n'
+                freeCouponsIds.join('\n') + '\n\n'
               )
               // prepare & save the post
               this.addToQueue(freeCouponsIds)
@@ -167,8 +167,7 @@ class ThirdPartyCourses {
         })
     }
 
-    const coupons = getCouponsNumber()
-    console.log('COUPONS CHECKER EXECUTED: ', coupons)
+    getCouponsNumber()
   }
 
   automate() {

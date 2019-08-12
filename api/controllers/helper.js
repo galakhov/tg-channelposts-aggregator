@@ -2,8 +2,8 @@ const getUrls = require('get-urls')
 const cleanMark = require('clean-mark')
 const UdemyCrawler = require('./crawler')
 const UrlCrawler = require('./urlParser')
-const mongoose = require('mongoose'),
-  Post = mongoose.model('Post')
+const mongoose = require('mongoose')
+const Post = mongoose.model('Post')
 // const nodeMercuryParser = require('node-mercury-parser')
 // nodeMercuryParser.init(process.env.MERCURY_PARSER_KEY)
 
@@ -24,7 +24,7 @@ const parseAndSaveCourse = (url, courseId = null) => {
           console.error(
             getFullDate() + ' ADD_POST: contents were not parsed yet.'
           )
-          // exit on Error: "Udemy page response with status 403" or other status than 200
+          // exit on: "Udemy page response of 403" or other status than 200
           throw 'Error connecting to the course platform.'
         }
       })
@@ -67,6 +67,7 @@ const isAlreadyInDB = cleanedUrl => {
   return false
 }
 
+// for logging purposes
 const getFullDate = (d = new Date()) => {
   const date = d // typeof d === 'string' ? new Date(d) : d
   const dd = date.getUTCDate()
@@ -90,7 +91,6 @@ const getFullDate = (d = new Date()) => {
   return fullDate
 }
 
-// TODO: refactor
 const parseUrl = async (url, paths = ['body a']) => {
   console.log(
     getFullDate() + ' parseUrl: parsing of the link from the third-party site',
@@ -108,7 +108,9 @@ const prepareUdemyCourseJSON = async (url, courseId) => {
       return console.error(err.message)
     }
     // console.log(content)
-    console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished...')
+    console.log(
+      getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished...👍'
+    )
     return content
   })
 }

@@ -285,20 +285,20 @@ const addPost = async data => {
 const updatePost = ({ edited_channel_post: data }) => {
   try {
     Post.findOne({ message_id: data.message_id }, async (err, existingPost) => {
-      console.log('----- FOUND', existingPost)
+      console.log('----- POST FOUND', existingPost)
       if (existingPost) {
-        const chat = _.get(data, 'chat', {})
-        let text = _.get(data, 'text', '') || _.get(data, 'caption', '')
-        if (text && text.length < 1) {
-          text = _.get(data, 'caption', '')
-        }
+        // const chat = _.get(data, 'chat', {})
+        // let text = _.get(data, 'text', '') || _.get(data, 'caption', '')
+        // if (text && text.length < 1) {
+        //   text = _.get(data, 'caption', '')
+        // }
 
-        existingPost.tags = ctlHelper.extractHashtags(text)
-        existingPost.raw = data
-        if (chat.type !== 'channel') {
-          existingPost.username = chat.username
-        }
-        existingPost.chat_id = chat.id
+        // existingPost.tags = ctlHelper.extractHashtags(text)
+        // existingPost.raw = data
+        // if (chat.type !== 'channel') {
+        //   existingPost.username = chat.username
+        // }
+        // existingPost.chat_id = chat.id
 
         // previews
         const url = ctlHelper.extractUrl(text)
