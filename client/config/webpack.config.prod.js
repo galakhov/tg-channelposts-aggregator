@@ -210,6 +210,11 @@ module.exports = {
             // Note: this won't work without `new ExtractTextPlugin()` in `plugins`.
           },
           {
+            test: /\.(ttf|woff|woff2|eot)(\?t=[0-9]+)?$/i,
+            include: [paths.globalStyles],
+            use: ['style-loader', 'css-loader', 'postcss-loader']
+          },
+          {
             test: /\.svg$/,
             use: [
               { loader: 'babel-loader' },

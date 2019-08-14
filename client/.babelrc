@@ -12,7 +12,8 @@
           "rootPathSuffix": "node_modules",
           "rootPathPrefix": "η"
         }
-      ]
+      ],
+      "react-hot-loader/babel"
     ]
   ]
 }

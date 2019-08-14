@@ -3,7 +3,7 @@ const ctlHelper = require('./helper')
 const normalizeUrl = require('normalize-url')
 const urlTools = require('url')
 
-const limitPerPage = 100
+const limitPerPage = 50
 
 const mongoose = require('mongoose'),
   Post = mongoose.model('Post')

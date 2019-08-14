@@ -13,6 +13,26 @@ import CardModal from '~/components/CardModal'
 import Posts from './Posts'
 import Nav from './Nav'
 
+import {
+  // Table,
+  // Notification,
+  // MessageBox,
+  // Message,
+  // Tabs,
+  Button,
+  // Icon,
+  Form,
+  Input
+  // Dialog,
+  // Card,
+  // Tag
+} from 'element-react'
+import 'element-theme-default/lib/form.css'
+import 'element-theme-default/lib/form-item.css'
+import 'element-theme-default/lib/button.css'
+import 'element-theme-default/lib/input.css'
+import 'element-theme-default/lib/icon.css'
+
 import styles from './Home.css'
 import '~/styles/global/global.css'
 
@@ -36,6 +56,20 @@ class Home extends React.Component {
         <h5 className={styles.subheadline}>
           50+ Fresh Free Courses Every Day!
         </h5>
+
+        <Form className={styles.searchForm} inline={true}>
+          <Form.Item>
+            <Input
+              className={styles.searchInput}
+              placeholder="Search..."
+              icon="circle-cross"
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button className={styles.searchButton}>Search</Button>
+          </Form.Item>
+        </Form>
+
         {Posts({ posts, openModal })}
 
         <CardModal />
