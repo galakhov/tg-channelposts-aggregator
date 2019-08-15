@@ -37,6 +37,14 @@ import styles from './Home.css'
 import '~/styles/global/global.css'
 
 class Home extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      // locale: getLanguage()
+      searchTerm: ''
+    }
+  }
+
   componentDidMount () {
     this.props.getPosts()
   }
@@ -44,7 +52,13 @@ class Home extends React.Component {
   render () {
     this.props.isModalOpen ? noScroll.on() : noScroll.off()
 
-    const { posts, openModal } = this.props
+    const {
+      posts,
+      openModal,
+      handleSearchChange,
+      handleClearSearch,
+      handleSearch
+    } = this.props
     return (
       <Page id="mainPage" className={styles.container}>
         <Nav posts={posts} />
@@ -57,16 +71,29 @@ class Home extends React.Component {
           50+ Fresh Free Courses Every Day!
         </h5>
 
-        <Form className={styles.searchForm} inline={true}>
+        <Form
+          className={styles.searchForm}
+          inline={true}
+          onSubmit={handleSearch}
+        >
           <Form.Item>
             <Input
               className={styles.searchInput}
               placeholder="Search..."
               icon="circle-cross"
+              onChange={handleSearchChange}
+              onIconClick={handleClearSearch}
+              value={this.state.searchTerm}
             />
           </Form.Item>
           <Form.Item>
-            <Button className={styles.searchButton}>Search</Button>
+            <Button
+              icon="search"
+              className={styles.searchButton}
+              onClick={handleSearch}
+            >
+              Search
+            </Button>
           </Form.Item>
         </Form>
 

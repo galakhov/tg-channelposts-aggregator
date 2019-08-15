@@ -65,6 +65,7 @@ export const clearAllTags = () => dispatch => {
   })
 }
 
+// Modal window actions
 export const openModal = _id => dispatch => {
   dispatch({
     type: ACTION_TYPES.OPEN_MODAL,
@@ -82,5 +83,46 @@ export const setCurrentId = id => dispatch => {
   dispatch({
     type: ACTION_TYPES.SET_CURRENT_ID,
     _id: id
+  })
+}
+
+// Search component actions
+export const handleSearchChange = term => dispatch => {
+  dispatch({
+    type: ACTION_TYPES.SET_SEARCH_TERM,
+    term: term
+  })
+}
+
+export const handleClearSearch = () => dispatch => {
+  dispatch({
+    type: ACTION_TYPES.CLEAR_SEARCH_TERM,
+    term: '',
+    searchResults: []
+  })
+}
+
+export const handleSearch = async event => {
+  event.preventDefault()
+  this.setState({ isSearching: true })
+  // const result = await API.graphql(
+  //   graphqlOperation(searchMarkets, {
+  //     filter: {
+  //       or: [
+  //         { name: { match: this.state.searchTerm } },
+  //         //   regexp: `.*${this.state.searchTerm}.*`
+  //         { owner: { match: this.state.searchTerm } },
+  //         { tags: { match: this.state.searchTerm } }
+  //       ]
+  //     },
+  //     sort: {
+  //       field: 'createdAt',
+  //       direction: 'desc'
+  //     }
+  //   })
+  // )
+  this.setState({
+    // searchResults: result.data.searchMarkets.items,
+    isSearching: false
   })
 }

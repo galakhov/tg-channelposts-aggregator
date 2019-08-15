@@ -69,6 +69,11 @@ const Posts = ({ posts, openModal }) => (
                     : post.tags
                   : post.tags
               }
+              language={
+                post.preview.courseContents.language
+                  ? post.preview.courseContents.language
+                  : null
+              }
               nr={index}
             />
           )

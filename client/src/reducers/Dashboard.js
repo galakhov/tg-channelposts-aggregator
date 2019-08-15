@@ -8,7 +8,10 @@ const initialState = {
   posts: [],
   tags: [],
   filteredPosts: [],
-  errorMessage: ''
+  errorMessage: '',
+  isSearching: false,
+  currentSearchTerm: '',
+  currentSearchResults: []
 }
 
 const addTagFilter = (state, newTag) => {
@@ -68,6 +71,33 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currentPostId: action._id
+      }
+    case ACTION_TYPES.SEARCHING:
+      return {
+        ...state,
+        isSearching: true
+      }
+    case ACTION_TYPES.SEARCHING_END:
+      return {
+        ...state,
+        isSearching: false
+      }
+    case ACTION_TYPES.SEARCHING_FAILED:
+      return {
+        ...state,
+        isSearching: false,
+        errorMessage: action.err
+      }
+    case ACTION_TYPES.CLEAR_SEARCH_TERM:
+      return {
+        ...state,
+        currentSearchTerm: action.term,
+        currentSearchResults: action.searchResults
+      }
+    case ACTION_TYPES.SET_SEARCH_TERM:
+      return {
+        ...state,
+        currentSearchTerm: action.term
       }
     case ACTION_TYPES.OPEN_MODAL:
       return {

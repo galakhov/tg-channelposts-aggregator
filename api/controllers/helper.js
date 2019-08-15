@@ -136,6 +136,7 @@ const populateUdemyCourseDate = async contents => {
   NewPost.preview.courseContents.rating = contents.rating
   NewPost.preview.courseContents.lectures = contents.curriculum
   NewPost.preview.courseContents.keywords = contents.topics.join(', ')
+  NewPost.preview.courseContents.language = contents.language
   NewPost.preview.courseContents.url = contents.image
 
   // save post only if the given url is valid and the contents were properly parsed

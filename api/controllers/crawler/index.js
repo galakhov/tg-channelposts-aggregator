@@ -102,6 +102,10 @@ class UdemyCrawler {
     Course.headline = $('.clp-lead__headline[data-purpose="lead-headline"]')
       .text()
       .trim()
+    Course.language = $('.clp-lead .clp-lead__locale')
+      .text()
+      .replace(/(\n)/g, '')
+      .trim()
     const crawledRating = $('.rate-count .tooltip-container span:first-child')
       .text()
       .trim()
@@ -115,7 +119,7 @@ class UdemyCrawler {
     const startEnrolledText = enrollmentNr.indexOf(' students enrolled')
     Course.enrollmentNumber = enrollmentNr
       .substring(0, startEnrolledText + 18) // remove first part of this weird string
-      .replace(/(?:\\n\\n)/gm, '') // also remove double line breaks: \n\n
+      .replace(/(?:\\n\\n)/gm, '') // remove double line breaks: \n\n
       .replace(' students enrolled', '') // remove the second part of the str
 
     const metaJson = JSON.parse($('#schema_markup script').html())
