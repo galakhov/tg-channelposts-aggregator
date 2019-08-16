@@ -17,4 +17,11 @@
       fill-opacity: 1;
     }
   }
+
+  .searchResultsCount {
+    text-align: center;
+    font-family: var(--consoleFont);
+    margin: 5px 0 25px;
+    color: var(--titleColor);
+  }
 }

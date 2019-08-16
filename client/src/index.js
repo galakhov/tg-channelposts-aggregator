@@ -1,7 +1,8 @@
 // React 16 global polyfill for IE < 11
 import 'core-js/es6/map'
 import 'core-js/es6/set'
-
+import 'react-app-polyfill/ie11'
+import 'react-app-polyfill/stable'
 import * as React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'

@@ -31,7 +31,13 @@ class CardModal extends React.Component {
           <span className={styles.close} onClick={this.props.closeModal}>
             <CloseIcon />
           </span>
-          <Detail post={currentPost} />
+          <Detail
+            post={
+              currentPost && currentPost._source
+                ? currentPost._source
+                : currentPost
+            }
+          />
           <Link to={`/edit/${currentPostId}`}>
             <span className={styles.edit}>
               <EditIcon />

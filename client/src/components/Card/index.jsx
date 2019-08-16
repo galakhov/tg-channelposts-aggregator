@@ -30,7 +30,7 @@ const Card = ({
     tagsArray = tags
   }
 
-  const discounted = discount !== null ? `${discount}% OFF` : ''
+  const discounted = discount && discount !== null ? `${discount}% OFF` : null
 
   const expiration =
     expirationDate !== null
@@ -40,7 +40,7 @@ const Card = ({
       )}`
       : ''
   const freeCourse =
-    listPrice === 0
+    listPrice === 0 || listPrice === null
       ? 'FREE'
       : listPrice !== undefined
         ? `Coupon expired: ${listPrice}€`
@@ -51,7 +51,11 @@ const Card = ({
     : ''
 
   const courseRating =
-    rating !== null ? (rating.length > 3 ? rating.substr(0, 3) : rating) : null
+    rating && rating !== null
+      ? rating.length > 3
+        ? rating.substr(0, 3)
+        : rating
+      : null
   const courseStudentsNr = studentsEnrolled !== null ? studentsEnrolled : null
 
   let studentsEnrolledCleared
@@ -81,16 +85,16 @@ const Card = ({
               {studentsEnrolledCleared}
             </div>
           )}
-          {courseRating !== null && courseRating !== '0.0' && (
+          {courseRating && courseRating !== null && courseRating !== '0.0' && (
             <div className={styles.courseRating}>Rating: {courseRating}/5</div>
           )}
         </div>
-        {expirationDate !== null && (
+        {expirationDate && discounted !== null && expirationDate !== '' && (
           <div className={styles.expirationDate}>
             <div className={styles.couponOff}>{discounted}</div> {expiration}
           </div>
         )}
-        {expirationDate === null && (
+        {(expirationDate === '' || discounted === null) && freeCourse !== '' && (
           <div className={styles.expirationDate}>
             <div className={styles.couponOff}>{freeCourse}</div>
           </div>

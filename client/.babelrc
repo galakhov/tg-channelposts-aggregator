@@ -1,5 +1,19 @@
 {
-  "presets": [["env", { "modules": false }], "stage-0", "react"],
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false,
+        "targets": {
+          "node": "current"
+        },
+        "useBuiltIns": "entry"
+      }
+    ],
+    "es2015",
+    "stage-0",
+    "react"
+  ],
   "plugins": [
     [
       "babel-plugin-root-import",

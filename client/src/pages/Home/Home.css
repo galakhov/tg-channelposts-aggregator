@@ -51,7 +51,8 @@
   .searchForm {
     .searchInput input {
       &:focus,
-      &:hover {
+      &:hover,
+      &:active {
         border-color: var(--actionColor);
       }
     }
@@ -67,7 +68,9 @@
     }
 
     .searchButton {
-      &:hover {
+      &:focus,
+      &:hover,
+      &:active {
         border-color: var(--actionColor);
         color: var(--actionColor);
       }

@@ -2,7 +2,8 @@ import { showLoading, hideLoading } from 'react-redux-loading-bar'
 import _filter from 'lodash/filter'
 // import _includes from 'lodash/includes'
 import _intersection from 'lodash/intersection'
-
+import elasticClient from '~/services/search/elasticsearch.js'
+import SearchService from '~/services/search/index.js'
 import * as ACTION_TYPES from './types'
 import Dashboard from '~/utils/api/Dashboard'
 
@@ -20,6 +21,13 @@ const filterByTags = dash => {
   if (filtered.length > 0) {
     return filtered
   }
+}
+
+const search = async (term, start, limit) => {
+  const searchService = new SearchService(elasticClient)
+  const results = await searchService.find(term, start, limit)
+  // const elasticResults = results.hits.hits.map(res => res._id)
+  return results
 }
 
 export const getPosts = () => dispatch => {
@@ -102,27 +110,45 @@ export const handleClearSearch = () => dispatch => {
   })
 }
 
-export const handleSearch = async event => {
+export const handleSearch = event => (dispatch, getState) => {
   event.preventDefault()
-  this.setState({ isSearching: true })
-  // const result = await API.graphql(
-  //   graphqlOperation(searchMarkets, {
-  //     filter: {
-  //       or: [
-  //         { name: { match: this.state.searchTerm } },
-  //         //   regexp: `.*${this.state.searchTerm}.*`
-  //         { owner: { match: this.state.searchTerm } },
-  //         { tags: { match: this.state.searchTerm } }
-  //       ]
-  //     },
-  //     sort: {
-  //       field: 'createdAt',
-  //       direction: 'desc'
-  //     }
-  //   })
-  // )
-  this.setState({
-    // searchResults: result.data.searchMarkets.items,
-    isSearching: false
+  console.log('FORM event.target.value: ' + event.target.value)
+  const currentDash = getState().dashboard
+  console.log('TCL: currentDash', currentDash)
+
+  dispatch({
+    type: ACTION_TYPES.SEARCHING,
+    isSearching: true
   })
+
+  const start = 0
+  const limit = 50
+  const term = currentDash.currentSearchTerm
+  console.log('handleSearch: term', term)
+
+  try {
+    const searchResults = async () => {
+      const result = await search(term, start, limit)
+      console.log(`handleSearch ES response:\n${result}`)
+      dispatch({
+        type: ACTION_TYPES.SET_SEARCH_RESULTS,
+        elasticResults: result.hits.hits,
+        elasticResultsCount: result.hits.total.value
+      })
+      dispatch({
+        type: ACTION_TYPES.SEARCHING_END,
+        isSearching: false
+      })
+      // return result
+    }
+
+    // const searchResult =
+    searchResults()
+    // return searchResult
+  } catch (e) {
+    dispatch({
+      type: ACTION_TYPES.SEARCHING_FAILED,
+      isSearching: false
+    })
+  }
 }

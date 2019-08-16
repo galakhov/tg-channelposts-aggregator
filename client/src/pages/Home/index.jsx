@@ -3,7 +3,13 @@ import _orderBy from 'lodash/orderBy'
 import noScroll from 'no-scroll'
 
 import { connect } from 'react-redux'
-import { getPosts, openModal } from '~/actions/Dashboard'
+import {
+  getPosts,
+  openModal,
+  handleSearchChange,
+  handleClearSearch,
+  handleSearch
+} from '~/actions/Dashboard'
 
 // import t from '~/utils/locales'
 import Logo from '~/assets/icons/logo_coupon.svg'
@@ -57,7 +63,11 @@ class Home extends React.Component {
       openModal,
       handleSearchChange,
       handleClearSearch,
-      handleSearch
+      handleSearch,
+      searchTerm,
+      isSearching,
+      searchResults,
+      searchResultsCount
     } = this.props
     return (
       <Page id="mainPage" className={styles.container}>
@@ -83,7 +93,8 @@ class Home extends React.Component {
               icon="circle-cross"
               onChange={handleSearchChange}
               onIconClick={handleClearSearch}
-              value={this.state.searchTerm}
+              value={searchTerm || ''}
+              disabled={isSearching}
             />
           </Form.Item>
           <Form.Item>
@@ -91,13 +102,19 @@ class Home extends React.Component {
               icon="search"
               className={styles.searchButton}
               onClick={handleSearch}
+              disabled={isSearching}
             >
               Search
             </Button>
           </Form.Item>
         </Form>
 
-        {Posts({ posts, openModal })}
+        <Posts
+          posts={posts}
+          openModal={openModal}
+          searchResults={searchResults}
+          searchResultsCount={searchResultsCount}
+        />
 
         <CardModal />
       </Page>
@@ -113,12 +130,18 @@ const mapStateToProps = state => ({
     ['created_date'],
     ['desc']
   ),
+  isSearching: state.dashboard.isSearching,
+  searchTerm: state.dashboard.currentSearchTerm,
+  searchResults: state.dashboard.currentSearchResults,
+  searchResultsCount: state.dashboard.currentSearchResultsCount,
   isModalOpen: state.dashboard.isModalOpen
-  // posts: state.dashboard.posts
 })
 const mapDispatchToProps = {
   openModal,
-  getPosts
+  getPosts,
+  handleSearchChange,
+  handleClearSearch,
+  handleSearch
 }
 
 export default connect(

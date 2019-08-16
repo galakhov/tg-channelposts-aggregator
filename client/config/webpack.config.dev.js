@@ -99,10 +99,12 @@ module.exports = {
               formatter: eslintFormatter,
               eslintPath: require.resolve('eslint')
             },
+            // loaders: ['react-hot', 'babel-loader?presets[]=react,presets[]=es2015', 'eslint-loader'],
             loader: require.resolve('eslint-loader')
           }
         ],
-        include: paths.appSrc
+        include: paths.appSrc,
+        exclude: /node_modules\/(?!(@elastic)\/).*/
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -124,6 +126,7 @@ module.exports = {
           {
             test: /\.(js|jsx)$/,
             include: paths.appSrc,
+            exclude: /node_modules\/(?!(@elastic)\/).*/,
             loader: require.resolve('babel-loader'),
             options: {
               // This is a feature of `babel-loader` for webpack (not Babel itself).
@@ -193,7 +196,7 @@ module.exports = {
             // it's runtime that would otherwise processed through "file" loader.
             // Also exclude `html` and `json` extensions so they get processed
             // by webpacks internal loaders.
-            exclude: [/\.js$/, /\.html$/, /\.json$/],
+            exclude: [/\.js$/, /\.ts$/, /\.html$/, /\.json$/],
             loader: require.resolve('file-loader'),
             options: {
               name: 'static/media/[name].[hash:8].[ext]'

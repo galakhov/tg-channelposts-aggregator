@@ -7,7 +7,9 @@ export const currentPostSelector = createSelector(
   dashSelector,
   dashboard => {
     return _filter(
-      dashboard.posts,
+      dashboard.currentSearchResults && dashboard.currentSearchResultsCount > 0
+        ? dashboard.currentSearchResults
+        : dashboard.posts,
       post => post._id === dashboard.currentPostId
     )[0]
   }

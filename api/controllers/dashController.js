@@ -227,13 +227,11 @@ const addPost = async data => {
       try {
         const urlWithoutParameters = cleanUrl(url)
         // exit the process if duplicates exist in DB
-        let isLinkAlreadyInDB = await ctlHelper.isAlreadyInDB(
-          urlWithoutParameters
-        )
+        let isLinkAlreadyInDB = ctlHelper.isAlreadyInDB(urlWithoutParameters)
         if (
           // If the course link isn't in DB, continue...
           typeof isLinkAlreadyInDB !== 'undefined' &&
-          !isLinkAlreadyInDB &&
+          isLinkAlreadyInDB !== true &&
           !isThirdPartyLink(url)
         ) {
           url = affiliateParametersCleaner(url)

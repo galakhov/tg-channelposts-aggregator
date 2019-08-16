@@ -110,7 +110,7 @@ class ThirdPartyCourses {
                   if (
                     // If the course's link isn't already in DB, continue...
                     typeof result !== 'undefined' &&
-                    !result
+                    result !== true
                   ) {
                     const courseUrl = `https://www.udemy.com${urlWithoutParameters}`
                     freeCoursesIds.push([courseId, courseUrl])
@@ -140,7 +140,7 @@ class ThirdPartyCourses {
                   if (
                     // If the course link isn't in DB, continue...
                     typeof result !== 'undefined' &&
-                    !result
+                    result !== true
                   ) {
                     const freeCoupon = `https://www.udemy.com${urlWithoutParameters}?couponCode=${
                       obj.course.coupon[0].code

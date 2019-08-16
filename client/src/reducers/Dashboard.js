@@ -11,7 +11,8 @@ const initialState = {
   errorMessage: '',
   isSearching: false,
   currentSearchTerm: '',
-  currentSearchResults: []
+  currentSearchResults: [],
+  currentSearchResultsCount: 0
 }
 
 const addTagFilter = (state, newTag) => {
@@ -98,6 +99,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currentSearchTerm: action.term
+      }
+    case ACTION_TYPES.SET_SEARCH_RESULTS:
+      return {
+        ...state,
+        currentSearchResults: action.elasticResults,
+        currentSearchResultsCount: action.elasticResultsCount
       }
     case ACTION_TYPES.OPEN_MODAL:
       return {

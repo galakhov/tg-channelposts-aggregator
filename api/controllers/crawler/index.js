@@ -81,10 +81,7 @@ class UdemyCrawler {
     })
 
     if (resLandingPage.statusCode !== 200) {
-      console.log(
-        '======== UdemyCrawler -> execute -> resLandingPage',
-        resLandingPage
-      )
+      console.log('======== UdemyCrawler -> resLandingPage\n', resLandingPage)
       return _cb(
         new Error(
           'Udemy page responded with status ' + resLandingPage.statusCode
@@ -106,6 +103,7 @@ class UdemyCrawler {
       .text()
       .replace(/(\n)/g, '')
       .trim()
+    console.log('UdemyCrawler -> execute -> Course.language', Course.language)
     const crawledRating = $('.rate-count .tooltip-container span:first-child')
       .text()
       .trim()

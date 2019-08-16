@@ -41,7 +41,8 @@ const isAlreadyInDB = cleanedUrl => {
     return Post.findOne(
       { 'preview.courseUrl': { $regex: cleanedUrl, $options: 'i' } },
       async (err, response) => {
-        if (response !== null) {
+        const result = await response
+        if (result !== null) {
           console.warn(
             getFullDate() +
               ' This post was already added to DB before. Aborting.',
