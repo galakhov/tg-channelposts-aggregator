@@ -7,9 +7,10 @@ const elasticClient = new elasticsearch.Client({
   sniffOnStart: false,
   keepAlive: true,
   hosts: [
-    `https://${process.env.ES_USERNAME}:${process.env.ES_PASSWORD}@${
+    /* `https://${process.env.ES_USERNAME}:${process.env.ES_PASSWORD}@${
       process.env.ES_HOST
-    }/${process.env.ES_NS_COLLECTION}`
+    }/${process.env.ES_NS_COLLECTION}` */
+    `https://ecfbe901bf214d008477c97a6f894235.eu-west-1.aws.found.io:9243/telegramchanneldb.posts`
   ]
 })
 
