@@ -4,7 +4,7 @@ function _interopDefault(ex) {
   return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex
 }
 
-const axios = require('axios')
+const phantom = require('phantom')
 const cheerio = _interopDefault(require('cheerio'))
 const request = require('then-request')
 // const request = _interopDefault(require('sync-request'))
@@ -93,31 +93,29 @@ class UdemyCrawler {
       // httpsAgent: new https.Agent({ keepAlive: true })
     }
 
-    axios(options)
-      .then(response => {
-        // request('GET', requestUrl, options).done(res => {
-        //   response = res.getBody()
+    let _ph, _page, _outObj
+    phantom
+      .create()
+      .then(ph => {
+        _ph = ph
+        return _ph.createPage()
+      })
+      .then(page => {
+        _page = page
+        return _page.open(requestUrl)
+      })
+      .then(status => {
+        console.log('PAGE STATUS: ', status)
+        return _page.property('content')
+      })
+      .then(content => {
+        console.log('PAGE CONTENT: ', content)
 
-        console.log(
-          '======== UdemyCrawler -> response.statusCode ',
-          response.status
-        )
-        console.log(
-          '======== UdemyCrawler -> response.statusText ',
-          response.statusText
-        )
-        if (response.status !== 200) {
-          // (response.statusCode !== 200) {
-          console.log(
-            '======== UdemyCrawler -> response (page parsing)\n',
-            response.data
-          )
-          return _cb(
-            new Error('Udemy page responded with status ' + response.status)
-          )
+        if (status !== 200) {
+          return _cb(new Error('Udemy page responded with status ' + status))
         }
 
-        const $ = cheerio.load(response.data) // response.getBody())
+        const $ = cheerio.load(content) // response.getBody())
 
         // id, title, headline, image
         Course.id = this.courseId || $('body').attr('data-clp-course-id')
@@ -241,13 +239,15 @@ class UdemyCrawler {
               ? jsonData.purchase.data.pricing_result.campaign.end_time
               : null
           }
-
+          // close page & phantom connection
+          _page.close()
+          _ph.exit()
           return _cb(null, Course)
         })
       })
-      .catch(function(error) {
+      .catch(error => {
         // handle error
-        console.log('AXIOS ERROR: ', error)
+        console.log('PHANTOM ERROR: ', error)
       })
   }
 }

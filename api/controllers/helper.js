@@ -15,7 +15,7 @@ const parseAndSaveCourse = (url, courseId = null) => {
         if (contents) {
           let contentsSaved
 
-          contentsSaved = populateUdemyCourseDate(contents)
+          contentsSaved = populateUdemyCourseData(contents)
 
           setTimeout(() => {
             console.log(getFullDate() + ' contentsSaved ', contentsSaved)
@@ -116,8 +116,8 @@ const prepareUdemyCourseJSON = async (url, courseId) => {
   })
 }
 
-const populateUdemyCourseDate = async contents => {
-  console.log(getFullDate() + ' populateUdemyCourseDate ', 'Starting...')
+const populateUdemyCourseData = async contents => {
+  console.log(getFullDate() + ' populateUdemyCourseData ', 'Starting...')
   const NewPost = new Post()
   NewPost.preview.courseContents = {}
   NewPost.preview.courseId = contents.id
@@ -213,7 +213,6 @@ exports.extractClutter = extractClutter
 exports.extractUrl = extractUrl
 exports.preparePreviewMark = preparePreviewMark
 exports.prepareUdemyCourseJSON = prepareUdemyCourseJSON
-exports.populateUdemyCourseDate = populateUdemyCourseDate
 exports.parseUrl = parseUrl
 exports.isAd = isAd
 exports.replaceAll = replaceAll
