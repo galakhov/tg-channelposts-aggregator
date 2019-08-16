@@ -54,10 +54,10 @@ class UdemyCrawler {
     }
 
     if (objUrl.pathname == null || objUrl.pathname === '/') {
-      return _cb(new Error('Must point to udemy.com/course-path'))
+      return _cb(new Error('Must point to udemy.com/course-url'))
     }
 
-    let requestUrl = 'https://www.udemy.com/course/' + objUrl.pathname
+    let requestUrl = 'https://www.udemy.com/' + objUrl.pathname
 
     if (objUrl.search) {
       requestUrl += objUrl.search
@@ -230,10 +230,6 @@ class UdemyCrawler {
         return _cb(null, Course)
       })
     })
-    // .catch(error => {
-    //   // handle error
-    //   console.log('PHANTOM ERROR: ', error)
-    // })
   }
 }
 
