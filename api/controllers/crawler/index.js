@@ -57,7 +57,7 @@ class UdemyCrawler {
       return _cb(new Error('Must point to udemy.com/course-path'))
     }
 
-    let requestUrl = 'https://www.udemy.com' + objUrl.pathname
+    let requestUrl = 'https://www.udemy.com/course/' + objUrl.pathname
 
     if (objUrl.search) {
       requestUrl += objUrl.search
