@@ -89,8 +89,8 @@ class UdemyCrawler {
       url: requestUrl,
       method: 'GET',
       xsrfCookieName: 'XSRF-TOKEN',
-      xsrfHeaderName: 'X-XSRF-TOKEN',
-      httpsAgent: new https.Agent({ keepAlive: true })
+      xsrfHeaderName: 'X-XSRF-TOKEN'
+      // httpsAgent: new https.Agent({ keepAlive: true })
     }
 
     axios(options)
