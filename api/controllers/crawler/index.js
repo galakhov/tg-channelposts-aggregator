@@ -84,7 +84,7 @@ class UdemyCrawler {
       'User-Agent': newUserAgent,
       // url: requestUrl,
       'set-cookie': [
-        '__cfduid=d6fa31f10f333852762ac4bb4836825381565944230; expires=Sat, 17-Aug-20 08:30:30 GMT; path=/; domain=.udemy.com; HttpOnly',
+        '__cfduid=d6fa31f10f333852762ac4bb4836825381565944230; expires=Sat, 18-Aug-20 08:30:30 GMT; path=/; domain=.udemy.com; HttpOnly',
         '_pxhd=32c182d85232d65b2288fb48868e813a2182aaf7fa2caee59c4b16bf61105878:1b7e3621-c000-11e9-b968-3908e2c0de98; path=/;'
       ],
       'x-content-type-options': 'nosniff'
@@ -105,7 +105,7 @@ class UdemyCrawler {
         )
       }
 
-      const $ = cheerio.load(res.getBody()) // response.getBody())
+      const $ = cheerio.load(res.getBody('utf8')) // response.getBody())
 
       // id, title, headline, image
       Course.id = this.courseId || $('body').attr('data-clp-course-id')
@@ -123,21 +123,31 @@ class UdemyCrawler {
       const crawledRating = $('.rate-count .tooltip-container span:first-child')
         .text()
         .trim()
+      console.log('UdemyCrawler -> execute -> crawledRating', crawledRating)
       Course.rating =
         crawledRating.length > 3
           ? crawledRating.trim().substr(0, 3)
           : crawledRating
+      console.log(
+        'TCL: UdemyCrawler -> execute -> Course.rating',
+        Course.rating
+      )
       const enrollmentNr = $('[data-purpose="enrollment"]')
         .text()
         .trim()
       const startEnrolledText = enrollmentNr.indexOf(' students enrolled')
       Course.enrollmentNumber = enrollmentNr
         .substring(0, startEnrolledText + 18) // remove first part of this weird string
-        .replace(/(?:\\n\\n)/gm, '') // remove double line breaks: \n\n
+        .replace(/(\n)/g, '') // remove double line breaks: \n\n
         .replace(' students enrolled', '') // remove the second part of the str
+      console.log(
+        'TCL: UdemyCrawler -> execute -> Course.enrollmentNumber',
+        Course.enrollmentNumber
+      )
 
       const metaJson = JSON.parse($('#schema_markup script').html())
       Course.image = metaJson[0].image
+      console.log('TCL: UdemyCrawler -> execute -> Course.image', Course.image)
       Course.date = $(
         '.main-content .container [data-purpose="last-update-date"] span'
       )
@@ -181,54 +191,58 @@ class UdemyCrawler {
           'User-Agent': newUserAgent,
           'Content-Type': 'application/json'
         }
-      }).done(res => {
-        resApi = res.getBody('utf8')
-
-        if (resApi.statusCode !== 200) {
-          return _cb(
-            new Error(
-              'Udemy API page responded with status ' + resApi.statusCode
-            )
-          )
-        }
-
-        let jsonData = JSON.parse(resApi)
-
-        // description, audiences, topics
-        Course.description = jsonData.description.data.description
-        Course.audiences = jsonData.description.data.target_audiences
-        Course.curriculum = {}
-        Course.curriculum.contents = JSON.parse(
-          JSON.stringify(jsonData.curriculum.data.sections)
-        )
-        Course.curriculum.courseLength =
-          jsonData.curriculum.data.estimated_content_length_text
-        Course.topics = jsonData.topic_menu.menu_data.map(
-          m => m.title || m.display_name
-        )
-
-        // price, discount
-        Course.price = jsonData.purchase.data.pricing_result.price.amount
-        Course.fullPrice = jsonData.purchase.data.list_price.amount
-
-        Course.authors =
-          jsonData.instructor_bio.data.instructors_info[0].display_name
-
-        // Course.image = jsonData.introduction_asset.images.image_480x270
-
-        if (jsonData.purchase.data.pricing_result.has_discount_saving) {
-          Course.discount =
-            jsonData.purchase.data.pricing_result.discount_percent_for_display
-          Course.discountExpiration = jsonData.purchase.data.pricing_result
-            .campaign
-            ? jsonData.purchase.data.pricing_result.campaign.end_time
-            : null
-        }
-        // close page & phantom connection
-        _page.close()
-        _ph.exit()
-        return _cb(null, Course)
       })
+        .getBody('utf8')
+        .then(JSON.parse)
+        .done(res => {
+          // resApi = res.getBody('utf8')
+          console.log('TCL: UdemyCrawler -> execute -> res', res)
+
+          if (res.statusCode !== 200) {
+            return _cb(
+              new Error(
+                'Udemy API page responded with status ' + res.statusCode
+              )
+            )
+          }
+
+          let jsonData = res // JSON.parse(resApi)
+
+          // description, audiences, topics
+          Course.description = jsonData.description.data.description
+          Course.audiences = jsonData.description.data.target_audiences
+          Course.curriculum = {}
+          Course.curriculum.contents = JSON.parse(
+            JSON.stringify(jsonData.curriculum.data.sections)
+          )
+          Course.curriculum.courseLength =
+            jsonData.curriculum.data.estimated_content_length_text
+          Course.topics = jsonData.topic_menu.menu_data.map(
+            m => m.title || m.display_name
+          )
+
+          // price, discount
+          Course.price = jsonData.purchase.data.pricing_result.price.amount
+          Course.fullPrice = jsonData.purchase.data.list_price.amount
+
+          Course.authors =
+            jsonData.instructor_bio.data.instructors_info[0].display_name
+
+          // Course.image = jsonData.introduction_asset.images.image_480x270
+
+          if (jsonData.purchase.data.pricing_result.has_discount_saving) {
+            Course.discount =
+              jsonData.purchase.data.pricing_result.discount_percent_for_display
+            Course.discountExpiration = jsonData.purchase.data.pricing_result
+              .campaign
+              ? jsonData.purchase.data.pricing_result.campaign.end_time
+              : null
+          }
+          // close page & phantom connection
+          _page.close()
+          _ph.exit()
+          return _cb(null, Course)
+        })
     })
   }
 }
