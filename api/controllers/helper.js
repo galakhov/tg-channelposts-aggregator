@@ -102,16 +102,7 @@ const parseUrl = async (url, paths = ['body a']) => {
 }
 
 const prepareUdemyCourseJSON = async (url, courseId) => {
-  const crawler = new UdemyCrawler(
-    {
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36',
-        'upgrade-insecure-requests': 1
-      }
-    },
-    courseId
-  )
+  const crawler = new UdemyCrawler({}, courseId)
   console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling', 'Starting...')
   return crawler.execute(url, (err, content) => {
     if (err) {

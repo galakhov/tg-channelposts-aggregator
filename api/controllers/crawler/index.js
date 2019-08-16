@@ -87,23 +87,20 @@ class UdemyCrawler {
       retryDelay: 3000
     }
 
-    // const resLandingPage = request('GET', requestUrl, {
-    //   headers: {
-    //     'User-Agent': this.config.headers['User-Agent']
-    //   }
-    // })
-
-    request('GET', url, options).done(res => {
+    request('GET', requestUrl, options).done(res => {
       response = res.getBody()
 
       if (response.statusCode !== 200) {
-        console.log('======== UdemyCrawler -> resLandingPage\n', response)
+        console.log(
+          '======== UdemyCrawler -> response (page parsing)\n',
+          response
+        )
         return _cb(
           new Error('Udemy page responded with status ' + response.statusCode)
         )
       }
 
-      const $ = cheerio.load(resLandingPage.getBody())
+      const $ = cheerio.load(response.getBody())
 
       // id, title, headline, image
       Course.id = this.courseId || $('body').attr('data-clp-course-id')
