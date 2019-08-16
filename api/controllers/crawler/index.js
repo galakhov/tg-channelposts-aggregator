@@ -195,17 +195,10 @@ class UdemyCrawler {
         .getBody('utf8')
         .then(JSON.parse)
         .done(res => {
-          console.log(
-            'TCL: UdemyCrawler -> execute -> resApi.statusCode',
-            res.statusCode
-          )
+          console.log('TCL: UdemyCrawler -> execute -> res', res)
 
-          if (!res || res.statusCode !== 200) {
-            return _cb(
-              new Error(
-                'Udemy API page responded with status ' + res.statusCode
-              )
-            )
+          if (!res) {
+            return _cb(new Error('Udemy API page responded with status ' + res))
           }
 
           let jsonData = res // JSON.parse(resApi)
