@@ -112,9 +112,7 @@ export const handleClearSearch = () => dispatch => {
 
 export const handleSearch = event => (dispatch, getState) => {
   event.preventDefault()
-  console.log('FORM event.target.value: ' + event.target.value)
   const currentDash = getState().dashboard
-  console.log('TCL: currentDash', currentDash)
 
   dispatch({
     type: ACTION_TYPES.SEARCHING,
@@ -124,12 +122,11 @@ export const handleSearch = event => (dispatch, getState) => {
   const start = 0
   const limit = 50
   const term = currentDash.currentSearchTerm
-  console.log('handleSearch: term', term)
 
   try {
     const searchResults = async () => {
       const result = await search(term, start, limit)
-      console.log(`handleSearch ES response:\n${result}`)
+      // console.log(`handleSearch ES response:\n${result}`)
       dispatch({
         type: ACTION_TYPES.SET_SEARCH_RESULTS,
         elasticResults: result.hits.hits,
@@ -139,12 +136,8 @@ export const handleSearch = event => (dispatch, getState) => {
         type: ACTION_TYPES.SEARCHING_END,
         isSearching: false
       })
-      // return result
     }
-
-    // const searchResult =
     searchResults()
-    // return searchResult
   } catch (e) {
     dispatch({
       type: ACTION_TYPES.SEARCHING_FAILED,
