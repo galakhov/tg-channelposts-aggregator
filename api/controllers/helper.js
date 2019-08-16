@@ -19,7 +19,7 @@ const parseAndSaveCourse = (url, courseId = null) => {
 
           setTimeout(() => {
             console.log(getFullDate() + ' contentsSaved ', contentsSaved)
-          }, 1000)
+          }, 3500)
         } else {
           console.error(
             getFullDate() + ' ADD_POST: contents were not parsed yet.'

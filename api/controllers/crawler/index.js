@@ -197,8 +197,8 @@ class UdemyCrawler {
         .done(res => {
           console.log('TCL: UdemyCrawler -> execute -> res', res)
 
-          if (!res) {
-            return _cb(new Error('Udemy API page responded with status ' + res))
+          if (!res || res.description.length <= 0) {
+            return _cb(new Error('Udemy API page responded with error ' + res))
           }
 
           let jsonData = res // JSON.parse(resApi)
