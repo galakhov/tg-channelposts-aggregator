@@ -1,6 +1,6 @@
 const cheerio = require('cheerio')
-// const request = require('sync-request')
-const request = require('then-request')
+const request = require('sync-request')
+// const request = require('then-request')
 const normalizeUrl = require('normalize-url')
 const UserAgent = require('user-agents')
 
@@ -19,59 +19,86 @@ class UrlCrawler {
     }
   }
 
-  execute(url, pathsToCheck = ['body a']) {
+  syncParsing(url) {
     const userAgent = new UserAgent()
     console.log('-------- userAgent: ' + userAgent.toString())
     const newUserAgent = userAgent.toString()
-    const options = {
+    const result = request('GET', url, {
       headers: {
         'User-Agent': newUserAgent
-      },
-      maxRetries: 3,
-      retryDelay: 3000
-    }
-
-    let response = null
-    let content = ''
-    const scrapedContent = []
-
-    request('GET', url, options).done(res => {
-      response = res.getBody()
-      if (response.statusCode !== 200) {
-        return new Error(
-          "Can't find the requested URL. Response code: " + response.statusCode
-        )
       }
-      const $ = cheerio.load(response.getBody(), {
-        xml: {
-          normalizeWhitespace: true,
-          decodeEntities: true
-        }
-      }) // loading the requested page (connsidering redirections, etc.)
-      // console.log('response.getBody()', $.html())
-
-      pathsToCheck.forEach(target => {
-        // universal parser: currently works with links & images
-        content =
-          $(target).attr('href') ||
-          $(target).attr('data-src') ||
-          $(target).attr('src')
-        if (content && content.indexOf('http') !== -1) {
-          console.log('UrlCrawler -> found url:', content)
-          const foundUrl = normalizeUrl(content.trim())
-          scrapedContent.push(foundUrl)
-        }
-        content = ''
-      })
-
-      console.log('-------- scrapedContent', scrapedContent)
-
-      if (scrapedContent.length > 0) {
-        return scrapedContent
-      }
-      return new Error("Couldn't parse the requested element(s).")
     })
+    if (result.statusCode != 200) {
+      console.log(
+        'UrlCrawler -> syncParsing -> error statusCode',
+        result.statusCode
+      )
+    }
+    return result.getBody('utf8')
   }
+
+  cheerioParsing(html, pathsToCheck) {
+    console.log('-------- cheerioParsing', pathsToCheck)
+    const $ = cheerio.load(html, {
+      xml: {
+        normalizeWhitespace: true,
+        decodeEntities: true
+      }
+    }) // loading the requested page (connsidering redirections, etc.)
+    // console.log('response.getBody()', $.html())
+    let content = '',
+      scrapedContent = []
+    pathsToCheck.forEach(target => {
+      // made as a universal parser: currently parses links & images
+      content =
+        $(target).attr('href') ||
+        $(target).attr('data-src') ||
+        $(target).attr('src')
+      if (content && content.indexOf('http') !== -1) {
+        console.log('-------- UrlCrawler -> found url(s):', content)
+        const foundUrl = normalizeUrl(content.trim())
+        scrapedContent.push(foundUrl)
+      }
+      content = ''
+    })
+    console.log('-------- scrapedContent', scrapedContent)
+
+    if (scrapedContent.length > 0) {
+      return scrapedContent[0]
+    }
+    return new Error("Couldn't parse the requested element(s).")
+  }
+
+  async execute(url, pathsToCheck = ['body a']) {
+    // ASYNC
+    try {
+      const parsedContent = this.syncParsing(url)
+      // console.log('parsedContent: ' + parsedContent)
+
+      const parsedLink = this.cheerioParsing(parsedContent, pathsToCheck)
+      console.log('-------- UrlCrawler -> execute -> parsedLink', parsedLink)
+      return parsedLink
+    } catch (error) {
+      console.error('parsedContent ERROR:', error)
+    }
+  }
+
+  // const options = {
+  //   headers: {
+  //     'User-Agent': newUserAgent
+  //   },
+  //   maxRetries: 3,
+  //   retryDelay: 3000
+  // }
+  // syncRequest('GET', url, options).done(res => {
+  //   response = res.getBody('utf8')
+  //   if (!response || response.statusCode !== 200) {
+  //     return new Error(
+  //       "Can't find the requested URL. Response code: " + response.statusCode
+  //     )
+  //   }
+  //   // cheerio parsing
+  // })
 }
 
 module.exports = UrlCrawler

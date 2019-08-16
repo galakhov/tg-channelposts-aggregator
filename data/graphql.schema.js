@@ -3,14 +3,6 @@ const gql = require('graphql-tag')
 const { makeExecutableSchema } = require('graphql-tools')
 // const typeDefs = require('./graphql.types')
 
-/*
-    // https://comidoc.net/graphql
-    {
-        "myDate": "2019-08-07"
-    }
-
-*/
-
 const typeDefs = gql`
   type Query {
     getFriend(id: ID): Friend

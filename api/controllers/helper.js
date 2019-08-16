@@ -10,28 +10,17 @@ const Post = mongoose.model('Post')
 const parseAndSaveCourse = (url, courseId = null) => {
   setTimeout(() => {
     // delay the next call to the third-party api
-    prepareUdemyCourseJSON(url, courseId)
-      .then(contents => {
-        if (contents) {
-          let contentsSaved
-
-          contentsSaved = populateUdemyCourseData(contents)
-
-          setTimeout(() => {
-            console.log(getFullDate() + ' contentsSaved ', contentsSaved)
-          }, 3500)
-        } else {
-          console.error(
-            getFullDate() + ' ADD_POST: contents were not parsed yet.'
-          )
-          // exit on: "Udemy page response of 403" or other status than 200
-          throw 'Error connecting to the course platform.'
-        }
-      })
-      .catch(err =>
-        console.error(getFullDate() + ' ADD_POST prepareUdemyCourseJSON: ', err)
+    let contents = null
+    try {
+      contents = prepareUdemyCourseJSON(url, courseId)
+      // let contentsSaved = null
+    } catch (err) {
+      console.error(
+        getFullDate() + ' ADD_POST prepareUdemyCourseJSON ❌\n',
+        err
       )
-  }, 3750)
+    }
+  }, 0)
 }
 
 const isAlreadyInDB = cleanedUrl => {
@@ -45,19 +34,19 @@ const isAlreadyInDB = cleanedUrl => {
         if (result !== null) {
           console.warn(
             getFullDate() +
-              ' This post was already added to DB before. Aborting.',
+              ' This post was already added to DB before. Aborting. ❌',
             cleanedUrl
           )
           isInDB = true
-          console.log(getFullDate() + ' isAlreadyInDB', isInDB)
+          console.log(getFullDate() + ' isAlreadyInDB ❌', isInDB)
           return isInDB
           // throw new Error('This post was already added to DB before. Aborting.')
         } else {
           if (err) {
-            console.error(getFullDate() + ' DB query error', err)
+            console.error(getFullDate() + ' DB query error ❌', err)
           }
           isInDB = false
-          console.log(getFullDate() + ' isAlreadyInDB', isInDB)
+          console.log(getFullDate() + ' isAlreadyInDB ✅', isInDB)
           return isInDB
         }
       }
@@ -108,11 +97,32 @@ const prepareUdemyCourseJSON = async (url, courseId) => {
     if (err) {
       return console.error(err.message)
     }
-    // console.log(content)
     console.log(
       getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished...👍'
     )
-    return content
+    // console.log(content)
+    // try {
+    if (content !== null) {
+      contentsSaved = populateUdemyCourseData(content)
+      if (contentsSaved !== null) {
+        console.log(getFullDate() + ' contentsSaved ✅', contentsSaved)
+        return contentsSaved
+      } else {
+        // exit on: "Udemy page response of 403" or other status than 200
+        console.error(
+          getFullDate() + ' ADD_POST: contents were not parsed yet ❌'
+        )
+        throw 'Error connecting to the course platform ❌\n'
+      }
+    } // else {
+    //   console.error(
+    //     getFullDate() + ' ADD_POST: contents were not parsed yet ❌'
+    //   )
+    // }
+    // } catch (e) {
+    //  console.error(getFullDate() + e + ' ❌')
+    // }
+    // return content
   })
 }
 

@@ -72,6 +72,7 @@ const timeoutBeforeNextRequest = ms => {
 
 const startUdemyOffParser = async url => {
   try {
+    // const delay = t => new Promise(resolve => setTimeout(resolve, t))
     const udemyOff = await ctlHelper
       .parseUrl(url, ['#content .wp-block-button__link'])
       .catch(err =>
@@ -80,17 +81,19 @@ const startUdemyOffParser = async url => {
           err
         )
       )
-    console.log(
-      ctlHelper.getFullDate() + ' ADD_POST udemyOff parsed',
-      udemyOff[0]
-    )
-    url = udemyOff[0].indexOf('udemy.com') !== -1 ? udemyOff[0] : url
+    // delay(1000).then(() => {
+    const urlToParse = udemyOff
+    // url = urlToParse.indexOf('udemy.com') !== -1 ? urlToParse : url
     console.log(
       ctlHelper.getFullDate() +
         ' Saving the link from the third-party site. Finishing...'
     )
-    console.log(url)
-    return url
+    console.log(
+      ctlHelper.getFullDate() + ' ADD_POST udemyOff parsed ❓❓❓',
+      urlToParse
+    )
+    return urlToParse
+    // })
   } catch (err) {
     console.error(ctlHelper.getFullDate() + ' startUdemyOffParser', err)
   }
@@ -275,7 +278,7 @@ const addPost = async data => {
       // throw new Error('Ad Blocked. Aborting.')
     }
   } catch (e) {
-    console.error(ctlHelper.getFullDate() + ' ADD_POST:')
+    console.error(ctlHelper.getFullDate() + ' ADD_POST FINAL:')
     throw e
   }
 }

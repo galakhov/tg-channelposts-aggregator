@@ -13,16 +13,16 @@ const express = require('express'),
   initBot = require('./bot/index')
 // ,router = express.Router()
 
-const graphqlHTTP = require('express-graphql')
-const schema = require('./data/graphql.schema')
+// const graphqlHTTP = require('express-graphql')
+// const schema = require('./data/graphql.schema')
 
-app.use(
-  '/graphql',
-  graphqlHTTP({
-    schema: schema,
-    graphiql: true
-  })
-)
+// app.use(
+//   '/graphql',
+//   graphqlHTTP({
+//     schema: schema,
+//     graphiql: true
+//   })
+// )
 
 // allow cors
 app.use(cors())
