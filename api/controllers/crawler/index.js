@@ -4,6 +4,7 @@ function _interopDefault(ex) {
   return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex
 }
 
+const axios = require('axios')
 const cheerio = _interopDefault(require('cheerio'))
 const request = require('then-request')
 // const request = _interopDefault(require('sync-request'))
@@ -83,63 +84,84 @@ class UdemyCrawler {
       headers: {
         'User-Agent': newUserAgent
       },
-      maxRetries: 3,
-      retryDelay: 3000
+      // maxRetries: 3,
+      // retryDelay: 3000,
+      url: requestUrl,
+      method: 'GET',
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      httpsAgent: new https.Agent({ keepAlive: true })
     }
 
-    request('GET', requestUrl, options).done(res => {
-      response = res.getBody()
+    axios(options)
+      .then(response => {
+        // request('GET', requestUrl, options).done(res => {
+        //   response = res.getBody()
 
-      if (response.statusCode !== 200) {
         console.log(
-          '======== UdemyCrawler -> response (page parsing)\n',
-          response
+          '======== UdemyCrawler -> response.statusCode ',
+          response.status
         )
-        return _cb(
-          new Error('Udemy page responded with status ' + response.statusCode)
+        console.log(
+          '======== UdemyCrawler -> response.statusText ',
+          response.statusText
         )
-      }
+        if (response.status !== 200) {
+          // (response.statusCode !== 200) {
+          console.log(
+            '======== UdemyCrawler -> response (page parsing)\n',
+            response.data
+          )
+          return _cb(
+            new Error('Udemy page responded with status ' + response.status)
+          )
+        }
 
-      const $ = cheerio.load(response.getBody())
+        const $ = cheerio.load(response.data) // response.getBody())
 
-      // id, title, headline, image
-      Course.id = this.courseId || $('body').attr('data-clp-course-id')
-      Course.title = $('.clp-lead__title[data-purpose="lead-title"]')
-        .text()
-        .trim()
-      Course.headline = $('.clp-lead__headline[data-purpose="lead-headline"]')
-        .text()
-        .trim()
-      Course.language = $('.clp-lead .clp-lead__locale')
-        .text()
-        .replace(/(\n)/g, '')
-        .trim()
-      console.log('UdemyCrawler -> execute -> Course.language', Course.language)
-      const crawledRating = $('.rate-count .tooltip-container span:first-child')
-        .text()
-        .trim()
-      Course.rating =
-        crawledRating.length > 3
-          ? crawledRating.trim().substr(0, 3)
-          : crawledRating
-      const enrollmentNr = $('[data-purpose="enrollment"]')
-        .text()
-        .trim()
-      const startEnrolledText = enrollmentNr.indexOf(' students enrolled')
-      Course.enrollmentNumber = enrollmentNr
-        .substring(0, startEnrolledText + 18) // remove first part of this weird string
-        .replace(/(?:\\n\\n)/gm, '') // remove double line breaks: \n\n
-        .replace(' students enrolled', '') // remove the second part of the str
+        // id, title, headline, image
+        Course.id = this.courseId || $('body').attr('data-clp-course-id')
+        Course.title = $('.clp-lead__title[data-purpose="lead-title"]')
+          .text()
+          .trim()
+        Course.headline = $('.clp-lead__headline[data-purpose="lead-headline"]')
+          .text()
+          .trim()
+        Course.language = $('.clp-lead .clp-lead__locale')
+          .text()
+          .replace(/(\n)/g, '')
+          .trim()
+        console.log(
+          'UdemyCrawler -> execute -> Course.language',
+          Course.language
+        )
+        const crawledRating = $(
+          '.rate-count .tooltip-container span:first-child'
+        )
+          .text()
+          .trim()
+        Course.rating =
+          crawledRating.length > 3
+            ? crawledRating.trim().substr(0, 3)
+            : crawledRating
+        const enrollmentNr = $('[data-purpose="enrollment"]')
+          .text()
+          .trim()
+        const startEnrolledText = enrollmentNr.indexOf(' students enrolled')
+        Course.enrollmentNumber = enrollmentNr
+          .substring(0, startEnrolledText + 18) // remove first part of this weird string
+          .replace(/(?:\\n\\n)/gm, '') // remove double line breaks: \n\n
+          .replace(' students enrolled', '') // remove the second part of the str
 
-      const metaJson = JSON.parse($('#schema_markup script').html())
-      Course.image = metaJson[0].image
-      Course.date = $(
-        '.main-content .container [data-purpose="last-update-date"] span'
-      )
-        .text()
-        .trim()
+        const metaJson = JSON.parse($('#schema_markup script').html())
+        Course.image = metaJson[0].image
+        Course.date = $(
+          '.main-content .container [data-purpose="last-update-date"] span'
+        )
+          .text()
+          .trim()
 
-      /*
+        /*
             Also consider other opened Udemy entry points:
             https://www.udemy.com/robots.txt
             Allow:/api-2.0/course-landing-components
@@ -158,71 +180,75 @@ class UdemyCrawler {
 
             curriculum,frequently_bought_together,practice_test_bundle,instructor_bio
         */
-      let apiUrl =
-        this._getApiUrl(Course.id, [
-          'topic_menu',
-          'description',
-          'purchase',
-          'redeem_coupon',
-          'introduction_asset',
-          'curriculum',
-          'instructor_bio'
-        ]) +
-        '&couponCode=' +
-        Course.couponCode
+        let apiUrl =
+          this._getApiUrl(Course.id, [
+            'topic_menu',
+            'description',
+            'purchase',
+            'redeem_coupon',
+            'introduction_asset',
+            'curriculum',
+            'instructor_bio'
+          ]) +
+          '&couponCode=' +
+          Course.couponCode
 
-      request('GET', apiUrl, {
-        headers: {
-          'User-Agent': newUserAgent,
-          'Content-Type': 'application/json'
-        }
-      }).done(res => {
-        resApi = res.getBody('utf8')
+        request('GET', apiUrl, {
+          headers: {
+            'User-Agent': newUserAgent,
+            'Content-Type': 'application/json'
+          }
+        }).done(res => {
+          resApi = res.getBody('utf8')
 
-        if (resApi.statusCode !== 200) {
-          return _cb(
-            new Error(
-              'Udemy API page responded with status ' + resApi.statusCode
+          if (resApi.statusCode !== 200) {
+            return _cb(
+              new Error(
+                'Udemy API page responded with status ' + resApi.statusCode
+              )
             )
+          }
+
+          let jsonData = JSON.parse(resApi)
+
+          // description, audiences, topics
+          Course.description = jsonData.description.data.description
+          Course.audiences = jsonData.description.data.target_audiences
+          Course.curriculum = {}
+          Course.curriculum.contents = JSON.parse(
+            JSON.stringify(jsonData.curriculum.data.sections)
           )
-        }
+          Course.curriculum.courseLength =
+            jsonData.curriculum.data.estimated_content_length_text
+          Course.topics = jsonData.topic_menu.menu_data.map(
+            m => m.title || m.display_name
+          )
 
-        let jsonData = JSON.parse(resApi)
+          // price, discount
+          Course.price = jsonData.purchase.data.pricing_result.price.amount
+          Course.fullPrice = jsonData.purchase.data.list_price.amount
 
-        // description, audiences, topics
-        Course.description = jsonData.description.data.description
-        Course.audiences = jsonData.description.data.target_audiences
-        Course.curriculum = {}
-        Course.curriculum.contents = JSON.parse(
-          JSON.stringify(jsonData.curriculum.data.sections)
-        )
-        Course.curriculum.courseLength =
-          jsonData.curriculum.data.estimated_content_length_text
-        Course.topics = jsonData.topic_menu.menu_data.map(
-          m => m.title || m.display_name
-        )
+          Course.authors =
+            jsonData.instructor_bio.data.instructors_info[0].display_name
 
-        // price, discount
-        Course.price = jsonData.purchase.data.pricing_result.price.amount
-        Course.fullPrice = jsonData.purchase.data.list_price.amount
+          // Course.image = jsonData.introduction_asset.images.image_480x270
 
-        Course.authors =
-          jsonData.instructor_bio.data.instructors_info[0].display_name
+          if (jsonData.purchase.data.pricing_result.has_discount_saving) {
+            Course.discount =
+              jsonData.purchase.data.pricing_result.discount_percent_for_display
+            Course.discountExpiration = jsonData.purchase.data.pricing_result
+              .campaign
+              ? jsonData.purchase.data.pricing_result.campaign.end_time
+              : null
+          }
 
-        // Course.image = jsonData.introduction_asset.images.image_480x270
-
-        if (jsonData.purchase.data.pricing_result.has_discount_saving) {
-          Course.discount =
-            jsonData.purchase.data.pricing_result.discount_percent_for_display
-          Course.discountExpiration = jsonData.purchase.data.pricing_result
-            .campaign
-            ? jsonData.purchase.data.pricing_result.campaign.end_time
-            : null
-        }
-
-        return _cb(null, Course)
+          return _cb(null, Course)
+        })
       })
-    })
+      .catch(function(error) {
+        // handle error
+        console.log('AXIOS ERROR: ', error)
+      })
   }
 }
 
