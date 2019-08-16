@@ -4,7 +4,7 @@ function _interopDefault(ex) {
   return ex && typeof ex === 'object' && 'default' in ex ? ex['default'] : ex
 }
 
-const phantom = require('phantom')
+// const phantom = require('phantom')
 const cheerio = _interopDefault(require('cheerio'))
 const request = require('then-request')
 // const request = _interopDefault(require('sync-request'))
@@ -80,42 +80,33 @@ class UdemyCrawler {
     const userAgent = new UserAgent()
     console.log('-------- userAgent: ' + userAgent.toString())
     const newUserAgent = userAgent.toString()
-    const options = {
-      headers: {
-        'User-Agent': newUserAgent
-      },
-      // maxRetries: 3,
-      // retryDelay: 3000,
-      url: requestUrl,
-      method: 'GET',
-      xsrfCookieName: 'XSRF-TOKEN',
-      xsrfHeaderName: 'X-XSRF-TOKEN'
+    const headers = {
+      'User-Agent': newUserAgent,
+      // url: requestUrl,
+      'set-cookie': [
+        '__cfduid=d6fa31f10f333852762ac4bb4836825381565944230; expires=Sat, 17-Aug-20 08:30:30 GMT; path=/; domain=.udemy.com; HttpOnly',
+        '_pxhd=32c182d85232d65b2288fb48868e813a2182aaf7fa2caee59c4b16bf61105878:1b7e3621-c000-11e9-b968-3908e2c0de98; path=/;'
+      ],
+      'x-content-type-options': 'nosniff'
       // httpsAgent: new https.Agent({ keepAlive: true })
     }
 
-    let _ph, _page, _outObj
-    phantom
-      .create()
-      .then(ph => {
-        _ph = ph
-        return _ph.createPage()
-      })
-      .then(page => {
-        _page = page
-        return _page.open(requestUrl)
-      })
-      .then(status => {
-        console.log('PAGE STATUS: ', status)
-        return _page.property('content')
-      })
-      .then(content => {
-        console.log('PAGE CONTENT: ', content)
-
-        if (status !== 200) {
-          return _cb(new Error('Udemy page responded with status ' + status))
+    request('GET', requestUrl, {
+      headers: headers,
+      allowRedirectHeaders: 'https://www.udemy.com/*',
+      maxRedirects: 3,
+      retry: true,
+      maxRetries: 3,
+      retryDelay: 3000
+    })
+      .done(res => {
+        if (res.statusCode !== 200) {
+          return _cb(
+            new Error('Udemy page responded with status ' + res.statusCode)
+          )
         }
 
-        const $ = cheerio.load(content) // response.getBody())
+        const $ = cheerio.load(res.getBody()) // response.getBody())
 
         // id, title, headline, image
         Course.id = this.courseId || $('body').attr('data-clp-course-id')
