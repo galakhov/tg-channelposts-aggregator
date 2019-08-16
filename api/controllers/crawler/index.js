@@ -191,59 +191,58 @@ class UdemyCrawler {
           'User-Agent': newUserAgent,
           'Content-Type': 'application/json'
         }
-      }).done(res => {
-        resApi = res.getBody('utf8')
-        console.log(
-          'TCL: UdemyCrawler -> execute -> res.statusCode',
-          res.statusCode
-        )
-        console.log(
-          'TCL: UdemyCrawler -> execute -> resApi.statusCode',
-          resApi.statusCode
-        )
-
-        if (resApi.statusCode !== 200) {
-          return _cb(
-            new Error(
-              'Udemy API page responded with status ' + resApi.statusCode
-            )
-          )
-        }
-
-        let jsonData = JSON.parse(resApi)
-
-        // description, audiences, topics
-        Course.description = jsonData.description.data.description
-        Course.audiences = jsonData.description.data.target_audiences
-        Course.curriculum = {}
-        Course.curriculum.contents = JSON.parse(
-          JSON.stringify(jsonData.curriculum.data.sections)
-        )
-        Course.curriculum.courseLength =
-          jsonData.curriculum.data.estimated_content_length_text
-        Course.topics = jsonData.topic_menu.menu_data.map(
-          m => m.title || m.display_name
-        )
-
-        // price, discount
-        Course.price = jsonData.purchase.data.pricing_result.price.amount
-        Course.fullPrice = jsonData.purchase.data.list_price.amount
-
-        Course.authors =
-          jsonData.instructor_bio.data.instructors_info[0].display_name
-
-        // Course.image = jsonData.introduction_asset.images.image_480x270
-
-        if (jsonData.purchase.data.pricing_result.has_discount_saving) {
-          Course.discount =
-            jsonData.purchase.data.pricing_result.discount_percent_for_display
-          Course.discountExpiration = jsonData.purchase.data.pricing_result
-            .campaign
-            ? jsonData.purchase.data.pricing_result.campaign.end_time
-            : null
-        }
-        return _cb(null, Course)
       })
+        .getBody('utf8')
+        .then(JSON.parse)
+        .done(res => {
+          resApi = res
+          console.log(
+            'TCL: UdemyCrawler -> execute -> resApi.statusCode',
+            res.statusCode
+          )
+
+          if (!resApi || resApi.statusCode !== 200) {
+            return _cb(
+              new Error(
+                'Udemy API page responded with status ' + resApi.statusCode
+              )
+            )
+          }
+
+          let jsonData = resApi // JSON.parse(resApi)
+
+          // description, audiences, topics
+          Course.description = jsonData.description.data.description
+          Course.audiences = jsonData.description.data.target_audiences
+          Course.curriculum = {}
+          Course.curriculum.contents = JSON.parse(
+            JSON.stringify(jsonData.curriculum.data.sections)
+          )
+          Course.curriculum.courseLength =
+            jsonData.curriculum.data.estimated_content_length_text
+          Course.topics = jsonData.topic_menu.menu_data.map(
+            m => m.title || m.display_name
+          )
+
+          // price, discount
+          Course.price = jsonData.purchase.data.pricing_result.price.amount
+          Course.fullPrice = jsonData.purchase.data.list_price.amount
+
+          Course.authors =
+            jsonData.instructor_bio.data.instructors_info[0].display_name
+
+          // Course.image = jsonData.introduction_asset.images.image_480x270
+
+          if (jsonData.purchase.data.pricing_result.has_discount_saving) {
+            Course.discount =
+              jsonData.purchase.data.pricing_result.discount_percent_for_display
+            Course.discountExpiration = jsonData.purchase.data.pricing_result
+              .campaign
+              ? jsonData.purchase.data.pricing_result.campaign.end_time
+              : null
+          }
+          return _cb(null, Course)
+        })
     })
   }
 }
