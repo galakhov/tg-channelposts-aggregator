@@ -1,6 +1,8 @@
 const cheerio = require('cheerio')
-const request = require('sync-request')
+// const request = require('sync-request')
+const request = require('then-request')
 const normalizeUrl = require('normalize-url')
+const UserAgent = require('user-agents')
 
 class UrlCrawler {
   constructor(config) {
@@ -18,48 +20,57 @@ class UrlCrawler {
   }
 
   execute(url, pathsToCheck = ['body a']) {
-    const response = request('GET', url, {
+    const userAgent = new UserAgent()
+    console.log('-------- userAgent: ' + userAgent.toString())
+    const newUserAgent = userAgent.toString()
+    const options = {
       headers: {
-        'User-Agent': this.config.headers['User-Agent']
-      }
-    })
-
-    if (response.statusCode !== 200) {
-      return new Error(
-        "Can't find the requested URL. Response code: " + response.statusCode
-      )
+        'User-Agent': newUserAgent
+      },
+      maxRetries: 3,
+      retryDelay: 3000
     }
-    const $ = cheerio.load(response.getBody(), {
-      xml: {
-        normalizeWhitespace: true,
-        decodeEntities: true
-      }
-    }) // loading the requested page (connsidering redirections, etc.)
-    // console.log('response.getBody()', $.html())
 
+    let response = null
     let content = ''
     const scrapedContent = []
 
-    pathsToCheck.forEach(target => {
-      // universal parser: currently works with links & images
-      content =
-        $(target).attr('href') ||
-        $(target).attr('data-src') ||
-        $(target).attr('src')
-      if (content && content.indexOf('http') !== -1) {
-        console.log('UrlCrawler -> found url:', content)
-        const foundUrl = normalizeUrl(content.trim())
-        scrapedContent.push(foundUrl)
+    request('GET', url, options).done(res => {
+      response = res.getBody()
+      if (response.statusCode !== 200) {
+        return new Error(
+          "Can't find the requested URL. Response code: " + response.statusCode
+        )
       }
-      content = ''
+      const $ = cheerio.load(response.getBody(), {
+        xml: {
+          normalizeWhitespace: true,
+          decodeEntities: true
+        }
+      }) // loading the requested page (connsidering redirections, etc.)
+      // console.log('response.getBody()', $.html())
+
+      pathsToCheck.forEach(target => {
+        // universal parser: currently works with links & images
+        content =
+          $(target).attr('href') ||
+          $(target).attr('data-src') ||
+          $(target).attr('src')
+        if (content && content.indexOf('http') !== -1) {
+          console.log('UrlCrawler -> found url:', content)
+          const foundUrl = normalizeUrl(content.trim())
+          scrapedContent.push(foundUrl)
+        }
+        content = ''
+      })
+
+      console.log('-------- scrapedContent', scrapedContent)
+
+      if (scrapedContent.length > 0) {
+        return scrapedContent
+      }
+      return new Error("Couldn't parse the requested element(s).")
     })
-
-    console.log('-------- scrapedContent', scrapedContent)
-
-    if (scrapedContent.length > 0) {
-      return scrapedContent
-    }
-    return new Error("Couldn't parse the requested element(s).")
   }
 }
 

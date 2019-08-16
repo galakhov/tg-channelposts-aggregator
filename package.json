@@ -29,7 +29,9 @@
     "request-promise": "^4.2.4",
     "sequential-task-queue": "^1.2.1",
     "sync-request": "^6.1.0",
-    "telegraf": "^3.16.4"
+    "telegraf": "^3.16.4",
+    "then-request": "^6.0.2",
+    "user-agents": "^1.0.350"
   },
   "scripts": {
     "dev": "nodemon server.js",
