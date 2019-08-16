@@ -242,9 +242,6 @@ class UdemyCrawler {
             ? jsonData.purchase.data.pricing_result.campaign.end_time
             : null
         }
-        // close page & phantom connection
-        _page.close()
-        _ph.exit()
         return _cb(null, Course)
       })
     })
