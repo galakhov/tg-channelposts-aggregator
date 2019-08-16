@@ -25,61 +25,56 @@ class Posts extends React.Component {
               Courses found: {searchResultsCount}
             </h5>
             <StackGrid columnWidth={340} gutterWidth={40} gutterHeight={20}>
-              {
-                // searchResults // &&
-                ((console.log('searchResultsCount', searchResultsCount),
-                  console.log('searchResults received: ', searchResults)),
-                  searchResults &&
-                  searchResults.map((post, index) => {
-                    return (
-                      <Card
-                        key={post._id}
-                        _id={post._id}
-                        createdDate={post._source.created_date}
-                        onCardClick={openModal}
-                        text={getCleanText(
-                          post._source.preview.courseContents.title
-                            ? post._source.preview.courseContents.title
-                            : 'Udemy Course'
-                        )}
-                        headline={
-                          post._source.preview.courseContents.headline
-                            ? post._source.preview.courseContents.headline
-                            : ''
-                        }
-                        img={
-                          post._source.preview.courseContents.url
-                            ? post._source.preview.courseContents.url
-                            : ''
-                        }
-                        tags={
-                          post._source.preview.courseContents.keywords
-                            ? post._source.preview.courseContents.keywords
-                            : ''
-                        }
-                        discount={
-                          post._source.preview.courseContents.discountInPercent
-                            ? post._source.preview.courseContents
-                              .discountInPercent
-                            : null
-                        }
-                        expirationDate={
-                          post._source.preview.courseContents
+              {searchResults &&
+                searchResults.map((post, index) => {
+                  return (
+                    <Card
+                      key={post._id}
+                      _id={post._id}
+                      createdDate={post._source.created_date}
+                      onCardClick={openModal}
+                      text={getCleanText(
+                        post._source.preview.courseContents.title
+                          ? post._source.preview.courseContents.title
+                          : 'Udemy Course'
+                      )}
+                      headline={
+                        post._source.preview.courseContents.headline
+                          ? post._source.preview.courseContents.headline
+                          : ''
+                      }
+                      img={
+                        post._source.preview.courseContents.url
+                          ? post._source.preview.courseContents.url
+                          : ''
+                      }
+                      tags={
+                        post._source.preview.courseContents.keywords
+                          ? post._source.preview.courseContents.keywords
+                          : ''
+                      }
+                      discount={
+                        post._source.preview.courseContents.discountInPercent
+                          ? post._source.preview.courseContents
+                            .discountInPercent
+                          : null
+                      }
+                      expirationDate={
+                        post._source.preview.courseContents
+                          .discountExpirationDate
+                          ? post._source.preview.courseContents
                             .discountExpirationDate
-                            ? post._source.preview.courseContents
-                              .discountExpirationDate
-                            : null
-                        }
-                        listPrice={
-                          post._source.preview.courseContents.initialPrice
-                            ? post._source.preview.courseContents.initialPrice
-                            : null
-                        }
-                        nr={index}
-                      />
-                    )
-                  }))
-              }
+                          : null
+                      }
+                      listPrice={
+                        post._source.preview.courseContents.initialPrice
+                          ? post._source.preview.courseContents.initialPrice
+                          : null
+                      }
+                      nr={index}
+                    />
+                  )
+                })}
             </StackGrid>
           </div>
         )}

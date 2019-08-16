@@ -55,11 +55,6 @@ class ThirdPartyCourses {
         ) {
           queue.push(() => {
             return new Promise(resolve => {
-              // console.log(
-              //   `\n\n${ctlHelper.getFullDate()} parseAndSaveCourse:\nCOURSE ID: ${
-              //     url[0]
-              //   }\nCOURSE URL: ${url[1]}\n\n`
-              // )
               setTimeout(() => {
                 ctlHelper.parseAndSaveCourse(url[1], url[0])
                 resolve()
@@ -79,9 +74,10 @@ class ThirdPartyCourses {
           })
           queue.wait().then(() => {
             // the last step in every queue is to cancel the running cron job
-            // if (this.jobs.running) {
-            //   this.jobs.stop()
-            // }
+            if (this.jobs.running) {
+              this.jobs.stop()
+              this.automate()
+            }
           })
         }
       })
@@ -93,9 +89,7 @@ class ThirdPartyCourses {
       const variables = {
         myDate: new Date().toISOString().split('T')[0]
       }
-      const freeCourses = [],
-        freeCoursesIds = [],
-        freeCoupons = [],
+      const freeCoursesIds = [],
         freeCouponsIds = []
       // see docs at: https://github.com/prisma/graphql-request
       request('https://comidoc.net/api', graphqlQuery, variables)
@@ -174,8 +168,11 @@ class ThirdPartyCourses {
     // https://www.npmjs.com/package/cron
     // https://github.com/kelektiv/node-cron
     const { CronJob } = require('cron')
+    const max = 45,
+      min = 15
+    const randomTime = Math.floor(Math.random() * (max - min)) + min
     this.jobs = new CronJob(
-      '*/30 * * * *', // every 30th minute
+      `*/${randomTime} * * * *`, // every 30th minute
       () => {
         this.execute()
         // this.jobs.stop()
@@ -188,7 +185,7 @@ class ThirdPartyCourses {
     console.log(
       '\n-------- Planning automation: cron will run on the following dates:\n'
     )
-    this.jobs.nextDates(10).forEach(d => {
+    this.jobs.nextDates(5).forEach(d => {
       const date = JSON.stringify(d)
         .replace(/-/g, '/')
         .replace(/T/, ' ')
