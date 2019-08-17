@@ -257,7 +257,7 @@ const addPost = async data => {
           // const tags = ctlHelper.extractHashtags(text)
           // NewPost.tags = tags
 
-          // crawl and parse contents
+          // crawl and parse contents: the link is clean
           if (
             url.indexOf('https://www.udemy.com/') !== -1 ||
             url.indexOf('https://udemy.com/') !== -1

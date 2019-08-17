@@ -53,32 +53,39 @@ class ThirdPartyCourses {
           url[1].indexOf('https://www.udemy.com/') !== -1 ||
           url[1].indexOf('https://udemy.com/') !== -1
         ) {
-          queue.push(() => {
-            return new Promise(resolve => {
-              setTimeout(() => {
-                ctlHelper.parseAndSaveCourse(url[1], url[0])
-                resolve()
-              }, 5000)
+          const isLinkAlreadyInDB = ctlHelper.isAlreadyInDB(url[1])
+          if (
+            // If the course link isn't in DB, continue...
+            typeof isLinkAlreadyInDB !== 'undefined' &&
+            isLinkAlreadyInDB === false
+          ) {
+            queue.push(() => {
+              return new Promise(resolve => {
+                setTimeout(() => {
+                  ctlHelper.parseAndSaveCourse(url[1], url[0])
+                  resolve()
+                }, 5000)
+              })
+                .then(r => {
+                  console.log(
+                    ctlHelper.getFullDate() +
+                      ' Following course added to the queue for parsing:\n' +
+                      url +
+                      '\n\n'
+                  )
+                })
+                .catch(e => {
+                  console.log('Error: ', e)
+                })
             })
-              .then(r => {
-                console.log(
-                  ctlHelper.getFullDate() +
-                    ' Following course added to the queue for parsing:\n' +
-                    url +
-                    '\n\n'
-                )
-              })
-              .catch(e => {
-                console.log('Error: ', e)
-              })
-          })
-          queue.wait().then(() => {
-            // the last step in every queue is to cancel the running cron job
-            if (this.jobs.running) {
-              this.jobs.stop()
-              this.automate()
-            }
-          })
+            queue.wait().then(() => {
+              // the last step in every queue is to cancel the running cron job
+              if (this.jobs.running) {
+                this.jobs.stop()
+                this.automate()
+              }
+            })
+          }
         }
       })
     }
