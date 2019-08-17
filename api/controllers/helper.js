@@ -127,18 +127,22 @@ const prepareUdemyCourseJSON = async (url, courseId) => {
   const crawler = new UdemyCrawler({}, courseId)
   console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling', 'Starting...')
   const urlWithoutAffiliateParameters = affiliateParametersCleaner(url)
+  console.log(
+    getFullDate() + 'urlWithoutAffiliateParameters: ',
+    urlWithoutAffiliateParameters
+  )
   return crawler.execute(urlWithoutAffiliateParameters, (err, content) => {
     if (err) {
       return console.error(err.message)
     }
+    console.log(getFullDate() + 'crawler content', content)
     console.log(
       getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished...👍'
     )
-    // console.log(content)
     // try {
-    if (content !== null) {
+    if (content) {
       contentsSaved = populateUdemyCourseData(content)
-      if (contentsSaved !== null) {
+      if (contentsSaved) {
         console.log(getFullDate() + ' contentsSaved ✅', contentsSaved)
         return contentsSaved
       } else {
@@ -163,26 +167,28 @@ const prepareUdemyCourseJSON = async (url, courseId) => {
 const populateUdemyCourseData = async contents => {
   console.log(getFullDate() + ' populateUdemyCourseData ', 'Starting...')
   const NewPost = new Post()
-  NewPost.preview.courseContents = {}
-  NewPost.preview.courseId = contents.id
-  NewPost.preview.courseUrl = contents.url
-  NewPost.preview.courseContents.text = contents.description
-  NewPost.preview.courseContents.audiences = contents.audiences
-  NewPost.preview.courseContents.author = contents.authors
-  NewPost.preview.courseContents.date = contents.date
-  NewPost.preview.courseContents.discountInPercent = contents.discount
-  NewPost.preview.courseContents.discountExpirationDate =
-    contents.discountExpiration
-  NewPost.preview.courseContents.currentPrice = contents.price
-  NewPost.preview.courseContents.initialPrice = contents.fullPrice
-  NewPost.preview.courseContents.title = contents.title
-  NewPost.preview.courseContents.headline = contents.headline
-  NewPost.preview.courseContents.enrolled = contents.enrollmentNumber
-  NewPost.preview.courseContents.rating = contents.rating
-  NewPost.preview.courseContents.lectures = contents.curriculum
-  NewPost.preview.courseContents.keywords = contents.topics.join(', ')
-  NewPost.preview.courseContents.language = contents.language
-  NewPost.preview.courseContents.url = contents.image
+  if (contents) {
+    NewPost.preview.courseContents = {}
+    NewPost.preview.courseId = contents.id
+    NewPost.preview.courseUrl = contents.url
+    NewPost.preview.courseContents.text = contents.description
+    NewPost.preview.courseContents.audiences = contents.audiences
+    NewPost.preview.courseContents.author = contents.authors
+    NewPost.preview.courseContents.date = contents.date
+    NewPost.preview.courseContents.discountInPercent = contents.discount
+    NewPost.preview.courseContents.discountExpirationDate =
+      contents.discountExpiration
+    NewPost.preview.courseContents.currentPrice = contents.price
+    NewPost.preview.courseContents.initialPrice = contents.fullPrice
+    NewPost.preview.courseContents.title = contents.title
+    NewPost.preview.courseContents.headline = contents.headline
+    NewPost.preview.courseContents.enrolled = contents.enrollmentNumber
+    NewPost.preview.courseContents.rating = contents.rating
+    NewPost.preview.courseContents.lectures = contents.curriculum
+    NewPost.preview.courseContents.keywords = contents.topics.join(', ')
+    NewPost.preview.courseContents.language = contents.language
+    NewPost.preview.courseContents.url = contents.image
+  }
 
   // save post only if the given url is valid and the contents were properly parsed
   const postStatus = NewPost.save().then(post => {

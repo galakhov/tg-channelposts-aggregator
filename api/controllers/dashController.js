@@ -214,7 +214,7 @@ const addPost = async data => {
 
       try {
         let isLinkAlreadyInDB = false
-        if (url !== undefined) {
+        if (url) {
           const urlWithoutParameters = cleanUrl(url)
           // exit the process if duplicates exist in DB
           isLinkAlreadyInDB = ctlHelper.isAlreadyInDB(urlWithoutParameters)

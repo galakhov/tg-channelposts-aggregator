@@ -55,7 +55,6 @@ class ThirdPartyCourses {
         ) {
           const isLinkAlreadyInDB = ctlHelper.isAlreadyInDB(url[1])
           if (
-            // If the course link isn't in DB, continue...
             typeof isLinkAlreadyInDB !== 'undefined' &&
             isLinkAlreadyInDB === false
           ) {

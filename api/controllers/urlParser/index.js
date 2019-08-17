@@ -74,7 +74,6 @@ class UrlCrawler {
     try {
       const parsedContent = this.syncParsing(url)
       // console.log('parsedContent: ' + parsedContent)
-
       const parsedLink = this.cheerioParsing(parsedContent, pathsToCheck)
       console.log('-------- UrlCrawler -> execute -> parsedLink', parsedLink)
       return parsedLink
