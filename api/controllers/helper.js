@@ -61,7 +61,7 @@ const isAlreadyInDB = cleanedUrl => {
   } else if (cleanedUrl === null || cleanedUrl === 'undefined') {
     cleanedUrl
     console.error(
-      getFullDate() + ' isAlreadyInDB: URL is invalid: ' + cleanedUrl
+      getFullDate() + ' isAlreadyInDB: URL is invalid ❌ ' + cleanedUrl
     )
     return false
   }

@@ -62,7 +62,15 @@ const isThirdPartyLink = url => {
     url.indexOf('udemyoff.com') !== -1 ||
     url.indexOf('ift.tt/') !== -1 ||
     url.indexOf('eduonix.com') !== -1 ||
-    url.indexOf('smartybro.com') !== -1
+    url.indexOf('smartybro.com') !== -1 ||
+    url.indexOf('udemy.com%2F') !== -1 // partner link
+
+  if (nonOriginalUdemyLink) {
+    console.error(
+      ctlHelper.getFullDate() + ' ADD_POST isThirdPartyLink found: ',
+      nonOriginalUdemyLink
+    )
+  }
   return nonOriginalUdemyLink
 }
 
