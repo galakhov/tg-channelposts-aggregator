@@ -4,6 +4,8 @@ const UdemyCrawler = require('./crawler')
 const UrlCrawler = require('./urlParser')
 const mongoose = require('mongoose')
 const Post = mongoose.model('Post')
+const normalizeUrl = require('normalize-url')
+const urlTools = require('url')
 // const nodeMercuryParser = require('node-mercury-parser')
 // nodeMercuryParser.init(process.env.MERCURY_PARSER_KEY)
 
@@ -100,10 +102,32 @@ const parseUrl = async (url, paths = ['body a']) => {
   return urlParser.execute(url, paths)
 }
 
+const affiliateParametersCleaner = urlToCheck => {
+  const offset = urlToCheck.indexOf('LSNPUBID=') || -1
+  let couponCode = null
+  if (offset !== -1) {
+    const objUrl = new urlTools.URL(normalizeUrl(urlToCheck))
+    couponCode = objUrl.searchParams.get('couponCode') || null
+    urlToCheck = `https://${objUrl.hostname}${objUrl.pathname}`
+
+    urlToCheck =
+      couponCode !== null && couponCode !== ''
+        ? (urlToCheck += `?couponCode=${couponCode}`)
+        : urlToCheck
+    console.log(
+      ctlHelper.getFullDate() +
+        ' How url without params looks like: ' +
+        urlToCheck
+    )
+  }
+  return urlToCheck
+}
+
 const prepareUdemyCourseJSON = async (url, courseId) => {
   const crawler = new UdemyCrawler({}, courseId)
   console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling', 'Starting...')
-  return crawler.execute(url, (err, content) => {
+  const urlWithoutAffiliateParameters = affiliateParametersCleaner(url)
+  return crawler.execute(urlWithoutAffiliateParameters, (err, content) => {
     if (err) {
       return console.error(err.message)
     }
@@ -238,3 +262,4 @@ exports.isAd = isAd
 exports.replaceAll = replaceAll
 exports.isAlreadyInDB = isAlreadyInDB
 exports.parseAndSaveCourse = parseAndSaveCourse
+exports.affiliateParametersCleaner = affiliateParametersCleaner

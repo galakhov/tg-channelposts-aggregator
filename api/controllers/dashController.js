@@ -1,7 +1,5 @@
 const _ = require('lodash')
 const ctlHelper = require('./helper')
-const normalizeUrl = require('normalize-url')
-const urlTools = require('url')
 
 const limitPerPage = 50
 
@@ -185,27 +183,6 @@ const startSmatrybroParser = async url => {
   }
 }
 
-const affiliateParametersCleaner = urlToCheck => {
-  const offset = urlToCheck.indexOf('LSNPUBID=') || -1
-  let couponCode = null
-  if (offset !== -1) {
-    const objUrl = new urlTools.URL(normalizeUrl(urlToCheck))
-    couponCode = objUrl.searchParams.get('couponCode') || null
-    urlToCheck = `https://${objUrl.hostname}${objUrl.pathname}`
-
-    urlToCheck =
-      couponCode !== null && couponCode !== ''
-        ? (urlToCheck += `?couponCode=${couponCode}`)
-        : urlToCheck
-    console.log(
-      ctlHelper.getFullDate() +
-        ' How url without params looks like: ' +
-        urlToCheck
-    )
-  }
-  return urlToCheck
-}
-
 const addPost = async data => {
   try {
     let text = _.get(data, 'text', '') || _.get(data, 'caption', '')
@@ -253,7 +230,7 @@ const addPost = async data => {
           isLinkAlreadyInDB === false &&
           !isThirdPartyLink(url)
         ) {
-          url = affiliateParametersCleaner(url)
+          url = ctlHelper.affiliateParametersCleaner(url)
 
           // NewPost.raw = data
           // NewPost.message_id = data.message_id
