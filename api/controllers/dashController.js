@@ -234,7 +234,7 @@ const addPost = async data => {
         if (
           // If the course link isn't in DB, continue...
           typeof isLinkAlreadyInDB !== 'undefined' &&
-          isLinkAlreadyInDB !== true &&
+          isLinkAlreadyInDB === false &&
           !isThirdPartyLink(url)
         ) {
           url = affiliateParametersCleaner(url)

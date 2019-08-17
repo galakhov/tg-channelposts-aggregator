@@ -27,6 +27,12 @@ const isAlreadyInDB = cleanedUrl => {
   // exit on duplicates
   if (cleanedUrl !== 0) {
     let isInDB = true
+    cleanedUrl = cleanedUrl.replace(/https:\/\/udemy\.com/, '')
+    cleanedUrl = cleanedUrl.replace(/course\//, '')
+    console.log(
+      getFullDate() + ' isAlreadyInDB: comparing this cleaned url: ',
+      cleanedUrl
+    )
     return Post.findOne(
       { 'preview.courseUrl': { $regex: cleanedUrl, $options: 'i' } },
       async (err, response) => {
