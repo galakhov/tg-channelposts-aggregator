@@ -228,9 +228,17 @@ const addPost = async data => {
       }
 
       try {
-        const urlWithoutParameters = cleanUrl(url)
-        // exit the process if duplicates exist in DB
-        let isLinkAlreadyInDB = ctlHelper.isAlreadyInDB(urlWithoutParameters)
+        let isLinkAlreadyInDB = false
+        if (url !== undefined) {
+          const urlWithoutParameters = cleanUrl(url)
+          // exit the process if duplicates exist in DB
+          isLinkAlreadyInDB = ctlHelper.isAlreadyInDB(urlWithoutParameters)
+        } else {
+          console.log(
+            ctlHelper.getFullDate() + ' addPost url was not found: ',
+            url
+          )
+        }
         if (
           // If the course link isn't in DB, continue...
           typeof isLinkAlreadyInDB !== 'undefined' &&
@@ -269,7 +277,11 @@ const addPost = async data => {
           throw new Error('The post is already in DB. Aborting.')
         }
       } catch (e) {
-        console.error(ctlHelper.getFullDate() + ' ADD_POST: ', e)
+        console.error(
+          ctlHelper.getFullDate() +
+            ' ADD_POST (starting form isLinkAlreadyInDB): ',
+          e
+        )
       }
     } else {
       console.error(
