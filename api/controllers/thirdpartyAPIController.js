@@ -80,7 +80,7 @@ class ThirdPartyCourses {
                 console.log('Error: ', e)
               })
           })
-          removeSingleElement(urlsArray, url[0])
+          this.removeSingleElement(urlsArray, url[0])
           console.log(
             ctlHelper.getFullDate() +
               ' ThirdPartyCourses -> addToQueue -> reduced urlsArray:\n',
