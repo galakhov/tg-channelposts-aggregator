@@ -70,7 +70,10 @@ const isAlreadyInDB = (cleanedUrl, crawledContents) => {
             )
             const saveContents = populateUdemyCourseData(crawledContents)
             if (saveContents === false) {
-              console.log(`${getFullDate()} Saving failed ❌`, saveContents)
+              console.log(
+                `${getFullDate()} Saving failed ❌ populateUdemyCourseData returned:`,
+                saveContents
+              )
             } else {
               console.log(
                 `${getFullDate()} Contents were saved into DB 👍\n`,
@@ -171,7 +174,7 @@ const prepareUdemyCourseJSON = async (url, courseId) => {
 }
 
 const populateUdemyCourseData = contents => {
-  console.log(getFullDate() + ' populateUdemyCourseData: ', 'Starting...')
+  console.log(getFullDate() + ' populateUdemyCourseData: Starting...')
   const NewPost = new Post()
   if (contents) {
     console.log(

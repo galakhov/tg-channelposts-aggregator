@@ -53,38 +53,32 @@ class ThirdPartyCourses {
           url[1].indexOf('https://www.udemy.com/') !== -1 ||
           url[1].indexOf('https://udemy.com/') !== -1
         ) {
-          const isLinkAlreadyInDB = ctlHelper.isAlreadyInDB(url[1])
-          if (
-            typeof isLinkAlreadyInDB !== 'undefined' &&
-            isLinkAlreadyInDB === false
-          ) {
-            queue.push(() => {
-              return new Promise(resolve => {
-                setTimeout(() => {
-                  ctlHelper.parseAndSaveCourse(url[1], url[0])
-                  resolve()
-                }, 5000)
+          queue.push(() => {
+            return new Promise(resolve => {
+              setTimeout(() => {
+                ctlHelper.parseAndSaveCourse(url[1], url[0])
+                resolve()
+              }, 5000)
+            })
+              .then(r => {
+                console.log(
+                  ctlHelper.getFullDate() +
+                    ' Following course added to the queue for parsing:\n' +
+                    url +
+                    '\n\n'
+                )
               })
-                .then(r => {
-                  console.log(
-                    ctlHelper.getFullDate() +
-                      ' Following course added to the queue for parsing:\n' +
-                      url +
-                      '\n\n'
-                  )
-                })
-                .catch(e => {
-                  console.log('Error: ', e)
-                })
-            })
-            queue.wait().then(() => {
-              // the last step in every queue is to cancel the running cron job
-              if (this.jobs.running) {
-                this.jobs.stop()
-                this.automate()
-              }
-            })
-          }
+              .catch(e => {
+                console.log('Error: ', e)
+              })
+          })
+          queue.wait().then(() => {
+            // the last step in every queue is to cancel the running cron job
+            if (this.jobs.running) {
+              this.jobs.stop()
+              this.automate()
+            }
+          })
         }
       })
     }
@@ -104,15 +98,8 @@ class ThirdPartyCourses {
             JSON.parse(JSON.stringify(data.free)).forEach(course => {
               const urlWithoutParameters = course.cleanUrl
               const courseId = course.udemyId
-              const result = ctlHelper.isAlreadyInDB(urlWithoutParameters)
-              if (
-                // If the course's link isn't already in DB, continue...
-                typeof result !== 'undefined' &&
-                result === false
-              ) {
-                const courseUrl = `https://www.udemy.com${urlWithoutParameters}`
-                freeCoursesIds.push([courseId, courseUrl])
-              }
+              const courseUrl = `https://www.udemy.com${urlWithoutParameters}`
+              freeCoursesIds.push([courseId, courseUrl])
               setTimeout(() => {
                 console.log(
                   '\nThirdPartyCourses -> freeCourses\n',
@@ -120,7 +107,7 @@ class ThirdPartyCourses {
                 )
                 // prepare & save the post
                 this.addToQueue(freeCoursesIds)
-              }, 10000)
+              }, 5000)
             })
           }
 
@@ -128,23 +115,10 @@ class ThirdPartyCourses {
             JSON.parse(JSON.stringify(data.coupons)).forEach(obj => {
               const urlWithoutParameters = obj.course.cleanUrl
               const courseId = obj.course.udemyId
-              ctlHelper
-                .isAlreadyInDB(urlWithoutParameters)
-                .then(result => {
-                  if (
-                    // If the course link isn't in DB, continue...
-                    typeof result !== 'undefined' &&
-                    result === false
-                  ) {
-                    const freeCoupon = `https://www.udemy.com${urlWithoutParameters}?couponCode=${
-                      obj.course.coupon[0].code
-                    }`
-                    freeCouponsIds.push([courseId, freeCoupon])
-                  }
-                })
-                .catch(err => {
-                  console.log('data.coupons response errors: ', err)
-                })
+              const freeCoupon = `https://www.udemy.com${urlWithoutParameters}?couponCode=${
+                obj.course.coupon[0].code
+              }`
+              freeCouponsIds.push([courseId, freeCoupon])
             })
             setTimeout(() => {
               console.log(
@@ -153,7 +127,7 @@ class ThirdPartyCourses {
               )
               // prepare & save the post
               this.addToQueue(freeCouponsIds)
-            }, 15000)
+            }, 10000)
           }
         })
         .catch(err => {
