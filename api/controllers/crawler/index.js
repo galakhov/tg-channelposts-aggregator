@@ -84,7 +84,7 @@ class UdemyCrawler {
       'User-Agent': newUserAgent,
       // url: requestUrl,
       'set-cookie': [
-        '__cfduid=d6fa31f10f333852762ac4bb4836825381565944230; expires=Sat, 18-Aug-20 08:30:30 GMT; path=/; domain=.udemy.com; HttpOnly',
+        '__cfduid=d6fa31f10f333852762ac4bb4836825381565944230; expires=Sat, 31-Aug-2019 23:59:59 GMT; path=/; domain=.udemy.com; HttpOnly',
         '_pxhd=32c182d85232d65b2288fb48868e813a2182aaf7fa2caee59c4b16bf61105878:1b7e3621-c000-11e9-b968-3908e2c0de98; path=/;'
       ],
       'x-content-type-options': 'nosniff'
@@ -104,9 +104,7 @@ class UdemyCrawler {
           new Error('Udemy page responded with status ' + res.statusCode)
         )
       }
-
       const $ = cheerio.load(res.getBody('utf8')) // response.getBody())
-
       // id, title, headline, image
       Course.id = this.courseId || $('body').attr('data-clp-course-id')
       Course.title = $('.clp-lead__title[data-purpose="lead-title"]')
@@ -119,19 +117,13 @@ class UdemyCrawler {
         .text()
         .replace(/(\n)/g, '')
         .trim()
-      console.log('UdemyCrawler -> execute -> Course.language', Course.language)
       const crawledRating = $('.rate-count .tooltip-container span:first-child')
         .text()
         .trim()
-      console.log('UdemyCrawler -> execute -> crawledRating', crawledRating)
       Course.rating =
         crawledRating.length > 3
           ? crawledRating.trim().substr(0, 3)
           : crawledRating
-      console.log(
-        'TCL: UdemyCrawler -> execute -> Course.rating',
-        Course.rating
-      )
       const enrollmentNr = $('[data-purpose="enrollment"]')
         .text()
         .trim()
@@ -140,14 +132,8 @@ class UdemyCrawler {
         .substring(0, startEnrolledText + 18) // remove first part of this weird string
         .replace(/(\n)/g, '') // remove double line breaks: \n\n
         .replace(' students enrolled', '') // remove the second part of the str
-      console.log(
-        'TCL: UdemyCrawler -> execute -> Course.enrollmentNumber',
-        Course.enrollmentNumber
-      )
-
       const metaJson = JSON.parse($('#schema_markup script').html())
       Course.image = metaJson[0].image
-      console.log('TCL: UdemyCrawler -> execute -> Course.image', Course.image)
       Course.date = $(
         '.main-content .container [data-purpose="last-update-date"] span'
       )
@@ -195,13 +181,13 @@ class UdemyCrawler {
         .getBody('utf8')
         .then(JSON.parse)
         .done(res => {
-          console.log('TCL: UdemyCrawler -> execute -> res', res)
-
           if (!res || res.description.length <= 0) {
             return _cb(new Error('Udemy API page responded with error ' + res))
+          } else {
+            console.log('UdemyCrawler -> execute -> populating contents... ✅')
           }
 
-          let jsonData = res // JSON.parse(resApi)
+          let jsonData = res
 
           // description, audiences, topics
           Course.description = jsonData.description.data.description

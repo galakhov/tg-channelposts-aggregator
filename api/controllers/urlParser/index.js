@@ -3,6 +3,7 @@ const request = require('sync-request')
 // const request = require('then-request')
 const normalizeUrl = require('normalize-url')
 const UserAgent = require('user-agents')
+const urlTools = require('url')
 
 class UrlCrawler {
   constructor(config) {
@@ -56,7 +57,18 @@ class UrlCrawler {
         $(target).attr('src')
       if (content && content.indexOf('http') !== -1) {
         console.log('-------- UrlCrawler -> found url(s):', content)
-        const foundUrl = normalizeUrl(content.trim())
+        let foundUrl = content.trim()
+        // special case for https://ift.tt/ links (real.discount)
+        if (content.indexOf('&RD_PARM1') !== -1) {
+          const objUrl = new urlTools.URL(foundUrl)
+          foundUrl = normalizeUrl(objUrl.searchParams.get('RD_PARM1')) || null
+          console.log(
+            '-------- UrlCrawler -> url from RD_PARM1:\n',
+            normalizeUrl(foundUrl)
+          )
+        } else {
+          foundUrl = normalizeUrl(foundUrl)
+        }
         scrapedContent.push(foundUrl)
       }
       content = ''
@@ -64,7 +76,7 @@ class UrlCrawler {
     console.log('-------- scrapedContent', scrapedContent)
 
     if (scrapedContent.length > 0) {
-      return scrapedContent[0]
+      return scrapedContent[0] // return the first found url
     }
     return new Error("Couldn't parse the requested element(s).")
   }

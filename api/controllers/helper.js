@@ -6,60 +6,87 @@ const mongoose = require('mongoose')
 const Post = mongoose.model('Post')
 const normalizeUrl = require('normalize-url')
 const urlTools = require('url')
-// const nodeMercuryParser = require('node-mercury-parser')
-// nodeMercuryParser.init(process.env.MERCURY_PARSER_KEY)
 
 const parseAndSaveCourse = (url, courseId = null) => {
-  setTimeout(() => {
-    // delay the next call to the third-party api
-    let contents = null
-    try {
-      contents = prepareUdemyCourseJSON(url, courseId)
-      // let contentsSaved = null
-    } catch (err) {
-      console.error(
-        getFullDate() + ' ADD_POST prepareUdemyCourseJSON ❌\n',
-        err
-      )
-    }
-  }, 0)
+  // delay the next call to the third-party api
+  try {
+    prepareUdemyCourseJSON(url, courseId)
+    // let contentsSaved = null
+  } catch (err) {
+    console.error(getFullDate() + ' ADD_POST prepareUdemyCourseJSON ❌\n', err)
+  }
 }
 
-const isAlreadyInDB = cleanedUrl => {
+const cleanUrl = url => {
+  let cleanedUrl = url
+  console.log(getFullDate() + ' cleanedUrl function: ', url)
+  let posToEnd = url.indexOf('/?couponCode=')
+  if (posToEnd === -1) {
+    posToEnd = url.indexOf('/?&deal_code=')
+  }
+  if (posToEnd === -1) {
+    posToEnd = url.indexOf('/?') // strict parameters cleaner
+  }
+  if (posToEnd !== -1) {
+    cleanedUrl = url.substr(0, posToEnd)
+  }
+  if (cleanedUrl && cleanedUrl.length > 5) {
+    // strip 'http(s)://' and the trailing slash in the end if any
+    cleanedUrl = cleanedUrl.replace(/(^\w+:|^)\/\//, '')
+    cleanedUrl = cleanedUrl.replace(/www\./, '')
+    cleanedUrl = cleanedUrl.replace(/\/$/, '')
+  } else {
+    cleanedUrl = 0
+  }
+
+  console.log(getFullDate() + ' How cleaned url looks like:', cleanedUrl)
+  console.log(
+    getFullDate() + ' Cleaned url will be parsed & added? ',
+    cleanedUrl.indexOf('udemy.com') !== -1
+  )
+  return cleanedUrl
+}
+
+const isAlreadyInDB = (cleanedUrl, crawledContents) => {
   // exit on duplicates
   if (cleanedUrl !== 0) {
-    let isInDB = true
-    cleanedUrl = cleanedUrl.replace(/https:\/\/udemy\.com/, '')
-    cleanedUrl = cleanedUrl.replace(/course\//, '')
-    console.log(
-      getFullDate() + ' isAlreadyInDB: comparing this cleaned url: ',
-      cleanedUrl
-    )
-    return Post.findOne(
-      { 'preview.courseUrl': { $regex: cleanedUrl, $options: 'i' } },
-      async (err, response) => {
-        const result = await response
-        if (result !== null) {
-          console.warn(
-            getFullDate() +
-              ' This post was already added to DB before. Aborting. ❌',
-            cleanedUrl
-          )
-          isInDB = true
-          console.log(getFullDate() + ' isAlreadyInDB ❌', isInDB)
-          return isInDB
-          // throw new Error('This post was already added to DB before. Aborting.')
-        } else {
-          if (err) {
-            console.error(getFullDate() + ' DB query error ❌', err)
+    let urlPath = cleanUrl(cleanedUrl)
+    urlPath = urlPath.replace(/udemy\.com/, '')
+    urlPath = urlPath.replace(/course\//, '')
+    try {
+      console.log(
+        getFullDate() + ' isAlreadyInDB: looking for this url path in DB: ',
+        urlPath
+      )
+      Post.findOne({
+        'preview.courseUrl': { $regex: urlPath, $options: 'i' }
+      })
+        .lean()
+        .exec((err, result) => {
+          if (result === null) {
+            console.log(
+              `${getFullDate()} The post with this URL isn't in DB ✅ `,
+              cleanedUrl
+            )
+            const saveContents = populateUdemyCourseData(crawledContents)
+            if (saveContents === false) {
+              console.log(`${getFullDate()} Saving failed ❌`, saveContents)
+            } else {
+              console.log(
+                `${getFullDate()} Contents were saved into DB 👍\n`,
+                saveContents
+              )
+            }
+          } else {
+            console.error(
+              `${getFullDate()} This post is already in DB. Stopping ❌`,
+              cleanedUrl
+            )
           }
-          isInDB = false
-          console.log(getFullDate() + ' isAlreadyInDB ✅', isInDB)
-          return isInDB
-        }
-      }
-    )
-    // return isInDB
+        })
+    } catch (e) {
+      console.log('Invoked findOne function: queryResult error\n', e)
+    }
   } else if (cleanedUrl === null || typeof cleanedUrl === 'undefined') {
     cleanedUrl
     console.error(
@@ -115,9 +142,7 @@ const affiliateParametersCleaner = urlToCheck => {
         ? (urlToCheck += `?couponCode=${couponCode}`)
         : urlToCheck
     console.log(
-      ctlHelper.getFullDate() +
-        ' How url without params looks like: ' +
-        urlToCheck
+      getFullDate() + ' How url without params looks like: ' + urlToCheck
     )
   }
   return urlToCheck
@@ -126,48 +151,33 @@ const affiliateParametersCleaner = urlToCheck => {
 const prepareUdemyCourseJSON = async (url, courseId) => {
   const crawler = new UdemyCrawler({}, courseId)
   console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling', 'Starting...')
-  const urlWithoutAffiliateParameters = affiliateParametersCleaner(url)
-  console.log(
-    getFullDate() + 'urlWithoutAffiliateParameters: ',
-    urlWithoutAffiliateParameters
-  )
-  return crawler.execute(urlWithoutAffiliateParameters, (err, content) => {
+  // const urlWithoutAffiliateParameters = affiliateParametersCleaner(url)
+  console.log(getFullDate() + 'urlWithoutAffiliateParameters: ', url)
+  return crawler.execute(url, (err, content) => {
     if (err) {
       return console.error(err.message)
     }
-    console.log(getFullDate() + 'crawler content', content)
+    console.log(getFullDate() + ' crawler contents\n', content)
     console.log(
-      getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished...👍'
+      getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished... 👍'
     )
     // try {
     if (content) {
-      contentsSaved = populateUdemyCourseData(content)
-      if (contentsSaved) {
-        console.log(getFullDate() + ' contentsSaved ✅', contentsSaved)
-        return contentsSaved
-      } else {
-        // exit on: "Udemy page response of 403" or other status than 200
-        console.error(
-          getFullDate() + ' ADD_POST: contents were not parsed yet ❌'
-        )
-        throw 'Error connecting to the course platform ❌\n'
-      }
-    } // else {
-    //   console.error(
-    //     getFullDate() + ' ADD_POST: contents were not parsed yet ❌'
-    //   )
-    // }
-    // } catch (e) {
-    //  console.error(getFullDate() + e + ' ❌')
-    // }
-    // return content
+      isAlreadyInDB(url, content)
+    } else {
+      console.error(getFullDate() + ' ADD_POST: contents were not parsed ❌')
+    }
   })
 }
 
-const populateUdemyCourseData = async contents => {
-  console.log(getFullDate() + ' populateUdemyCourseData ', 'Starting...')
+const populateUdemyCourseData = contents => {
+  console.log(getFullDate() + ' populateUdemyCourseData: ', 'Starting...')
   const NewPost = new Post()
   if (contents) {
+    console.log(
+      getFullDate() +
+        ' populateUdemyCourseData: contents are being populated ✅'
+    )
     NewPost.preview.courseContents = {}
     NewPost.preview.courseId = contents.id
     NewPost.preview.courseUrl = contents.url
@@ -188,15 +198,36 @@ const populateUdemyCourseData = async contents => {
     NewPost.preview.courseContents.keywords = contents.topics.join(', ')
     NewPost.preview.courseContents.language = contents.language
     NewPost.preview.courseContents.url = contents.image
+  } else {
+    console.error(
+      getFullDate() + ' populateUdemyCourseData: contents were not populated ❌'
+    )
+    return false
   }
 
   // save post only if the given url is valid and the contents were properly parsed
-  const postStatus = NewPost.save().then(post => {
-    return post
-      ? getFullDate() +
-          ` ADD_POST: course contents saved! 👍 POST ID: ${post._id}`
-      : getFullDate() + ' ADD_POST: contents couldn’t be saved into DB: ' + post
-  })
+  const postStatus = NewPost.save()
+    .then(post => {
+      return post
+        ? Promise.resolve(
+            getFullDate() +
+              ` populateUdemyCourseData: course contents saved! 👍\nPOST ID: ${
+                post._id
+              }`
+          )
+        : Promise.reject(
+            getFullDate() +
+              ' populateUdemyCourseData: contents WERE NOT saved into DB: ❌\n' +
+              post
+          )
+    })
+    .catch(err =>
+      console.log(
+        getFullDate() + ' populateUdemyCourseData: error while saving ❌\n',
+        err
+      )
+    )
+  // return true
   return postStatus
 }
 

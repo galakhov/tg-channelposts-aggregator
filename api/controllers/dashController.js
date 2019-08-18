@@ -22,46 +22,13 @@ const listAllPosts = (req, res) => {
     .limit(limitPerPage)
 }
 
-const cleanUrl = url => {
-  let cleanedUrl = url
-  console.log(ctlHelper.getFullDate() + ' cleanedUrl', url)
-  let posToEnd = url.indexOf('/?couponCode=')
-  if (posToEnd === -1) {
-    posToEnd = url.indexOf('/?&deal_code=')
-  }
-  if (posToEnd === -1) {
-    posToEnd = url.indexOf('/?') // strict parameters cleaner
-  }
-  if (posToEnd !== -1) {
-    cleanedUrl = url.substr(0, posToEnd)
-  }
-  if (cleanedUrl && cleanedUrl.length > 5) {
-    // strip 'http(s)://' and the trailing slash in the end if any
-    cleanedUrl = cleanedUrl.replace(/(^\w+:|^)\/\//, '')
-    cleanedUrl = cleanedUrl.replace(/www\./, '')
-    cleanedUrl = cleanedUrl.replace(/\/$/, '')
-  } else {
-    cleanedUrl = 0
-  }
-
-  console.log(
-    ctlHelper.getFullDate() + ' How cleaned url looks like:',
-    cleanedUrl
-  )
-  console.log(
-    ctlHelper.getFullDate() + ' Cleaned url will be parsed & added? ',
-    cleanedUrl.indexOf('udemy.com') !== -1
-  )
-  return cleanedUrl
-}
-
 const isThirdPartyLink = url => {
   const nonOriginalUdemyLink =
     url.indexOf('udemyoff.com') !== -1 ||
     url.indexOf('ift.tt/') !== -1 ||
     url.indexOf('eduonix.com') !== -1 ||
     url.indexOf('smartybro.com') !== -1 ||
-    url.indexOf('udemy.com%2F') !== -1 // partner link
+    url.indexOf('udemy.com%2F') !== -1 // partner link referring udemy?
 
   if (nonOriginalUdemyLink) {
     console.error(
@@ -78,18 +45,15 @@ const timeoutBeforeNextRequest = ms => {
 
 const startUdemyOffParser = async url => {
   try {
-    // const delay = t => new Promise(resolve => setTimeout(resolve, t))
     const udemyOff = await ctlHelper
       .parseUrl(url, ['#content .wp-block-button__link'])
       .catch(err =>
         console.error(
-          ctlHelper.getFullDate() + ' ADD_POST parseUdemyOff: ',
+          ctlHelper.getFullDate() + ' ADD_POST start UdemyOff Parser: ',
           err
         )
       )
-    // delay(1000).then(() => {
     const urlToParse = udemyOff
-    // url = urlToParse.indexOf('udemy.com') !== -1 ? urlToParse : url
     console.log(
       ctlHelper.getFullDate() +
         ' Saving the link from the third-party site. Finishing...'
@@ -99,7 +63,6 @@ const startUdemyOffParser = async url => {
       urlToParse
     )
     return urlToParse
-    // })
   } catch (err) {
     console.error(ctlHelper.getFullDate() + ' startUdemyOffParser', err)
   }
@@ -121,16 +84,15 @@ const startRealDiscountParser = async (urlToParse, entities) => {
 
       // if no udemy.com url was found in entities, start plan B case
       if (foundUrlInDBAtIndex === -1) {
-        // curl -4 https://ift.tt/2Xv2ddp --> <body><a href="..."></a></body>
         const parsedUrl = await ctlHelper
           .parseUrl(urlToParse, ['.deal-sidebar-box a'])
           .then(foundUrl => {
-            if (foundUrl[0] && foundUrl[0].length > 7) {
+            if (foundUrl && foundUrl.length > 7) {
               console.log(
                 ctlHelper.getFullDate() + ' real.dicount url found',
-                foundUrl[0]
+                foundUrl
               )
-              return foundUrl[0]
+              return foundUrl
             } else {
               console.log('startRealDiscountParser -> urlToParse', urlToParse)
               return foundUrl
@@ -163,35 +125,34 @@ const startRealDiscountParser = async (urlToParse, entities) => {
 
 const startSmatrybroParser = async url => {
   try {
-    const scrapedContent = await ctlHelper
-      .parseUrl(url, [
-        // '.sing-cont img',
-        '.sing-cont .fasc-button'
-      ])
+    await ctlHelper
+      .parseUrl(url, ['.sing-cont .fasc-button'])
+      .then(res => {
+        url = res
+      })
       .catch(err =>
         console.error(
           ctlHelper.getFullDate() +
-            ' ADD_POST ctlHelper.parseUrl[.sing-cont .fasc-button]: ',
+            ' ADD_POST ctlHelper.parseUrl[.sing-cont .fasc-button]:\n',
           err
         )
       )
-    url = scrapedContent[0]
-    // the eduonix.com urls are blocked (no parser yet)
+    // the eduonix.com urls are blocked (no parser implemented yet)
     return url
   } catch (err) {
-    console.error(ctlHelper.getFullDate() + ' startSmatrybroParser', err)
+    console.error(ctlHelper.getFullDate() + ' startSmatrybroParser\n', err)
   }
 }
 
 const addPost = async data => {
   try {
     let text = _.get(data, 'text', '') || _.get(data, 'caption', '')
-    if (text && text.length < 1) {
-      text = _.get(data, 'caption', '')
+    // console.log('addPost: text:\n', text)
+    if (!text || text === '' || text.length < 1) {
       console.log(
         ctlHelper.getFullDate() +
           ' ADD_POST: No text found. Getting caption instead',
-        text
+        data
       )
     }
     const isSticker = _.get(data, 'sticker', '')
@@ -213,58 +174,27 @@ const addPost = async data => {
       }
 
       try {
-        let isLinkAlreadyInDB = false
         if (url) {
-          const urlWithoutParameters = cleanUrl(url)
-          // exit the process if duplicates exist in DB
-          isLinkAlreadyInDB = ctlHelper.isAlreadyInDB(urlWithoutParameters)
+          url = ctlHelper.affiliateParametersCleaner(url)
+          if (!isThirdPartyLink(url) && url.indexOf('udemy.com/') !== -1) {
+            // do the parsing of a udemy course
+            ctlHelper.parseAndSaveCourse(url)
+          } else {
+            console.error(
+              ctlHelper.getFullDate() + ' addPost third Party Link: ',
+              url
+            )
+          }
         } else {
           console.log(
             ctlHelper.getFullDate() + ' addPost url was not found: ',
-            url
+            data
           )
-        }
-        if (
-          // If the course link isn't in DB, continue...
-          typeof isLinkAlreadyInDB !== 'undefined' &&
-          isLinkAlreadyInDB === false &&
-          !isThirdPartyLink(url)
-        ) {
-          url = ctlHelper.affiliateParametersCleaner(url)
-
-          // NewPost.raw = data
-          // NewPost.message_id = data.message_id
-          // NewPost.preview.url = url
-
-          // NewPost.raw.text = ctlHelper.extractClutter(text)
-
-          // const chat = _.get(data, 'chat', {})
-          // NewPost.username = chat.username
-          // if (chat.type !== 'channel') {
-          //   NewPost.username = chat.username
-          // } else {
-          //   NewPost.username = chat.title
-          // }
-          // NewPost.chat_id = chat.id
-
-          // const tags = ctlHelper.extractHashtags(text)
-          // NewPost.tags = tags
-
-          // crawl and parse contents: the link is clean
-          if (
-            url.indexOf('https://www.udemy.com/') !== -1 ||
-            url.indexOf('https://udemy.com/') !== -1
-          ) {
-            // do the parsing of a udemy course
-            ctlHelper.parseAndSaveCourse(url)
-          }
-        } else {
-          throw new Error('The post is already in DB. Aborting.')
         }
       } catch (e) {
         console.error(
           ctlHelper.getFullDate() +
-            ' ADD_POST (starting form isLinkAlreadyInDB): ',
+            ' ADD_POST the link is already in DB or query error: ',
           e
         )
       }
@@ -272,7 +202,6 @@ const addPost = async data => {
       console.error(
         ctlHelper.getFullDate() + ' ADD_POST: Channel’s ad/sticker was blocked'
       )
-      // throw new Error('Ad Blocked. Aborting.')
     }
   } catch (e) {
     console.error(ctlHelper.getFullDate() + ' ADD_POST FINAL:')
@@ -285,19 +214,6 @@ const updatePost = ({ edited_channel_post: data }) => {
     Post.findOne({ message_id: data.message_id }, async (err, existingPost) => {
       console.log('----- POST FOUND', existingPost)
       if (existingPost) {
-        // const chat = _.get(data, 'chat', {})
-        // let text = _.get(data, 'text', '') || _.get(data, 'caption', '')
-        // if (text && text.length < 1) {
-        //   text = _.get(data, 'caption', '')
-        // }
-
-        // existingPost.tags = ctlHelper.extractHashtags(text)
-        // existingPost.raw = data
-        // if (chat.type !== 'channel') {
-        //   existingPost.username = chat.username
-        // }
-        // existingPost.chat_id = chat.id
-
         // previews
         const url = ctlHelper.extractUrl(text)
         existingPost.preview.url = url // consinder using courseUrl

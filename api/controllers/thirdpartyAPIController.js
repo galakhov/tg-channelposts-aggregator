@@ -104,30 +104,24 @@ class ThirdPartyCourses {
             JSON.parse(JSON.stringify(data.free)).forEach(course => {
               const urlWithoutParameters = course.cleanUrl
               const courseId = course.udemyId
-              ctlHelper
-                .isAlreadyInDB(urlWithoutParameters)
-                .then(result => {
-                  if (
-                    // If the course's link isn't already in DB, continue...
-                    typeof result !== 'undefined' &&
-                    result !== true
-                  ) {
-                    const courseUrl = `https://www.udemy.com${urlWithoutParameters}`
-                    freeCoursesIds.push([courseId, courseUrl])
-                  }
-                })
-                .catch(err => {
-                  console.log('data.free response errors: ', err)
-                })
+              const result = ctlHelper.isAlreadyInDB(urlWithoutParameters)
+              if (
+                // If the course's link isn't already in DB, continue...
+                typeof result !== 'undefined' &&
+                result === false
+              ) {
+                const courseUrl = `https://www.udemy.com${urlWithoutParameters}`
+                freeCoursesIds.push([courseId, courseUrl])
+              }
+              setTimeout(() => {
+                console.log(
+                  '\nThirdPartyCourses -> freeCourses\n',
+                  freeCoursesIds.join('\n') + '\n\n'
+                )
+                // prepare & save the post
+                this.addToQueue(freeCoursesIds)
+              }, 10000)
             })
-            setTimeout(() => {
-              console.log(
-                '\nThirdPartyCourses -> freeCourses\n',
-                freeCoursesIds.join('\n') + '\n\n'
-              )
-              // prepare & save the post
-              this.addToQueue(freeCoursesIds)
-            }, 10000)
           }
 
           if (data && data.coupons) {
@@ -140,7 +134,7 @@ class ThirdPartyCourses {
                   if (
                     // If the course link isn't in DB, continue...
                     typeof result !== 'undefined' &&
-                    result !== true
+                    result === false
                   ) {
                     const freeCoupon = `https://www.udemy.com${urlWithoutParameters}?couponCode=${
                       obj.course.coupon[0].code
