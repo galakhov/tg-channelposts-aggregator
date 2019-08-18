@@ -22,7 +22,7 @@ class UrlCrawler {
 
   syncParsing(url) {
     const userAgent = new UserAgent()
-    console.log('-------- userAgent: ' + userAgent.toString())
+    console.log('-------- userAgent:\n' + userAgent.toString())
     const newUserAgent = userAgent.toString()
     const result = request('GET', url, {
       headers: {
@@ -56,14 +56,14 @@ class UrlCrawler {
         $(target).attr('data-src') ||
         $(target).attr('src')
       if (content && content.indexOf('http') !== -1) {
-        console.log('-------- UrlCrawler -> found url(s):', content)
+        console.log('-------- UrlCrawler -> found url(s):\n', content)
         let foundUrl = content.trim()
         // special case for https://ift.tt/ links (real.discount)
         if (content.indexOf('&RD_PARM1') !== -1) {
           const objUrl = new urlTools.URL(foundUrl)
           foundUrl = normalizeUrl(objUrl.searchParams.get('RD_PARM1')) || null
           console.log(
-            '-------- UrlCrawler -> url from RD_PARM1:\n',
+            '-------- UrlCrawler -> url read from RD_PARM1:\n',
             normalizeUrl(foundUrl)
           )
         } else {
@@ -90,7 +90,7 @@ class UrlCrawler {
       console.log('-------- UrlCrawler -> execute -> parsedLink', parsedLink)
       return parsedLink
     } catch (error) {
-      console.error('parsedContent ERROR:', error)
+      console.error('parsedContent ERROR:\n', error)
     }
   }
 

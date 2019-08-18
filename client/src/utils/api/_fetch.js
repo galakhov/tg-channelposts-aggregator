@@ -10,14 +10,14 @@ const checkStatus = res => {
   if (res.status >= 200 && res.status < 300) {
     return res
   } else {
-    console.log('Checking status: ', checkStatus)
+    console.log('Checking status:\n', checkStatus)
     throw res
   }
 }
 
 const parseResponse = res => {
   return res.text().then(text => {
-    // console.log('Getting response from the API: ', text)
+    // console.log('Getting response from the API:\n', text)
     const headers = res.headers
     let data = null
     try {
@@ -54,14 +54,14 @@ export default ({ api, method, path, query, body }) => {
     })
   }
 
-  console.log('Accessing the API: ', _url)
+  console.log('Accessing the API:\n', _url)
   console.log(_opts)
 
   return fetch(_url, _opts)
     .then(checkStatus)
     .then(parseResponse)
     .catch(err => {
-      console.log('Fetching of data from DB failed: ', err)
+      console.log('Fetching of data from DB failed:\n', err)
       throw err
     })
 }

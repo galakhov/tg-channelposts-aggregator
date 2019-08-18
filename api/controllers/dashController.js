@@ -11,7 +11,7 @@ const mongoose = require('mongoose'),
 const listAllPosts = (req, res) => {
   Post.find({}, (err, posts) => {
     if (err) {
-      console.log('listAllPosts -> err:', err)
+      console.log('listAllPosts -> err:\n', err)
       res.send(err)
     }
     res.json(posts)
@@ -32,7 +32,7 @@ const isThirdPartyLink = url => {
 
   if (nonOriginalUdemyLink) {
     console.error(
-      ctlHelper.getFullDate() + ' ADD_POST isThirdPartyLink found: ',
+      ctlHelper.getFullDate() + ' ADD_POST isThirdPartyLink found:\n',
       nonOriginalUdemyLink
     )
   }
@@ -49,7 +49,7 @@ const startUdemyOffParser = async url => {
       .parseUrl(url, ['#content .wp-block-button__link'])
       .catch(err =>
         console.error(
-          ctlHelper.getFullDate() + ' ADD_POST start UdemyOff Parser: ',
+          ctlHelper.getFullDate() + ' ADD_POST start UdemyOff Parser:\n',
           err
         )
       )
@@ -78,7 +78,7 @@ const startRealDiscountParser = async (urlToParse, entities) => {
         entity.url ? entity.url.indexOf('udemy.com') !== -1 : false
       )
       console.log(
-        ctlHelper.getFullDate() + ' real.dicount URL: ',
+        ctlHelper.getFullDate() + ' real.dicount URL:\n',
         foundUrlInDBAtIndex
       )
 
@@ -101,7 +101,7 @@ const startRealDiscountParser = async (urlToParse, entities) => {
           .catch(err => {
             console.error(
               ctlHelper.getFullDate() +
-                ' ADD_POST ctlHelper.parseUrl[body a]: ',
+                ' ADD_POST ctlHelper.parseUrl[body a]:\n',
               err
             )
             return false
@@ -181,20 +181,20 @@ const addPost = async data => {
             ctlHelper.parseAndSaveCourse(url)
           } else {
             console.error(
-              ctlHelper.getFullDate() + ' addPost third Party Link: ',
+              ctlHelper.getFullDate() + ' addPost third Party Link:\n',
               url
             )
           }
         } else {
           console.log(
-            ctlHelper.getFullDate() + ' addPost url was not found: ',
+            ctlHelper.getFullDate() + ' addPost url was not found:\n',
             data
           )
         }
       } catch (e) {
         console.error(
           ctlHelper.getFullDate() +
-            ' ADD_POST the link is already in DB or query error: ',
+            ' ADD_POST the link is already in DB or query error:\n',
           e
         )
       }
@@ -204,7 +204,7 @@ const addPost = async data => {
       )
     }
   } catch (e) {
-    console.error(ctlHelper.getFullDate() + ' ADD_POST FINAL:')
+    console.error(ctlHelper.getFullDate() + ' ADD_POST FINAL:\n')
     throw e
   }
 }
@@ -222,7 +222,7 @@ const updatePost = ({ edited_channel_post: data }) => {
             .prepareUdemyCourseJSON(url)
             .catch(err =>
               console.error(
-                '-------- UPDATE_POST prepareUdemyCourseJSON: ',
+                '-------- UPDATE_POST prepareUdemyCourseJSON:\n',
                 err
               )
             )
@@ -232,7 +232,10 @@ const updatePost = ({ edited_channel_post: data }) => {
               JSON.stringify(courseContents)
             )
           } catch (e) {
-            console.error('-------- UPDATE_POST courseContents:', existingPost)
+            console.error(
+              '-------- UPDATE_POST courseContents:\n',
+              existingPost
+            )
           }
         }
 

@@ -78,7 +78,7 @@ class UdemyCrawler {
       ''
 
     const userAgent = new UserAgent()
-    console.log('-------- userAgent: ' + userAgent.toString())
+    console.log('-------- userAgent:\n' + userAgent.toString())
     const newUserAgent = userAgent.toString()
     const headers = {
       'User-Agent': newUserAgent,

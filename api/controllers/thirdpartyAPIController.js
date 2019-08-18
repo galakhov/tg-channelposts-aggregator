@@ -77,7 +77,10 @@ class ThirdPartyCourses {
                 )
               })
               .catch(e => {
-                console.log('Error: ', e)
+                console.log(
+                  ctlHelper.getFullDate() + ' SequentialTaskQueue error:\n',
+                  e
+                )
               })
           })
           this.removeSingleElement(urlsArray, url[0])
@@ -143,7 +146,10 @@ class ThirdPartyCourses {
           }
         })
         .catch(err => {
-          console.log('GraphQL response errors: ', err)
+          console.log(
+            ctlHelper.getFullDate() + ' GraphQL response errors:\n',
+            err
+          )
         })
     }
 

@@ -19,7 +19,7 @@ const parseAndSaveCourse = (url, courseId = null) => {
 
 const cleanUrl = url => {
   let cleanedUrl = url
-  console.log(getFullDate() + ' cleanedUrl function: ', url)
+  console.log(getFullDate() + ' cleanedUrl function:\n', url)
   let posToEnd = url.indexOf('/?couponCode=')
   if (posToEnd === -1) {
     posToEnd = url.indexOf('/?&deal_code=')
@@ -39,7 +39,7 @@ const cleanUrl = url => {
     cleanedUrl = 0
   }
 
-  console.log(getFullDate() + ' How cleaned url looks like:', cleanedUrl)
+  console.log(getFullDate() + ' How cleaned url looks like:\n', cleanedUrl)
   console.log(
     getFullDate() + ' Cleaned url will be parsed & added? ',
     cleanedUrl.indexOf('udemy.com') !== -1
@@ -55,7 +55,7 @@ const isAlreadyInDB = (cleanedUrl, crawledContents) => {
     urlPath = urlPath.replace(/course\//, '')
     try {
       console.log(
-        getFullDate() + ' isAlreadyInDB: looking for this url path in DB: ',
+        getFullDate() + ' isAlreadyInDB: looking for this url path in DB:\n',
         urlPath
       )
       Post.findOne({
@@ -77,7 +77,7 @@ const isAlreadyInDB = (cleanedUrl, crawledContents) => {
             const saveContents = populateUdemyCourseData(crawledContents)
             if (saveContents === false) {
               console.log(
-                `${getFullDate()} Saving failed ❌ populateUdemyCourseData returned:`,
+                `${getFullDate()} Saving failed ❌ populateUdemyCourseData returned:\n`,
                 saveContents
               )
             } else {
@@ -88,7 +88,7 @@ const isAlreadyInDB = (cleanedUrl, crawledContents) => {
             }
           } else {
             console.error(
-              `${getFullDate()} This post is already in DB. Stopping ❌`,
+              `${getFullDate()} This post is already in DB. Stopping ❌\n`,
               cleanedUrl
             )
           }

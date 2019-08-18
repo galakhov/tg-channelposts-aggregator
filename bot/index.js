@@ -8,14 +8,12 @@ const bot = new Telegraf(process.env.BOT_TOKEN)
 const initBot = () => {
   console.log('\n\n-------- initBot\n')
   bot.start(ctx => {
-    // console.log('started: ', ctx.from.id)
     ctx.reply('Hello! I have started!')
     return true
   })
 
   bot.on(['channel_post'], ctx => {
     if (ctx.channelPost) {
-      // console.log('NEW POST HAS ARRIVED: ', ctx.channelPost)
       try {
         dashboard.addPost(ctx.channelPost)
       } catch (e) {
@@ -32,9 +30,10 @@ const initBot = () => {
       try {
         if (ctx.update) {
           const { query = '' } = ctx.update ? ctx.update.inline_query : {}
-          console.log('initBot -> update query: ', query)
+          console.log('initBot -> update query:\n', query)
           if (query === 'checkCoupons') {
             const runThirdPartyApi = new ThirdPartyCourses()
+            // simulate a crob job
             runThirdPartyApi.execute()
           }
           // dashboard.updatePost(update)
@@ -51,20 +50,20 @@ const initBot = () => {
         }
       } catch (e) {
         // ctx.reply('// TG channel bot inline_query error', e)
-        console.log('ERROR: TG channel bot inline_query error', e)
+        console.log('ERROR: TG channel bot inline_query error:\n', e)
       }
     }
   })
 
   bot.on(['edited_channel_post'], ctx => {
-    console.log('EDITING: ', ctx)
+    console.log('EDITING:\n', ctx)
     if (ctx.update) {
       console.log(ctx.update)
       const { update } = ctx
       try {
         dashboard.updatePost(update)
       } catch (e) {
-        ctx.reply('// TG channel bot update error', e)
+        ctx.reply('-------- TG channel bot update error\n', e)
       }
     }
   })
