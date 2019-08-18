@@ -23,7 +23,7 @@ mongoose
     // useMongoClient: true
   })
   .catch(error => {
-    console.log('mongoose.connection error', error)
+    console.log('-------- mongoose.connection error\n', error)
   })
 
 const friendSchema = new mongoose.Schema({

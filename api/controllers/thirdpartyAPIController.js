@@ -85,7 +85,9 @@ class ThirdPartyCourses {
           })
           this.removeSingleElement(urlsArray, url[0])
           console.log(
-            `${ctlHelper.getFullDate()} ThirdPartyCourses -> addToQueue -> reduced urlsArray:\n${urlsArray}`
+            `${ctlHelper.getFullDate()} ThirdPartyCourses -> addToQueue -> reduced urlsArray to:\n${
+              urlsArray.length
+            } entries`
           )
         }
       })
