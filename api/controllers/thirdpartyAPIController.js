@@ -98,7 +98,7 @@ class ThirdPartyCourses {
             JSON.parse(JSON.stringify(data.free)).forEach(course => {
               const urlWithoutParameters = course.cleanUrl
               const courseId = course.udemyId
-              const courseUrl = `https://www.udemy.com${urlWithoutParameters}`
+              const courseUrl = `https://www.udemy.com/course${urlWithoutParameters}`
               freeCoursesIds.push([courseId, courseUrl])
               setTimeout(() => {
                 console.log(
@@ -115,7 +115,7 @@ class ThirdPartyCourses {
             JSON.parse(JSON.stringify(data.coupons)).forEach(obj => {
               const urlWithoutParameters = obj.course.cleanUrl
               const courseId = obj.course.udemyId
-              const freeCoupon = `https://www.udemy.com${urlWithoutParameters}?couponCode=${
+              const freeCoupon = `https://www.udemy.com/course${urlWithoutParameters}?couponCode=${
                 obj.course.coupon[0].code
               }`
               freeCouponsIds.push([courseId, freeCoupon])
