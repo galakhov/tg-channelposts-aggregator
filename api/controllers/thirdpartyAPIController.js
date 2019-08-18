@@ -1,7 +1,6 @@
-// const fetch = require('node-fetch')
 const { request } = require('graphql-request')
-const ctlHelper = require('./helper')
 const { SequentialTaskQueue } = require('sequential-task-queue')
+const ctlHelper = require('./helper')
 
 class ThirdPartyCourses {
   constructor(config) {
@@ -81,7 +80,12 @@ class ThirdPartyCourses {
                 console.log('Error: ', e)
               })
           })
-          removeSingleElement(urlsArray, url[1])
+          removeSingleElement(urlsArray, url[0])
+          console.log(
+            ctlHelper.getFullDate() +
+              ' ThirdPartyCourses -> addToQueue -> reduced urlsArray:\n',
+            urlsArray
+          )
         }
       })
       queue.wait().then(() => {
