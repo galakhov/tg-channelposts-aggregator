@@ -63,6 +63,12 @@ const isAlreadyInDB = (cleanedUrl, crawledContents) => {
       })
         .lean()
         .exec((err, result) => {
+          if (err) {
+            console.log(
+              `${getFullDate()} isAlreadyInDB Saving -> error:\n${err}`
+            )
+            return
+          }
           if (result === null) {
             console.log(
               `${getFullDate()} The post with this URL isn't in DB ✅ `,
@@ -145,7 +151,7 @@ const affiliateParametersCleaner = urlToCheck => {
         ? (urlToCheck += `?couponCode=${couponCode}`)
         : urlToCheck
     console.log(
-      getFullDate() + ' How url without params looks like: ' + urlToCheck
+      getFullDate() + ' How url without params looks like:\n' + urlToCheck
     )
   }
   return urlToCheck
@@ -155,7 +161,7 @@ const prepareUdemyCourseJSON = async (url, courseId) => {
   const crawler = new UdemyCrawler({}, courseId)
   console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling', 'Starting...')
   // const urlWithoutAffiliateParameters = affiliateParametersCleaner(url)
-  console.log(getFullDate() + 'urlWithoutAffiliateParameters: ', url)
+  console.log(getFullDate() + ' urlWithoutAffiliateParameters:\n', url)
   return crawler.execute(url, (err, content) => {
     if (err) {
       return console.error(err.message)

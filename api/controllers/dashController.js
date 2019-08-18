@@ -161,7 +161,7 @@ const addPost = async data => {
     if (!isThisAnAd && isSticker === '') {
       // grab url from the channel's post
       let url = ctlHelper.extractUrl(text)
-      console.log(ctlHelper.getFullDate() + ' ADD_POST parsed urls:', url)
+      console.log(ctlHelper.getFullDate() + ' ADD_POST parsed urls:\n', url)
 
       if (url.indexOf('udemyoff.com') !== -1) {
         url = await startUdemyOffParser(url)

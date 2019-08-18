@@ -44,6 +44,15 @@ class ThirdPartyCourses {
     }
   }
 
+  removeSingleElement(arr, value) {
+    arr.some((row, index) => {
+      if (row.includes(value)) {
+        arr.splice(index, 1)
+      }
+    })
+    return arr
+  }
+
   addToQueue(urlsArray) {
     if (urlsArray && urlsArray.length > 0) {
       // https://github.com/BalassaMarton/sequential-task-queue#readme
@@ -72,13 +81,14 @@ class ThirdPartyCourses {
                 console.log('Error: ', e)
               })
           })
-          queue.wait().then(() => {
-            // the last step in every queue is to cancel the running cron job
-            if (this.jobs.running) {
-              this.jobs.stop()
-              this.automate()
-            }
-          })
+          removeSingleElement(urlsArray, url[1])
+        }
+      })
+      queue.wait().then(() => {
+        // the last step in every queue is to cancel the running cron job
+        if (this.jobs.running) {
+          this.jobs.stop()
+          this.automate()
         }
       })
     }
