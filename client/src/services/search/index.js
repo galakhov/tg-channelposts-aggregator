@@ -38,7 +38,10 @@ class SearchService {
               'preview.courseContents.text',
               'preview.courseContents.discountExpirationDate',
               'preview.courseContents.discountInPercent',
-              'preview.courseContents.initialPrice'
+              'preview.courseContents.initialPrice',
+              'preview.courseContents.currentPrice',
+              'preview.courseContents.rating',
+              'preview.courseContents.enrolled'
             ],
             sort: [{ _score: 'desc' }, { created_date: 'desc' }],
             from: `${start}`,

@@ -18,6 +18,7 @@ const Card = ({
   expirationDate,
   discount,
   listPrice,
+  currentPrice,
   img,
   text,
   headline,
@@ -30,7 +31,12 @@ const Card = ({
     tagsArray = tags
   }
 
-  const discounted = discount && discount !== null ? `${discount}% OFF` : null
+  const discounted =
+    discount && discount !== null
+      ? `${discount}% OFF`
+      : listPrice === 0 || (currentPrice && currentPrice <= 0)
+        ? `100% OFF`
+        : `99.9% OFF`
 
   const expiration =
     expirationDate !== null
@@ -40,10 +46,10 @@ const Card = ({
       )}`
       : ''
   const freeCourse =
-    listPrice === 0 || listPrice === null
+    listPrice === 0
       ? 'FREE'
-      : listPrice !== undefined
-        ? `Coupon expired: ${listPrice}€`
+      : currentPrice !== undefined && currentPrice > 0
+        ? `Coupon expired: ${currentPrice}€`
         : ''
 
   const addedOnDate = createdDate
@@ -62,7 +68,9 @@ const Card = ({
     courseStudentsNr && courseStudentsNr !== null
       ? studentsEnrolled.replace(/(\\n)/g, '')
       : courseStudentsNr
-  const startEnrolledText = courseStudentsNr.indexOf(' students enrolled')
+  const startEnrolledText = courseStudentsNr
+    ? courseStudentsNr.indexOf(' students enrolled')
+    : -1
   if (
     courseStudentsNr &&
     courseStudentsNr !== null &&
@@ -102,16 +110,16 @@ const Card = ({
             <div className={styles.courseRating}>Rating: {courseRating}/5</div>
           )}
         </div>
-        {expirationDate && discounted !== null && expirationDate !== '' && (
-          <div className={styles.expirationDate}>
-            <div className={styles.couponOff}>{discounted}</div> {expiration}
-          </div>
-        )}
-        {(expirationDate === '' || discounted === null) && freeCourse !== '' && (
-          <div className={styles.expirationDate}>
-            <div className={styles.couponOff}>{freeCourse}</div>
-          </div>
-        )}
+        {(expirationDate && discounted !== null && expirationDate !== '') ||
+        freeCourse === '' ? (
+            <div className={styles.expirationDate}>
+              <div className={styles.couponOff}>{discounted}</div> {expiration}
+            </div>
+          ) : (
+            <div className={styles.expirationDate}>
+              <div className={styles.couponOff}>{freeCourse}</div>
+            </div>
+          )}
       </div>
       <div
         className={styles.main}

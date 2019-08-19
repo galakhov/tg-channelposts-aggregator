@@ -38,6 +38,16 @@ class Posts extends React.Component {
                           ? post._source.preview.courseContents.title
                           : 'Udemy Course'
                       )}
+                      rating={
+                        post._source.preview.courseContents.rating
+                          ? post._source.preview.courseContents.rating
+                          : null
+                      }
+                      studentsEnrolled={
+                        post._source.preview.courseContents.enrolled
+                          ? post._source.preview.courseContents.enrolled
+                          : null
+                      }
                       headline={
                         post._source.preview.courseContents.headline
                           ? post._source.preview.courseContents.headline
@@ -70,6 +80,9 @@ class Posts extends React.Component {
                         post._source.preview.courseContents.initialPrice
                           ? post._source.preview.courseContents.initialPrice
                           : null
+                      }
+                      currentPrice={
+                        post._source.preview.courseContents.currentPrice
                       }
                       nr={index}
                     />
@@ -116,6 +129,7 @@ class Posts extends React.Component {
                       : null
                   }
                   listPrice={post.preview.courseContents.initialPrice}
+                  currentPrice={post.preview.courseContents.currentPrice}
                   text={getCleanText(
                     post.preview
                       ? post.preview.courseContents
