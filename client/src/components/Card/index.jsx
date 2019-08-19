@@ -69,8 +69,8 @@ const Card = ({
       'students enrolled',
       ''
     )
-    studentsEnrolledCleared += ` students joined`
   }
+  studentsEnrolledCleared += ` students joined`
 
   return (
     <div className={styles.card} onClick={() => onCardClick(_id)}>
