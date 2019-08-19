@@ -117,21 +117,6 @@ class UdemyCrawler {
         .text()
         .replace(/(\n)/g, '')
         .trim()
-      const crawledRating = $('.rate-count .tooltip-container span:first-child')
-        .text()
-        .trim()
-      Course.rating =
-        crawledRating.length > 3
-          ? crawledRating.trim().substr(0, 3)
-          : crawledRating
-      const enrollmentNr = $('[data-purpose="enrollment"]')
-        .text()
-        .trim()
-      const startEnrolledText = enrollmentNr.indexOf(' students enrolled')
-      Course.enrollmentNumber = enrollmentNr
-        .substring(0, startEnrolledText + 18) // remove first part of this weird string
-        .replace(/(\n)/g, '') // remove double line breaks: \n\n
-        .replace(' students enrolled', '') // remove the second part of the str
       const metaJson = JSON.parse($('#schema_markup script').html())
       Course.image = metaJson[0].image
       Course.date = $(
@@ -201,6 +186,12 @@ class UdemyCrawler {
           Course.topics = jsonData.topic_menu.menu_data.map(
             m => m.title || m.display_name
           )
+
+          Course.rating = parseFloat(
+            jsonData.instructor_bio.data.instructors_info[0].avg_rating_recent
+          ).toFixed(2)
+          Course.enrollmentNumber =
+            jsonData.instructor_bio.data.instructors_info[0].total_num_students
 
           // price, discount
           Course.price = jsonData.purchase.data.pricing_result.price.amount
