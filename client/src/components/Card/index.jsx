@@ -59,11 +59,15 @@ const Card = ({
   const courseStudentsNr = studentsEnrolled !== null ? studentsEnrolled : null
 
   let studentsEnrolledCleared =
-    courseStudentsNr !== null
+    courseStudentsNr && courseStudentsNr !== null
       ? studentsEnrolled.replace(/(\\n)/g, '')
       : courseStudentsNr
   const startEnrolledText = courseStudentsNr.indexOf(' students enrolled')
-  if (courseStudentsNr !== null && startEnrolledText !== -1) {
+  if (
+    courseStudentsNr &&
+    courseStudentsNr !== null &&
+    startEnrolledText !== -1
+  ) {
     // studentsEnrolledCleared.substring(0, startEnrolledText + 18)
     studentsEnrolledCleared = studentsEnrolledCleared.replace(
       ' students enrolled',
@@ -71,7 +75,12 @@ const Card = ({
     )
   } else {
     // is there still some crappy string? Replace it.
-    studentsEnrolledCleared = studentsEnrolledCleared.replace(' students', '')
+    studentsEnrolledCleared = studentsEnrolledCleared
+      ? (studentsEnrolledCleared = studentsEnrolledCleared.replace(
+        ' students',
+        ''
+      ))
+      : courseStudentsNr
   }
   studentsEnrolledCleared += ` students joined`
 
