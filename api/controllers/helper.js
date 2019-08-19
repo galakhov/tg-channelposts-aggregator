@@ -159,7 +159,7 @@ const affiliateParametersCleaner = urlToCheck => {
 
 const prepareUdemyCourseJSON = async (url, courseId) => {
   const crawler = new UdemyCrawler({}, courseId)
-  console.log(getFullDate() + ' prepareUdemyCourseJSON Crawling', 'Starting...')
+  console.log(getFullDate() + ' prepareUdemyCourseJSON: start crawling...')
   // const urlWithoutAffiliateParameters = affiliateParametersCleaner(url)
   console.log(getFullDate() + ' urlWithoutAffiliateParameters:\n', url)
   return crawler.execute(url, (err, content) => {
@@ -168,7 +168,7 @@ const prepareUdemyCourseJSON = async (url, courseId) => {
     }
     console.log(getFullDate() + ' crawler contents\n', content)
     console.log(
-      getFullDate() + ' prepareUdemyCourseJSON Crawling: Finished... 👍'
+      getFullDate() + ' prepareUdemyCourseJSON finished crawling...👍'
     )
     // try {
     if (content) {

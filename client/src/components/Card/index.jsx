@@ -58,12 +58,13 @@ const Card = ({
       : null
   const courseStudentsNr = studentsEnrolled !== null ? studentsEnrolled : null
 
-  let studentsEnrolledCleared
-  if (courseStudentsNr) {
-    const startEnrolledText = courseStudentsNr.indexOf(' students enrolled')
-    studentsEnrolledCleared = studentsEnrolled
-      .substring(0, startEnrolledText + 18)
-      .replace(/(?:\\n\\n)/gm, '')
+  let studentsEnrolledCleared =
+    courseStudentsNr !== null
+      ? studentsEnrolled.replace(/(\\n)/g, '')
+      : courseStudentsNr
+  const startEnrolledText = courseStudentsNr.indexOf(' students enrolled')
+  if (courseStudentsNr !== null && startEnrolledText !== -1) {
+    studentsEnrolledCleared.substring(0, startEnrolledText + 18)
     studentsEnrolledCleared = studentsEnrolledCleared.replace(
       'students enrolled',
       ''
