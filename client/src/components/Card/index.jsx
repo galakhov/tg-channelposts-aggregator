@@ -69,7 +69,8 @@ const Card = ({
       ' students enrolled',
       ''
     )
-    // is there still some crappy string?
+  } else {
+    // is there still some crappy string? Replace it.
     studentsEnrolledCleared = studentsEnrolledCleared.replace(' students', '')
   }
   studentsEnrolledCleared += ` students joined`

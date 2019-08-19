@@ -25,6 +25,7 @@ const filterByTags = dash => {
 
 const search = async (term, start, limit) => {
   const searchService = new SearchService(elasticClient)
+  console.log('-------- async: search -> term', term)
   const results = await searchService.find(term, start, limit)
   // const elasticResults = results.hits.hits.map(res => res._id)
   return results
