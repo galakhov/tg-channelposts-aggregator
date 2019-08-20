@@ -75,6 +75,20 @@
       position: absolute;
     }
 
+    & .courseLanguage {
+      background-color: pink;
+      font-family: var(--sansFont);
+      color: var(--actionColor);
+      padding: 5px 12px;
+      top: 0px;
+      left: 0px;
+      font-size: 18px;
+      position: absolute;
+      margin: 0 auto 6px auto;
+      text-align: center;
+      border-radius: 5px;
+    }
+
     & .courseStats {
       & .courseRating {
         float: left;

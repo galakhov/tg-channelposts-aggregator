@@ -23,6 +23,7 @@ const Card = ({
   text,
   headline,
   tags,
+  language,
   nr
 }) => {
   if (tags && typeof tags === 'string') {
@@ -102,6 +103,8 @@ const Card = ({
   }
   studentsEnrolledCleared += ` students joined`
 
+  const courseLanguage = language || null
+
   return (
     <div className={styles.card} onClick={() => onCardClick(_id)}>
       {img && (
@@ -110,6 +113,11 @@ const Card = ({
         </div>
       )}
       <div className={styles.breadcrumbs}>
+        {courseLanguage &&
+          courseLanguage !== null &&
+          courseLanguage !== 'English' && (
+            <div className={styles.courseLanguage}>{courseLanguage}</div>
+          )}
         <div className={styles.courseStats}>
           {courseStudentsNr !== null && (
             <div className={styles.courseStudents}>
