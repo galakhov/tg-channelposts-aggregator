@@ -67,6 +67,7 @@ const Card = ({
   const courseStudentsNr =
     studentsEnrolled && studentsEnrolled !== null ? studentsEnrolled : null
 
+  // studentsEnrolled can be passed over either as number or a crappy string
   let studentsEnrolledCleared =
     courseStudentsNr && courseStudentsNr !== null
       ? typeof studentsEnrolled === 'string'
