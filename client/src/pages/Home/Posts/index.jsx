@@ -77,12 +77,14 @@ class Posts extends React.Component {
                           : null
                       }
                       listPrice={
-                        post._source.preview.courseContents.initialPrice
-                          ? post._source.preview.courseContents.initialPrice
-                          : null
+                        post._source.preview.courseContents.initialPrice === 0
+                          ? 0
+                          : post._source.preview.courseContents.initialPrice
                       }
                       currentPrice={
-                        post._source.preview.courseContents.currentPrice
+                        post._source.preview.courseContents.currentPrice === 0
+                          ? 0
+                          : post._source.preview.courseContents.currentPrice
                       }
                       nr={index}
                     />
@@ -128,8 +130,16 @@ class Posts extends React.Component {
                       ? post.preview.courseContents.discountExpirationDate
                       : null
                   }
-                  listPrice={post.preview.courseContents.initialPrice}
-                  currentPrice={post.preview.courseContents.currentPrice}
+                  listPrice={
+                    post.preview.courseContents.initialPrice === 0
+                      ? 0
+                      : post.preview.courseContents.initialPrice
+                  }
+                  currentPrice={
+                    post.preview.courseContents.currentPrice === 0
+                      ? 0
+                      : post.preview.courseContents.currentPrice
+                  }
                   text={getCleanText(
                     post.preview
                       ? post.preview.courseContents
