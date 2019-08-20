@@ -34,7 +34,9 @@ const Card = ({
   const discounted =
     discount && discount !== null
       ? `${discount}% OFF`
-      : listPrice === 0 || (currentPrice && currentPrice <= 0)
+      : listPrice > 0 ||
+        listPrice === 'undefined' ||
+        (currentPrice && currentPrice <= 0)
         ? `100% OFF`
         : `99.9% OFF`
 
