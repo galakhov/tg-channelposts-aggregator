@@ -32,6 +32,33 @@ const Detail = ({ post }) => {
   if (keywords) {
     keywords = keywords.split(', ')
   }
+  let courseDurationText = _get(
+    post,
+    'preview.courseContents.lectures.courseLength'
+  )
+  let courseDuration = null
+  if (courseDurationText && courseDurationText !== '00:00') {
+    courseDuration = courseDurationText.split(':')
+    let hours = ``
+    let index = 0
+    if (courseDurationText.length > 5) {
+      // course duration includes hours
+      hours = parseInt(courseDuration[index], 10)
+      hours = hours <= 1 ? `${hours} hour ` : `${hours} hours `
+    } else {
+      index -= 1 // course duration excludes hours
+    }
+    let minutes = parseInt(courseDuration[index + 1], 10)
+    minutes = minutes < 2 ? `${minutes} minute` : `${minutes} minutes`
+    let seconds = parseInt(courseDuration[index + 2], 10)
+    seconds = seconds
+      ? seconds < 2
+        ? `and ${seconds} second`
+        : `and ${seconds} seconds`
+      : ``
+    // yes, no space between hours and minutes (hours are optional)
+    courseDuration = `${hours}${minutes} ${seconds}`
+  }
 
   const onTagClick = () => ({})
 
@@ -71,6 +98,11 @@ const Detail = ({ post }) => {
             <a target="_blank" href={courseUrl} alt="title">
               Join the course!
             </a>
+            {courseDuration && courseDuration !== null && (
+              <div className={styles.courseDuration}>
+                {courseDuration} of contents
+              </div>
+            )}
           </div>
           <div className={styles.headline}>
             <h3>

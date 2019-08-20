@@ -79,6 +79,12 @@
       margin-bottom: 20px;
     }
 
+    .courseDuration {
+      font-family: var(--sansFont);
+      margin-top: 15px;
+      font-weight: 300;
+    }
+
     .tags {
       margin-top: 15px;
       padding-left: 3px;
