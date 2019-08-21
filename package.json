@@ -39,7 +39,7 @@
     "serve:simple": "nohup node server.js &",
     "serve:pm2": "pm2 startOrRestart pm2.config.js start server.js",
     "start": "npm run serve:pm2",
-    "build:client": "cd client/ && npm run build",
+    "build:client": "cd client/ && npm i && npm run build",
     "postinstall": "npm install pm2 -g && npm run build:client"
   },
   "devDependencies": {
