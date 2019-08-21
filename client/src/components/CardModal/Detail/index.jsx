@@ -15,6 +15,34 @@ const unescapeHTML = html => {
   return escapeEl.textContent
 }
 
+const getCourseDuration = courseDurationStr => {
+  let courseDuration = null
+  if (courseDurationStr && courseDurationStr !== '00:00') {
+    courseDuration = courseDurationStr.split(':')
+    let hours = ``
+    let index = 0
+    if (courseDurationStr.length > 5) {
+      // course duration including hours
+      hours = parseInt(courseDuration[index], 10)
+      hours = hours <= 1 ? `${hours} hour ` : `${hours} hours `
+    } else {
+      index -= 1 // course duration excluding hours
+    }
+    let minutes = parseInt(courseDuration[index + 1], 10)
+    minutes =
+      minutes >= 1 && minutes < 2 ? `${minutes} minute` : `${minutes} minutes`
+    let seconds = parseInt(courseDuration[index + 2], 10)
+    seconds = seconds
+      ? seconds < 2
+        ? `and ${seconds} second`
+        : `and ${seconds} seconds`
+      : ``
+    // yes, no space between hours and minutes (hours are optional)
+    courseDuration = `${hours}${minutes} ${seconds}`
+  }
+  return courseDuration
+}
+
 const Detail = ({ post }) => {
   const imgSrc = _get(post, 'preview.courseContents.url')
   const courseContent = _get(post, 'preview.courseContents.text')
@@ -36,29 +64,8 @@ const Detail = ({ post }) => {
     post,
     'preview.courseContents.lectures.courseLength'
   )
-  let courseDuration = null
-  if (courseDurationText && courseDurationText !== '00:00') {
-    courseDuration = courseDurationText.split(':')
-    let hours = ``
-    let index = 0
-    if (courseDurationText.length > 5) {
-      // course duration includes hours
-      hours = parseInt(courseDuration[index], 10)
-      hours = hours <= 1 ? `${hours} hour ` : `${hours} hours `
-    } else {
-      index -= 1 // course duration excludes hours
-    }
-    let minutes = parseInt(courseDuration[index + 1], 10)
-    minutes = minutes < 2 ? `${minutes} minute` : `${minutes} minutes`
-    let seconds = parseInt(courseDuration[index + 2], 10)
-    seconds = seconds
-      ? seconds < 2
-        ? `and ${seconds} second`
-        : `and ${seconds} seconds`
-      : ``
-    // yes, no space between hours and minutes (hours are optional)
-    courseDuration = `${hours}${minutes} ${seconds}`
-  }
+
+  const courseDuration = getCourseDuration(courseDurationText)
 
   const onTagClick = () => ({})
 
