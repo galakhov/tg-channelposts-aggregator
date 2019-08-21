@@ -40,7 +40,7 @@
     "serve:pm2": "pm2 startOrRestart pm2.config.js start server.js",
     "start": "npm run serve:pm2",
     "build:client": "cd client/ && npm --production=true install && node scripts/build.js",
-    "postinstall": "npm install pm2 -g && npm run build:client"
+    "postinstall": "npm install pm2 -g"
   },
   "devDependencies": {
     "dotenv": "^8.0.0",
