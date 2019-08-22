@@ -7,7 +7,7 @@ const elasticClient = new elasticsearch.Client({
   sniffOnStart: false,
   keepAlive: true,
   hosts: [
-    `https://${process.env.ES_CONNECTION_URI}`
+    `${process.env.ES_CONNECTION_URI}`
     // `https://${process.env.ES_USERNAME}:${process.env.ES_PASSWORD}@${
     //   process.env.ES_HOST
     // }/${process.env.ES_NS_COLLECTION}`
