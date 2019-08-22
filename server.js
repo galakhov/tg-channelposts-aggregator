@@ -57,13 +57,12 @@ app.use(bodyParser.json())
 //   next()
 // })
 // router.use('/api/v1/posts', require('./api/routes/dashRoutes'))
+// register routes
+// routes(app)
 
 const dashboard = require('./api/controllers/dashController')
 app.get('/api/v1/posts', dashboard.listAllPosts)
 app.use(express.static('client/build'))
-
-// register routes
-// routes(app)
 
 app.listen(port)
 initBot()
