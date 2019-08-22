@@ -103,5 +103,5 @@
     "extends": "react-app"
   },
   "homepage": "https://aggregator.cleverapps.io",
-  "proxy": "https://aggregator.cleverapps.io:8081"
+  "proxy": "https://aggregator.cleverapps.io:8080"
 }
