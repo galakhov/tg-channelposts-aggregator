@@ -1,5 +1,5 @@
 const elasticsearch = require('elasticsearch')
-require('dotenv').config()
+// require('dotenv').config()
 // https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/16.x/host-reference.html
 
 const elasticClient = new elasticsearch.Client({

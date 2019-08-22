@@ -56,6 +56,7 @@ class ThirdPartyCourses {
     if (urlsArray && urlsArray.length > 0) {
       // https://github.com/BalassaMarton/sequential-task-queue#readme
       const queue = new SequentialTaskQueue()
+      // TODO: Run async actions sequentially: https://stackoverflow.com/questions/36672566/node-js-control-a-queue-of-promises
       urlsArray.forEach(url => {
         if (
           url[1].indexOf('https://www.udemy.com/') !== -1 ||
