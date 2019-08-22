@@ -60,7 +60,7 @@ CI=
 
 BOT_TOKEN=123456789:AAH54XXXMBUXXXPz4XX-fbeXXXTXYYYY
 
-ELASTICSEARCH_URI="https://elasticUser:elasticPassword@domain.found.io:9243"
+ES_CONNECTION_URI="https://elasticUser:elasticPassword@domain.found.io:9243/nameOfYourDbCollection"
 ```
 
 # Debugging 🐞
