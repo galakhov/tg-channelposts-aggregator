@@ -1,3 +1,5 @@
+const dotenv = require('dotenv')
+dotenv.config()
 require('./data/mongoose.connector')
 
 // const ThirdPartyCourses = require('./api/controllers/thirdpartyAPIController')
