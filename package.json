@@ -1,0 +1,52 @@
+{
+  "name": "tg-channelposts-aggregator-back",
+  "version": "1.1.1",
+  "main": "index.js",
+  "authors": [
+    "foreseaz",
+    "galakhov"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "clean-mark": "^0.8.0",
+    "cors": "^2.8.5",
+    "cron": "^1.7.1",
+    "express": "^4.16.2",
+    "express-graphql": "^0.9.0",
+    "get-urls": "^7.2.0",
+    "graphql": "^14.4.2",
+    "graphql-request": "^1.8.2",
+    "graphql-tag": "^2.10.1",
+    "graphql-tools": "^4.0.5",
+    "http-headers": "^3.0.2",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.6.7",
+    "mongoose-paginate": "^5.0.3",
+    "node-fetch": "^2.6.0",
+    "normalize-url": "^3.3.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "sequential-task-queue": "^1.2.1",
+    "sync-request": "^6.1.0",
+    "telegraf": "^3.16.4",
+    "then-request": "^6.0.2",
+    "user-agents": "^1.0.350"
+  },
+  "scripts": {
+    "dev": "nodemon server.js",
+    "dev:client": "cd client/ && node --inspect scripts/start.js",
+    "serve:simple": "nohup node server.js &",
+    "serve:pm2": "pm2 startOrRestart pm2.config.js start server.js",
+    "start": "npm run serve:pm2",
+    "build:client": "cd client/ && npm --production=true install && node scripts/build.js",
+    "postinstall": "npm install pm2 -g"
+  },
+  "devDependencies": {
+    "dotenv": "^8.0.0",
+    "nodemon": "^1.19.1"
+  },
+  "engines": {
+    "node": ">=10.0.0 <=11.0.0"
+  }
+}
