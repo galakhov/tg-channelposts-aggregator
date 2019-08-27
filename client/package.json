@@ -101,7 +101,6 @@
     "react-svg-loader": "^3.0.3",
     "redux-devtools": "^3.4.0",
     "redux-logger": "^3.0.6",
-<<<<<<< HEAD
     "style-loader": "0.18.2",
     "sw-precache-webpack-plugin": "0.11.4",
     "url-loader": "0.5.9",
@@ -109,9 +108,6 @@
     "webpack-bundle-analyzer": "^3.4.1",
     "webpack-dev-server": "2.7.1",
     "webpack-manifest-plugin": "1.2.1",
-=======
-    "webpack-dev-server": "2.7.1",
->>>>>>> parent of 62b0390... Remove client's build & prod script
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {

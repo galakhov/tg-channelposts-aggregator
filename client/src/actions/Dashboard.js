@@ -107,7 +107,8 @@ export const handleClearSearch = () => dispatch => {
   dispatch({
     type: ACTION_TYPES.CLEAR_SEARCH_TERM,
     term: '',
-    searchResults: []
+    searchResults: [],
+    searchResultsCount: 0
   })
 }
 

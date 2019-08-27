@@ -93,7 +93,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currentSearchTerm: action.term,
-        currentSearchResults: action.searchResults
+        currentSearchResults: action.searchResults,
+        currentSearchResultsCount: action.searchResultsCount
       }
     case ACTION_TYPES.SET_SEARCH_TERM:
       return {

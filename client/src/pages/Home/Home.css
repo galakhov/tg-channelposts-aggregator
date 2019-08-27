@@ -68,6 +68,11 @@
     }
 
     .searchButton {
+      @media (--s) {
+        & span {
+          display: none;
+        }
+      }
       &:focus,
       &:hover,
       &:active {

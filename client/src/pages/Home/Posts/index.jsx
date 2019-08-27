@@ -8,10 +8,6 @@ import Spinner from '~/assets/icons/spinning-wheel.svg'
 import styles from './Posts.css'
 
 class Posts extends React.Component {
-  // constructor (props) {
-  //   super(props)
-  // }
-
   render () {
     const { posts, openModal, searchResults, searchResultsCount } = this.props
     return searchResults && searchResults.length > 0 ? (
