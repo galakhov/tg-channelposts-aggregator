@@ -7,6 +7,7 @@ import { currentPostSelector } from '~/reducers/selector.js'
 
 import CloseIcon from '~/assets/icons/close.svg'
 import EditIcon from '~/assets/icons/edit.svg'
+import BackIcon from '~/assets/icons/step-back.svg'
 import Modal from '~/components/Modal'
 import Detail from './Detail'
 
@@ -28,6 +29,9 @@ class CardModal extends React.Component {
         onRequestClose={this.props.closeModal}
       >
         <div className={styles.container}>
+          <span className={styles.back} onClick={this.props.closeModal}>
+            <BackIcon />
+          </span>
           <span className={styles.close} onClick={this.props.closeModal}>
             <CloseIcon />
           </span>

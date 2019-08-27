@@ -2,7 +2,7 @@
   position: relative;
   padding: 20px 30px;
   @media (--s) {
-    padding: 10px 0px;
+    padding: 15px 0px;
   }
   @media (--l) {
     padding: 20px 10px;
@@ -12,6 +12,8 @@
 .logout {
   margin-top: 15px;
 }
+
+.back,
 .close {
   position: absolute;
   cursor: pointer;
@@ -33,6 +35,27 @@
     right: -6px;
   }
 }
+
+.back {
+  top: -2px;
+  left: 4px;
+  right: auto;
+  @media (--m) {
+    left: 32px;
+    right: auto;
+  }
+  @media (--s) {
+    top: -9px;
+    left: 4px;
+    right: auto;
+  }
+  @media (--xs) {
+    top: -9px;
+    left: 3px;
+    right: auto;
+  }
+}
+
 .edit {
   position: absolute;
   cursor: pointer;
