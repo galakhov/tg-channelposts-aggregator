@@ -84,7 +84,7 @@ class UdemyCrawler {
       'User-Agent': newUserAgent,
       // url: requestUrl,
       'set-cookie': [
-        '__cfduid=d6fa31f10f333852762ac4bb4836825381565944230; expires=Sat, 31-Aug-2019 23:59:59 GMT; path=/; domain=.udemy.com; HttpOnly',
+        '__cfduid=d6fa31f10f333852762ac4bb4836825381565944230; expires=Sat, 30-Sep-2019 23:59:59 GMT; path=/; domain=.udemy.com; HttpOnly',
         '_pxhd=32c182d85232d65b2288fb48868e813a2182aaf7fa2caee59c4b16bf61105878:1b7e3621-c000-11e9-b968-3908e2c0de98; path=/;'
       ],
       'x-content-type-options': 'nosniff'
@@ -104,7 +104,8 @@ class UdemyCrawler {
           new Error('Udemy page responded with status ' + res.statusCode)
         )
       }
-      const $ = cheerio.load(res.getBody('utf8')) // response.getBody())
+      const $ = cheerio.load(res.getBody('utf8'))
+      // response.getBody())
       // id, title, headline, image
       Course.id = this.courseId || $('body').attr('data-clp-course-id')
       Course.title = $('.clp-lead__title[data-purpose="lead-title"]')
@@ -124,7 +125,6 @@ class UdemyCrawler {
       )
         .text()
         .trim()
-
       /*
             Also consider other opened Udemy entry points:
             https://www.udemy.com/robots.txt
