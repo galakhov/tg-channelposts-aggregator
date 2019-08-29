@@ -109,7 +109,7 @@ const Card = ({
     <div className={styles.card} onClick={() => onCardClick(_id)}>
       {img && (
         <div className={styles.leadImg}>
-          <img src={img} alt="lead-img" />
+          <img src={img} alt={text} />
         </div>
       )}
       <div className={styles.breadcrumbs}>
