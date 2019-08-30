@@ -22,6 +22,20 @@ const listAllPosts = (req, res) => {
     .limit(limitPerPage)
 }
 
+const countPosts = (userId = null, postType, searchQuery = null) => {
+  switch (postType) {
+    case 'search':
+      return this.searchService.countFoundEmails(userId, searchQuery)
+    case 'listPosts':
+      return this.PostModel.count({
+        // userId,
+        type: '*'
+      })
+    default:
+      throw new Error(`${postType} is not a valid postType`)
+  }
+}
+
 const isThirdPartyLink = url => {
   const nonOriginalUdemyLink =
     url.indexOf('udemyoff.com') !== -1 ||
@@ -255,3 +269,4 @@ const updatePost = ({ edited_channel_post: data }) => {
 exports.listAllPosts = listAllPosts
 exports.addPost = addPost
 exports.updatePost = updatePost
+exports.countPosts = countPosts
