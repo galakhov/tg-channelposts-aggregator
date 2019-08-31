@@ -1,8 +1,8 @@
-import qs from 'querystring'
 import _merge from 'lodash/merge'
 import _isObject from 'lodash/isObject'
 import _isArray from 'lodash/isArray'
 import _isEmtpy from 'lodash/isEmpty'
+// import qs from 'querystring'
 
 import { API_HOST } from '~/utils/constants'
 
@@ -30,7 +30,9 @@ const parseResponse = res => {
 }
 
 export default ({ api, method, path, query, body }) => {
-  const queries = _isEmtpy(query) ? '' : `?${qs.encode(query)}`
+  // const queries = _isEmtpy(query) ? '' : `?${qs.encode(query)}`
+  // const queries = _isEmtpy(query) ? '' : `?${query}`
+  const queries = _isEmtpy(query) ? '' : `?${encodeURIComponent(query)}`
   const _url = `${API_HOST}/${api.service}/${api.version}${path}${queries}`
 
   const API_HEADERS = {} // placeholder
@@ -54,6 +56,8 @@ export default ({ api, method, path, query, body }) => {
     })
   }
 
+  console.log('queries not encoded: \n' + query)
+  console.log('queries encoded: \n' + encodeURIComponent(query))
   console.log('Accessing the API:\n', _url)
   console.log(_opts)
 

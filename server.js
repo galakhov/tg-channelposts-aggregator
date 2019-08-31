@@ -83,13 +83,14 @@ app.get(
 app.get(
   '/api/v1/posts',
   catchExceptions(async (req, res) => {
-    let { offset, limit } = req.query
+    let { offset = 0, limit = MAX_POSTS_PER_PAGE } = req.query
     // offset = (pageNumber - 1) * limit
     console.log(`-------- GET /api/v1/posts?offset=${offset}&limit=${limit}`)
     offset = parseInt(offset)
     limit = parseInt(limit)
     limit = Math.min(limit, MAX_POSTS_PER_PAGE) // either limit or the MAX const
-    console.log('-------- limit', limit)
+    console.log('-------- offset: ', offset)
+    console.log('-------- limit: ', limit)
 
     const posts = await dashboard.listAllPosts(
       {
@@ -97,13 +98,13 @@ app.get(
         offset,
         limit
       },
-      (err, result) => {
+      (err, posts) => {
         if (err) {
           console.log('-------- listAllPosts Error:', err)
           return err
         } else {
           // console.log('-------- listAllPosts Result\n', result)
-          return res.json({ result })
+          return res.json({ posts })
         }
       }
     )

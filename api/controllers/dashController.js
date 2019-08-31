@@ -6,16 +6,19 @@ const mongoose = require('mongoose'),
 // mongoose.set('debug', true)
 
 const maxLimit = 50
-const listAllPosts = (req, callback) => {
-  let { offset, limit } = req
+const listAllPosts = (req, callback = null) => {
+  let { offset = 2000, limit = 50 } = req
   limit = Math.min(limit, maxLimit)
   console.log('-------- request', req)
 
+  // const count = Post.estimatedDocumentCount()
+
   const query = Post.aggregate([
+    // the order of the MongoDB stages below does matter
     { $match: { created_date: { $exists: 1 } } },
     { $skip: offset },
-    { $limit: limit },
-    { $sort: { created_date: -1 } } // sort in descending order
+    { $sort: { created_date: -1 } }, // sort in descending order
+    { $limit: limit }
   ]).allowDiskUse(true)
   // https://mongoosejs.com/docs/api.html#aggregate_Aggregate-allowDiskUse
 
@@ -24,7 +27,7 @@ const listAllPosts = (req, callback) => {
       console.log('-------- aggregationResult err:\n' + err)
       return callback(err)
     }
-    console.log('-------- aggregationResult results:\n', results)
+    // console.log('-------- aggregationResult results:\n', results)
     return callback(null, results)
   })
 }

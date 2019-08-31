@@ -11,7 +11,8 @@ export default {
           service: 'api',
           version: 'v1'
         },
-        path: `/posts`
+        path: `/posts`,
+        query: `offset=2000&limit=50`
       })
     }
   }

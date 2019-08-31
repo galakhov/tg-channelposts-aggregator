@@ -28,7 +28,7 @@ export default (state = initialState, action) => {
     case ACTION_TYPES.GET_POSTS:
       return {
         ...state,
-        posts: action.data
+        posts: action.data.posts
       }
     case ACTION_TYPES.SET_FILTERED_POSTS:
       return {
