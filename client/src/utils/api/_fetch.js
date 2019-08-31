@@ -2,7 +2,7 @@ import _merge from 'lodash/merge'
 import _isObject from 'lodash/isObject'
 import _isArray from 'lodash/isArray'
 import _isEmtpy from 'lodash/isEmpty'
-// import qs from 'querystring'
+import qs from 'querystring'
 
 import { API_HOST } from '~/utils/constants'
 
@@ -17,7 +17,6 @@ const checkStatus = res => {
 
 const parseResponse = res => {
   return res.text().then(text => {
-    // console.log('Getting response from the API:\n', text)
     const headers = res.headers
     let data = null
     try {
@@ -30,11 +29,11 @@ const parseResponse = res => {
 }
 
 export default ({ api, method, path, query, body }) => {
-  // const queries = _isEmtpy(query) ? '' : `?${qs.encode(query)}`
-  // const queries = _isEmtpy(query) ? '' : `?${query}`
   const queries = _isEmtpy(query) ? '' : query
   const cleanQuery = queries.replace(/[^&=\w\d]/gi, '')
-  const _url = `${API_HOST}/${api.service}/${api.version}${path}?${cleanQuery}`
+  const _url = `${API_HOST}/${api.service}/${api.version}${path}?${qs.encode(
+    cleanQuery
+  )}`
 
   const API_HEADERS = {} // placeholder
 
@@ -57,10 +56,8 @@ export default ({ api, method, path, query, body }) => {
     })
   }
 
-  console.log('queries raw: \n' + query)
-  console.log('queries cleaned: \n' + cleanQuery)
-  console.log('Accessing the API:\n', _url)
-  console.log(_opts)
+  // console.log('Accessing the API:\n', _url)
+  // console.log(_opts)
 
   return fetch(_url, _opts)
     .then(checkStatus)
