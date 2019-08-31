@@ -85,16 +85,12 @@ app.get(
   catchExceptions(async (req, res) => {
     let parsedOffset, parsedLimit
     // offset = (pageNumber - 1) * limit
-    try {
-      const { offset = 0, limit = MAX_POSTS_PER_PAGE } = decodeURIComponent(
-        req.query
-      )
-      console.log(`-------- GET /api/v1/posts?offset=${offset}&limit=${limit}`)
-      parsedOffset = parseInt(offset)
-      parsedLimit = parseInt(limit)
-    } catch (e) {
-      console.error(`-------- ${e}`)
-    }
+    const { offset = 0, limit = MAX_POSTS_PER_PAGE } = req.query
+
+    console.log(`-------- GET /api/v1/posts?offset=${offset}&limit=${limit}`)
+    parsedOffset = parseInt(offset)
+    parsedLimit = parseInt(limit)
+
     // set either the parsed limit or the default MAX constant:
     parsedLimit = Math.min(limit, MAX_POSTS_PER_PAGE)
     console.log('-------- parsedOffset: ', parsedOffset)

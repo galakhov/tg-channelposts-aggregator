@@ -32,7 +32,7 @@ const parseResponse = res => {
 export default ({ api, method, path, query, body }) => {
   // const queries = _isEmtpy(query) ? '' : `?${qs.encode(query)}`
   const cleanQuery = query.replace(/[^&=\w\d]/gi, '')
-  const queries = _isEmtpy(query) ? '' : `?${encodeURIComponent(cleanQuery)}`
+  const queries = _isEmtpy(query) ? '' : `?${cleanQuery}`
   const _url = `${API_HOST}/${api.service}/${api.version}${path}${queries}`
 
   const API_HEADERS = {} // placeholder
