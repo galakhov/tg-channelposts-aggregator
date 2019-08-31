@@ -18,5 +18,5 @@ const PostSchema = new Schema({
     default: Date.now
   }
 })
-
+// PostSchema.index({ preview.courseId: -1, created_date: -1 })
 module.exports = mongoose.model('Post', PostSchema)

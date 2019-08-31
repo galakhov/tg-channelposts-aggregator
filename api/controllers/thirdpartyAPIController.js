@@ -1,5 +1,6 @@
 const { request } = require('graphql-request')
 const { SequentialTaskQueue } = require('sequential-task-queue')
+const { CronJob } = require('cron')
 const ctlHelper = require('./helper')
 
 class ThirdPartyCourses {
@@ -133,9 +134,7 @@ class ThirdPartyCourses {
             JSON.parse(JSON.stringify(data.coupons)).forEach(obj => {
               const urlWithoutParameters = obj.course.cleanUrl
               const courseId = obj.course.udemyId
-              const freeCoupon = `https://www.udemy.com/course${urlWithoutParameters}?couponCode=${
-                obj.course.coupon[0].code
-              }`
+              const freeCoupon = `https://www.udemy.com/course${urlWithoutParameters}?couponCode=${obj.course.coupon[0].code}`
               freeCouponsIds.push([courseId, freeCoupon])
             })
             setTimeout(() => {
@@ -162,7 +161,6 @@ class ThirdPartyCourses {
   automate() {
     // https://www.npmjs.com/package/cron
     // https://github.com/kelektiv/node-cron
-    const { CronJob } = require('cron')
     const max = 45,
       min = 15
     const randomTime = Math.floor(Math.random() * (max - min)) + min

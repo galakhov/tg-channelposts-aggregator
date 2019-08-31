@@ -1,17 +1,17 @@
 const dotenv = require('dotenv')
 dotenv.config()
 require('./data/mongoose.connector')
-
-// const ThirdPartyCourses = require('./api/controllers/thirdpartyAPIController')
-
+const Post = require('./api/models/postModel')
+const catchExceptions = require('./api/controllers/helper').catchExceptions
 const express = require('express'),
   app = express(),
   port = process.env.PORT || 8081,
   cors = require('cors'),
   bodyParser = require('body-parser'),
-  Post = require('./api/models/postModel'),
   initBot = require('./bot/index')
 // ,router = express.Router()
+
+// const ThirdPartyCourses = require('./api/controllers/thirdpartyAPIController')
 
 // const graphqlHTTP = require('express-graphql')
 // const schema = require('./data/graphql.schema')
@@ -61,9 +61,76 @@ app.use(bodyParser.json())
 // router.use('/api/v1/posts', require('./api/routes/dashRoutes'))
 // register routes
 // routes(app)
-
 const dashboard = require('./api/controllers/dashController')
-app.get('/api/v1/posts', dashboard.listAllPosts)
+
+const MAX_POSTS_PER_PAGE = 50
+
+app.get(
+  '/api/v1/posts/count',
+  // userIsLoggedIn, // returns user id
+  catchExceptions(async (req, res) => {
+    const { postType, searchQuery } = req.query
+    console.log('-------- postType', postType)
+    const count = await dashboard.countPosts(
+      null, // req.session.userId,
+      'countPosts', // postType,
+      searchQuery
+    )
+    res.json({ count })
+  })
+)
+
+app.get(
+  '/api/v1/posts',
+  catchExceptions(async (req, res) => {
+    let { offset, limit } = req.query
+    // offset = (pageNumber - 1) * limit
+    console.log(`-------- GET /api/v1/posts?offset=${offset}&limit=${limit}`)
+    offset = parseInt(offset)
+    limit = parseInt(limit)
+    limit = Math.min(limit, MAX_POSTS_PER_PAGE) // either limit or the MAX const
+    console.log('-------- limit', limit)
+
+    const posts = await dashboard.listAllPosts(
+      {
+        // req.session.userId,
+        offset,
+        limit
+      },
+      (err, result) => {
+        if (err) {
+          console.log('-------- listAllPosts Error:', err)
+          return err
+        } else {
+          // console.log('-------- listAllPosts Result\n', result)
+          return res.json({ result })
+        }
+      }
+    )
+  })
+)
+
+app.get(
+  '/api/v1/search',
+  // userIsLoggedIn,
+  catchExceptions(async (req, res) => {
+    let { searchQuery, offset, limit } = req.query
+    console.log(
+      `-------- GET /api/v1/search q=${searchQuery} offset=${offset} limit=${limit}`
+    )
+    offset = parseInt(offset)
+    limit = parseInt(limit)
+    limit = Math.min(limit, MAX_POSTS_PER_PAGE)
+    const emails = await dashboard.search(
+      // req.session.userId,
+      searchQuery,
+      offset,
+      limit
+    )
+    res.json(posts)
+  })
+)
+
 app.use(express.static('client/build'))
 
 app.listen(port)

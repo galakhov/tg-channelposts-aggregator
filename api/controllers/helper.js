@@ -105,6 +105,12 @@ const isAlreadyInDB = (cleanedUrl, crawledContents) => {
   }
 }
 
+const catchExceptions = func => {
+  return (req, res, next) => {
+    Promise.resolve(func(req, res)).catch(next)
+  }
+}
+
 // for logging purposes
 const getFullDate = (d = new Date()) => {
   const date = d // typeof d === 'string' ? new Date(d) : d
@@ -112,8 +118,11 @@ const getFullDate = (d = new Date()) => {
   let mm = date.getUTCMonth() + 1
   mm = mm < 10 ? `0${mm}` : mm
   const yyyy = date.getUTCFullYear()
-  let hh = date.getUTCHours() + 2
+  let hh = date.getUTCHours() + 2 // time zone offset
   hh = hh.toString().length < 2 ? `0${hh}` : hh
+  if (hh.toString() === '25') {
+    hh = '01'
+  }
   let min = date.getUTCMinutes()
   min = min.toString().length < 2 ? `0${min}` : min
   let sec = date.getUTCSeconds()
@@ -220,9 +229,7 @@ const populateUdemyCourseData = contents => {
       return post
         ? Promise.resolve(
             getFullDate() +
-              ` populateUdemyCourseData: course contents saved! 👍\nPOST ID: ${
-                post._id
-              }`
+              ` populateUdemyCourseData: course contents saved! 👍\nPOST ID: ${post._id}`
           )
         : Promise.reject(
             getFullDate() +
@@ -309,3 +316,4 @@ exports.replaceAll = replaceAll
 exports.isAlreadyInDB = isAlreadyInDB
 exports.parseAndSaveCourse = parseAndSaveCourse
 exports.affiliateParametersCleaner = affiliateParametersCleaner
+exports.catchExceptions = catchExceptions

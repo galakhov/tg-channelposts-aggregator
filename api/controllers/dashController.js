@@ -1,36 +1,40 @@
 const _ = require('lodash')
 const ctlHelper = require('./helper')
-
-const limitPerPage = 50
-
 const mongoose = require('mongoose'),
   Post = mongoose.model('Post')
 
 // mongoose.set('debug', true)
 
-const listAllPosts = (req, res) => {
-  Post.find({}, (err, posts) => {
+const maxLimit = 50
+const listAllPosts = (req, callback) => {
+  let { offset, limit } = req
+  limit = Math.min(limit, maxLimit)
+  console.log('-------- request', req)
+
+  const query = Post.aggregate([
+    { $match: { created_date: { $exists: 1 } } },
+    { $skip: offset },
+    { $limit: limit },
+    { $sort: { created_date: -1 } } // sort in descending order
+  ]).allowDiskUse(true)
+  // https://mongoosejs.com/docs/api.html#aggregate_Aggregate-allowDiskUse
+
+  query.exec((err, results) => {
     if (err) {
-      console.log('listAllPosts -> err:\n', err)
-      res.send(err)
+      console.log('-------- aggregationResult err:\n' + err)
+      return callback(err)
     }
-    res.json(posts)
+    console.log('-------- aggregationResult results:\n', results)
+    return callback(null, results)
   })
-    .sort({
-      created_date: 'desc'
-    })
-    .limit(limitPerPage)
 }
 
 const countPosts = (userId = null, postType, searchQuery = null) => {
   switch (postType) {
-    case 'search':
-      return this.searchService.countFoundEmails(userId, searchQuery)
-    case 'listPosts':
-      return this.PostModel.count({
-        // userId,
-        type: '*'
-      })
+    // case 'search':
+    //   return this.searchService.countFoundPosts(userId, searchQuery)
+    case 'countPosts':
+      return Post.estimatedDocumentCount()
     default:
       throw new Error(`${postType} is not a valid postType`)
   }
