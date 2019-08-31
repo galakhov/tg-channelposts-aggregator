@@ -32,8 +32,9 @@ const parseResponse = res => {
 export default ({ api, method, path, query, body }) => {
   // const queries = _isEmtpy(query) ? '' : `?${qs.encode(query)}`
   // const queries = _isEmtpy(query) ? '' : `?${query}`
-  const queries = _isEmtpy(query) ? '' : `?${encodeURIComponent(query)}`
-  const _url = `${API_HOST}/${api.service}/${api.version}${path}${queries}`
+  const queries = _isEmtpy(query) ? '' : query
+  const cleanQuery = queries.replace(/[^&=\w\d]/gi, '')
+  const _url = `${API_HOST}/${api.service}/${api.version}${path}?${cleanQuery}`
 
   const API_HEADERS = {} // placeholder
 
@@ -56,8 +57,8 @@ export default ({ api, method, path, query, body }) => {
     })
   }
 
-  console.log('queries not encoded: \n' + query)
-  console.log('queries encoded: \n' + encodeURIComponent(query))
+  console.log('queries raw: \n' + query)
+  console.log('queries cleaned: \n' + cleanQuery)
   console.log('Accessing the API:\n', _url)
   console.log(_opts)
 

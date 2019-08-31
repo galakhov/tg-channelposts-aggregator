@@ -11,12 +11,15 @@ const listAllPosts = (req, callback = null) => {
   limit = Math.min(limit, maxLimit)
   console.log('-------- request', req)
 
+  // TODO: pagination for redux
   // const count = Post.estimatedDocumentCount()
+  // const firstPageOffset = count - limit
 
   const query = Post.aggregate([
     // the order of the MongoDB stages below does matter
     { $match: { created_date: { $exists: 1 } } },
-    { $skip: offset },
+    // { $skip: offset },
+    { $skip: offset ? offset : firstPageOffset },
     { $sort: { created_date: -1 } }, // sort in descending order
     { $limit: limit }
   ]).allowDiskUse(true)
