@@ -18,7 +18,6 @@ const listAllPosts = (req, callback = null) => {
   const query = Post.aggregate([
     // the order of the MongoDB stages below does matter
     { $match: { created_date: { $exists: 1 } } },
-    // { $skip: offset },
     { $skip: offset ? offset : firstPageOffset },
     { $sort: { created_date: -1 } }, // sort in descending order
     { $limit: limit }
@@ -28,21 +27,18 @@ const listAllPosts = (req, callback = null) => {
   query.exec((err, results) => {
     if (err) {
       console.log('-------- aggregationResult err:\n' + err)
-      return callback(err)
+      return callback(err) // use the passed callback function from the args
     }
-    // console.log('-------- aggregationResult results:\n', results)
     return callback(null, results)
   })
 }
 
 const countPosts = (userId = null, postType, searchQuery = null) => {
   switch (postType) {
-    // case 'search':
-    //   return this.searchService.countFoundPosts(userId, searchQuery)
     case 'countPosts':
       return Post.estimatedDocumentCount()
     default:
-      throw new Error(`${postType} is not a valid postType`)
+      throw new Error(`-------- ${postType} is not a valid postType`)
   }
 }
 

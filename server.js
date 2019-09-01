@@ -103,13 +103,12 @@ app.get(
         parsedLimit
       },
       (err, posts) => {
+        // pass the callback function
         if (err) {
           console.log('-------- listAllPosts Error:', err)
           return err
-        } else {
-          // console.log('-------- listAllPosts Result\n', result)
-          return res.json({ posts })
         }
+        return res.json({ posts })
       }
     )
   })
@@ -126,13 +125,13 @@ app.get(
     offset = parseInt(offset)
     limit = parseInt(limit)
     limit = Math.min(limit, MAX_POSTS_PER_PAGE)
-    const emails = await dashboard.search(
+    const posts = await dashboard.search(
       // req.session.userId,
       searchQuery,
       offset,
       limit
     )
-    res.json(posts)
+    res.json({ posts })
   })
 )
 
