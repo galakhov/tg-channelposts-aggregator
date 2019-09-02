@@ -50,6 +50,7 @@ class Home extends React.Component {
       prevProps.isFetching !== this.props.isFetching &&
       prevProps.isFetching === true
     ) {
+      // scroll to the top after fetching of the data was finished
       this.handleAfterPageSwitch()
     }
   }
@@ -63,20 +64,19 @@ class Home extends React.Component {
     //   window.pageYOffset
     // )
     // set scroll step in px
-    window.scroll(0, window.pageYOffset - 30)
+    window.scroll(0, window.pageYOffset - 100)
   }
 
   handleAfterPageSwitch = () => {
     // delay in ms
-    let intervalId = setInterval(this.scrollStep.bind(this), 20)
+    let intervalId = setInterval(this.scrollStep.bind(this), 10)
     this.setState({ intervalId: intervalId })
-
-    // console.log('-> handleAfterPageSwitch was executed now!')
-    // TODO: smooth transition to the top: window.scrollTo(0, 0)
   }
 
   handlePageSwitch = currentPageNumber => {
     console.log('handlePageSwitch: ' + currentPageNumber)
+    // TODO: smooth transition to the top: window.scroll(0, 0)
+    this.handleAfterPageSwitch()
     this.setState({ currentPage: currentPageNumber })
   }
 
