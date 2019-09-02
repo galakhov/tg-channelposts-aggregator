@@ -11,9 +11,8 @@ const listAllPosts = (req, callback = null) => {
   let { parsedOffset = 0, parsedLimit = 50 } = req
 
   parsedLimit = Math.min(parsedLimit, maxLimit)
-  console.log('-------- request', req)
+  // console.log('-------- request', req)
 
-  // TODO: pagination for redux
   if (parsedOffset === 0) {
     const queryPostsTotal = Post.estimatedDocumentCount()
     // fist get the total number of posts
@@ -43,7 +42,8 @@ const aggregatePosts = (offset, limit, callback) => {
   query.exec((err, results) => {
     if (err) {
       console.log('-------- aggregationResult err:\n' + err)
-      return callback(err, null) // use the passed callback function from the args
+      // use the passed callback function from the args above
+      return callback(err, null)
     }
     return callback(null, results)
   })

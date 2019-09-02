@@ -56,9 +56,9 @@ export default ({ api, method, path, query, body }) => {
     })
   }
 
-  console.log('queries raw: \n' + query)
-  console.log('queries encoded: \n' + queries)
-  console.log('Accessing the API:\n', _url)
+  // console.log('queries raw: \n' + query)
+  // console.log('queries encoded: \n' + queries)
+  // console.log('Accessing the API:\n', _url)
   // console.log(_opts)
 
   return fetch(_url, _opts)

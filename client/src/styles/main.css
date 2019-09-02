@@ -2,9 +2,13 @@
 @import 'normalize.css';
 @import 'reset-css';
 
-html,
-body {
-  height: 100%;
+:global {
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 body {

@@ -20,15 +20,12 @@ class PaginationComponent extends React.Component {
     console.log('postsCount: ', this.props.postsCount)
   }
 
-  // TODO: next page / prev page
   componentDidUpdate (prevProps, prevState) {
     // only update the pagination if the postsCount has changed
     if (
       prevProps.postsCount !== this.props.postsCount ||
       prevProps.currentPage !== this.props.currentPage
     ) {
-      // this.props.skip =
-      // this.props.limit =
       console.log('componentDidUpdate postsCount: ', this.props.postsCount)
       const offset =
         this.props.postsCount - this.state.limit * this.props.currentPage

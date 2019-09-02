@@ -20,20 +20,7 @@ import Posts from './Posts'
 import PaginationComponent from './Pagination'
 import Nav from './Nav'
 
-import {
-  // Table,
-  // Notification,
-  // MessageBox,
-  // Message,
-  // Tabs,
-  Button,
-  // Icon,
-  Form,
-  Input
-  // Dialog,
-  // Card,
-  // Tag
-} from 'element-react'
+import { Button, Form, Input } from 'element-react'
 import 'element-theme-default/lib/form.css'
 import 'element-theme-default/lib/form-item.css'
 import 'element-theme-default/lib/button.css'
@@ -49,7 +36,8 @@ class Home extends React.Component {
     this.state = {
       // locale: getLanguage()
       currentPage: 1,
-      searchTerm: ''
+      searchTerm: '',
+      intervalId: 0
     }
   }
 
@@ -57,9 +45,26 @@ class Home extends React.Component {
     this.props.getPosts(this.state.skip, this.state.limit)
   }
 
+  scrollStep = el => {
+    if (window.pageYOffset === 0) {
+      clearInterval(this.state.intervalId)
+    }
+    // console.log(
+    //   'TCL: Home -> scrollStep -> window.pageYOffset',
+    //   window.pageYOffset
+    // )
+    // set scroll step in px
+    window.scroll(0, window.pageYOffset - 30)
+  }
+
   handlePageSwitch = currentPageNumber => {
     console.log('handlePageSwitch: ' + currentPageNumber)
     this.setState({ currentPage: currentPageNumber })
+
+    // TODO: smooth transition to the top: window.scrollTo(0, 0)
+    // delay in ms
+    let intervalId = setInterval(this.scrollStep.bind(this), 20)
+    this.setState({ intervalId: intervalId })
   }
 
   render () {
