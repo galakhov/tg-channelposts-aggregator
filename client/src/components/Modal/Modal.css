@@ -1,6 +1,10 @@
 :global {
   .ReactModal__Content {
     border: none !important;
+    transform: translate(-50%, -40%);
+    @media (--l) {
+      transform: translate(-50%, -50%);
+    }
   }
   .ReactModalPortal > * {
     opacity: 0;

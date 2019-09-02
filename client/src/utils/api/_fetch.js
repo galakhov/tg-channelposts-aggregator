@@ -31,8 +31,8 @@ const parseResponse = res => {
 
 export default ({ api, method, path, query, body }) => {
   // const queries = _isEmtpy(query) ? '' : `?${qs.encode(query)}`
-  const cleanQuery = query.replace(/[^&=\w\d]/gi, '')
-  const queries = _isEmtpy(query) ? '' : `?${cleanQuery}`
+  const cleanQuery = query ? `?${query.replace(/[^&=\w\d]/gi, '')}` : ''
+  const queries = _isEmtpy(query) ? '' : `${cleanQuery}`
   const _url = `${API_HOST}/${api.service}/${api.version}${path}${queries}`
 
   const API_HEADERS = {} // placeholder
@@ -59,13 +59,13 @@ export default ({ api, method, path, query, body }) => {
   console.log('queries raw: \n' + query)
   console.log('queries encoded: \n' + queries)
   console.log('Accessing the API:\n', _url)
-  console.log(_opts)
+  // console.log(_opts)
 
   return fetch(_url, _opts)
     .then(checkStatus)
     .then(parseResponse)
     .catch(err => {
-      console.log('Fetching of data from DB failed:\n', err)
+      console.log('1: Fetching of data from DB failed:\n', err)
       throw err
     })
 }

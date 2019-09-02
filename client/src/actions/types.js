@@ -1,4 +1,5 @@
 export const GET_POSTS = 'dash/GET_POSTS'
+export const GET_POSTS_COUNT = 'dash/GET_POSTS_COUNT'
 export const SET_FILTERED_POSTS = 'dash/SET_FILTERED_POSTS'
 export const FETCHING = 'dash/FETCHING'
 export const FETCHING_END = 'dash/FETCHING_END'

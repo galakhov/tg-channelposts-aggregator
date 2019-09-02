@@ -6,6 +6,7 @@ const initialState = {
   isModalOpen: false,
   currentPostId: '',
   posts: [],
+  postsCount: 0,
   tags: [],
   filteredPosts: [],
   errorMessage: '',
@@ -29,6 +30,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         posts: action.data.posts
+      }
+    case ACTION_TYPES.GET_POSTS_COUNT:
+      return {
+        ...state,
+        postsCount: action.data.count
       }
     case ACTION_TYPES.SET_FILTERED_POSTS:
       return {

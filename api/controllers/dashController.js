@@ -6,40 +6,59 @@ const mongoose = require('mongoose'),
 // mongoose.set('debug', true)
 
 const maxLimit = 50
+
 const listAllPosts = (req, callback = null) => {
-  let { offset = 2000, limit = 50 } = req
-  limit = Math.min(limit, maxLimit)
+  let { parsedOffset = 0, parsedLimit = 50 } = req
+
+  parsedLimit = Math.min(parsedLimit, maxLimit)
   console.log('-------- request', req)
 
   // TODO: pagination for redux
-  // const count = Post.estimatedDocumentCount()
-  // const firstPageOffset = count - limit
+  if (parsedOffset === 0) {
+    const queryPostsTotal = Post.estimatedDocumentCount()
+    // fist get the total number of posts
+    queryPostsTotal.exec((err, results) => {
+      if (err) {
+        console.log('-------- estimatedDocumentCount error:\n' + err)
+        return err
+      }
+      parsedOffset = parseInt(results) - parseInt(parsedLimit)
+      return aggregatePosts(parsedOffset, parsedLimit, callback)
+    })
+  } else if (parsedOffset !== NaN) {
+    return aggregatePosts(parsedOffset, parsedLimit, callback)
+  }
+}
 
+const aggregatePosts = (offset, limit, callback) => {
   const query = Post.aggregate([
     // the order of the MongoDB stages below does matter
+    { $skip: offset ? offset : 2000 },
+    { $limit: limit },
     { $match: { created_date: { $exists: 1 } } },
-    { $skip: offset ? offset : firstPageOffset },
-    { $sort: { created_date: -1 } }, // sort in descending order
-    { $limit: limit }
+    { $sort: { created_date: -1 } } // sort in descending order
   ]).allowDiskUse(true)
   // https://mongoosejs.com/docs/api.html#aggregate_Aggregate-allowDiskUse
 
   query.exec((err, results) => {
     if (err) {
       console.log('-------- aggregationResult err:\n' + err)
-      return callback(err) // use the passed callback function from the args
+      return callback(err, null) // use the passed callback function from the args
     }
     return callback(null, results)
   })
 }
 
-const countPosts = (userId = null, postType, searchQuery = null) => {
-  switch (postType) {
-    case 'countPosts':
-      return Post.estimatedDocumentCount()
-    default:
-      throw new Error(`-------- ${postType} is not a valid postType`)
-  }
+const countPosts = callback => {
+  const query = Post.estimatedDocumentCount()
+  // error handler
+  query.exec((err, results) => {
+    if (err) {
+      console.log('-------- estimatedDocumentCount error:\n' + err)
+      return callback(err, null)
+    }
+    return callback(null, results)
+  })
 }
 
 const isThirdPartyLink = url => {

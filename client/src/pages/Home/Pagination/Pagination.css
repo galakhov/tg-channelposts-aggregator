@@ -1,0 +1,41 @@
+.pagination {
+  margin-top: 25px;
+
+  button {
+    /* font-family: var(--sansFont); */
+    font-family: var(--consoleFont);
+  }
+
+  .paginationBlock {
+    background-color: var(--cardColor);
+    padding: 10px 0px 7px;
+    border-radius: 5px;
+    text-align: center;
+    width: 340px;
+    max-width: 340px;
+  }
+
+  ul li {
+    line-height: 27px;
+    font-family: var(--consoleFont);
+  }
+
+  .paginationBlock button:hover,
+  ul li:hover {
+    color: var(--actionColor);
+  }
+
+  :global .el-pagination {
+    display: inline-block;
+  }
+
+  :global ul li.active {
+    background-color: var(--actionBgColor);
+    border-color: var(--actionBgColor);
+    color: var(--actionColor);
+  }
+
+  :global ul li.active:hover {
+    color: var(--actionColor);
+  }
+}

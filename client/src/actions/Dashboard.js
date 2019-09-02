@@ -31,11 +31,25 @@ const search = async (term, start, limit) => {
   return results
 }
 
-export const getPosts = () => dispatch => {
+export const getPostsCount = () => dispatch => {
+  Dashboard.Posts.count()
+    .then(({ data }) => {
+      console.log('TCL: getPostsCount', data.count)
+      dispatch({
+        type: ACTION_TYPES.GET_POSTS_COUNT,
+        data
+      })
+    })
+    .catch(err => {
+      console.log(`GET_POSTS_COUNT_FAILED:\n${err}`)
+    })
+}
+
+export const getPosts = (skip, limit) => dispatch => {
   dispatch(showLoading())
   dispatch({ type: ACTION_TYPES.FETCHING })
 
-  Dashboard.Posts.get()
+  Dashboard.Posts.get(skip, limit)
     .then(({ data }) => {
       dispatch(hideLoading())
       dispatch({

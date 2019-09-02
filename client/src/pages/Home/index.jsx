@@ -17,6 +17,7 @@ import Page from '~/components/Page'
 import AirLine from '~/components/AirLine'
 import CardModal from '~/components/CardModal'
 import Posts from './Posts'
+import PaginationComponent from './Pagination'
 import Nav from './Nav'
 
 import {
@@ -47,12 +48,18 @@ class Home extends React.Component {
     super(props)
     this.state = {
       // locale: getLanguage()
+      currentPage: 1,
       searchTerm: ''
     }
   }
 
   componentDidMount () {
-    this.props.getPosts()
+    this.props.getPosts(this.state.skip, this.state.limit)
+  }
+
+  handlePageSwitch = currentPageNumber => {
+    console.log('handlePageSwitch: ' + currentPageNumber)
+    this.setState({ currentPage: currentPageNumber })
   }
 
   render () {
@@ -114,8 +121,12 @@ class Home extends React.Component {
           openModal={openModal}
           searchResults={searchResults}
           searchResultsCount={searchResultsCount}
+          currentPage={this.state.currentPage}
         />
-
+        <PaginationComponent
+          handlePageSwitch={this.handlePageSwitch.bind(this)}
+          currentPage={this.state.currentPage}
+        />
         <CardModal />
       </Page>
     )

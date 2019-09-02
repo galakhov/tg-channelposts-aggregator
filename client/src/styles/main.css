@@ -95,3 +95,14 @@ input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* resets */
+.el-pagination ul li.active:hover {
+  color: var(--titleColor);
+}
+
+.paginationBlock ul li.active {
+  border-color: var(--buttonColor);
+  background-color: var(--buttonColor);
+  color: var(--titleColor);
+}

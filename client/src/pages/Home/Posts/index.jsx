@@ -9,7 +9,13 @@ import styles from './Posts.css'
 
 class Posts extends React.Component {
   render () {
-    const { posts, openModal, searchResults, searchResultsCount } = this.props
+    const {
+      posts,
+      openModal,
+      searchResults,
+      searchResultsCount,
+      currentPage
+    } = this.props
     return searchResults && searchResults.length > 0 ? (
       <div className={styles.wrapper}>
         <div className="spinning-wheel">
@@ -95,6 +101,12 @@ class Posts extends React.Component {
         <div className="spinning-wheel">
           {posts.length === 0 && <Spinner className={styles.spinner} />}
         </div>
+
+        {currentPage > 1 && (
+          <h5 className={styles.searchResultsCount}>
+            Current page: {currentPage}
+          </h5>
+        )}
 
         <StackGrid columnWidth={340} gutterWidth={40} gutterHeight={20}>
           {posts &&

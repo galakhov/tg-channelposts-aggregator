@@ -69,14 +69,15 @@ app.get(
   '/api/v1/posts/count',
   // userIsLoggedIn, // returns user id
   catchExceptions(async (req, res) => {
-    const { postType, searchQuery } = req.query
-    console.log('-------- postType', postType)
-    const count = await dashboard.countPosts(
-      null, // req.session.userId,
-      'countPosts', // postType,
-      searchQuery
-    )
-    res.json({ count })
+    // const { postType } = req.query
+    await dashboard.countPosts((err, count) => {
+      // pass the callback function
+      if (err) {
+        console.log('-------- countPosts Error:', err)
+        return err
+      }
+      return res.json({ count })
+    })
   })
 )
 
@@ -87,6 +88,12 @@ app.get(
     // offset = (pageNumber - 1) * limit
     const { offset = 0, limit = MAX_POSTS_PER_PAGE } = req.query
 
+    if (offset === 0) {
+      let totalCount = 0
+      const count = await dashboard.countPosts()
+      totalCount = res.json({ count })
+      offset = totalCount - limit
+    }
     console.log(`-------- GET /api/v1/posts?offset=${offset}&limit=${limit}`)
     parsedOffset = parseInt(offset)
     parsedLimit = parseInt(limit)
@@ -96,7 +103,7 @@ app.get(
     console.log('-------- parsedOffset: ', parsedOffset)
     console.log('-------- parsedLimit: ', parsedLimit)
 
-    const posts = await dashboard.listAllPosts(
+    await dashboard.listAllPosts(
       {
         // req.session.userId,
         parsedOffset,
@@ -114,6 +121,7 @@ app.get(
   })
 )
 
+// TODO: map this route with the frontend & move elasticsearch to the backend
 app.get(
   '/api/v1/search',
   // userIsLoggedIn,
