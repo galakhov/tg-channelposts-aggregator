@@ -70,7 +70,8 @@ class Home extends React.Component {
     // delay in ms
     let intervalId = setInterval(this.scrollStep.bind(this), 20)
     this.setState({ intervalId: intervalId })
-    console.log('-> handleAfterPageSwitch was executed now!')
+
+    // console.log('-> handleAfterPageSwitch was executed now!')
     // TODO: smooth transition to the top: window.scrollTo(0, 0)
   }
 

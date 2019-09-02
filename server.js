@@ -86,11 +86,13 @@ app.get(
   catchExceptions(async (req, res) => {
     let parsedOffset, parsedLimit
     // offset = (pageNumber - 1) * limit
-    const { offset = 0, limit = MAX_POSTS_PER_PAGE } = req.query
+    const { offset = -1, limit = MAX_POSTS_PER_PAGE } = req.query
 
-    if (offset === 0) {
+    // first run: set the offset for the 1st page
+    if (offset === -1) {
       let totalCount = 0
       const count = await dashboard.countPosts()
+      console.log('-------- find out total count of posts', count)
       totalCount = res.json({ count })
       offset = totalCount - limit
     }

@@ -16,7 +16,7 @@ const listAllPosts = (req, callback = null) => {
   parsedLimit = Math.min(parsedLimit, maxLimit)
   // console.log('-------- request', req)
 
-  if (parsedOffset === 0) {
+  if (parsedOffset === -1) {
     const queryPostsTotal = Post.estimatedDocumentCount()
     // fist get the total number of posts
     queryPostsTotal.exec((err, results) => {

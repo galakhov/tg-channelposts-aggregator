@@ -4,7 +4,7 @@ import _fetch from './_fetch'
 
 export default {
   Posts: {
-    get (skip = 0, limit = 50) {
+    get (skip = -1, limit = 50) {
       return _fetch({
         method: 'GET',
         api: {
