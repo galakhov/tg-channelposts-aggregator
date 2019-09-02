@@ -11,7 +11,7 @@ const mongoose = require('mongoose'),
 const maxLimit = 50
 
 const listAllPosts = (req, callback = null) => {
-  let { parsedOffset = 0, parsedLimit = 50 } = req
+  let { parsedOffset = -1, parsedLimit = 50 } = req
 
   parsedLimit = Math.min(parsedLimit, maxLimit)
   // console.log('-------- request', req)
@@ -19,12 +19,12 @@ const listAllPosts = (req, callback = null) => {
   if (parsedOffset === -1) {
     // initial value: in the first run get the total number of posts
     const queryPostsTotal = Post.estimatedDocumentCount()
-    queryPostsTotal.exec((err, results) => {
+    queryPostsTotal.exec((err, totalCount) => {
       if (err) {
         console.log('-------- estimatedDocumentCount error:\n' + err)
         return err
       }
-      parsedOffset = parseInt(results) - parseInt(parsedLimit)
+      parsedOffset = parseInt(totalCount) - parseInt(parsedLimit)
       return aggregatePosts(parsedOffset, parsedLimit, callback)
     })
   } else if (parsedOffset !== NaN) {
@@ -35,7 +35,7 @@ const listAllPosts = (req, callback = null) => {
 const aggregatePosts = (offset, limit, callback) => {
   const query = Post.aggregate([
     // the order of the MongoDB stages below does matter
-    { $skip: offset ? offset : 2000 },
+    { $skip: offset ? offset : 0 },
     { $limit: limit },
     { $match: { created_date: { $exists: 1 } } },
     { $sort: { created_date: -1 } } // sort in descending order

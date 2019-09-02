@@ -48,7 +48,7 @@ class PaginationComponent extends React.Component {
             <Pagination
               className={styles.paginationPager}
               layout="prev, pager, next"
-              total={postsCount || 2000}
+              total={postsCount - this.state.limit || 2000}
               pageSize={this.state.limit}
               currentPage={currentPage}
               onCurrentChange={this.props.handlePageSwitch}
