@@ -54,8 +54,7 @@ class Home extends React.Component {
     }
   }
 
-  scrollStep = el => {
-    console.log('scrollStep -> el', el)
+  scrollStep = () => {
     if (window.pageYOffset === 0) {
       clearInterval(this.state.intervalId)
     }
@@ -71,6 +70,7 @@ class Home extends React.Component {
     // delay in ms
     let intervalId = setInterval(this.scrollStep.bind(this), 20)
     this.setState({ intervalId: intervalId })
+    console.log('-> handleAfterPageSwitch was executed now!')
     // TODO: smooth transition to the top: window.scrollTo(0, 0)
   }
 

@@ -58,7 +58,7 @@ class Nav extends React.Component {
       const filteredPostsByTag = getPostsByTag(tag)
       this.setState({ filtered: filteredPostsByTag }) // local state: seefiltered.length
       // this.props.setFilteredPosts(filteredPostsByTag)
-      console.log('state after filteredPostsByTag', this.state)
+      // console.log('state after filteredPostsByTag', this.state)
     }
     this.clearTags = () => {
       const { clearAllTags, getPosts } = this.props

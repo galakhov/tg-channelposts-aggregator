@@ -10,14 +10,14 @@ import Dashboard from '~/utils/api/Dashboard'
 const filterByTags = dash => {
   const { posts, tags } = dash
   const tagsArray = tags.map(el => el.type)
-  console.log('tags in state', tags)
+  console.log('tags in the global state', tags)
   const filtered = _filter(
     posts,
     post =>
       _intersection(post.preview.courseContents.keywords.split(', '), tagsArray)
         .length > 0
   )
-  console.log('these posts were filtered', filtered)
+  // console.log('these posts were filtered', filtered)
   if (filtered.length > 0) {
     return filtered
   }

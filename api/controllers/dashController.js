@@ -5,6 +5,9 @@ const mongoose = require('mongoose'),
 
 // mongoose.set('debug', true)
 
+/***
+ * Database operations
+ * ***/
 const maxLimit = 50
 
 const listAllPosts = (req, callback = null) => {
@@ -61,6 +64,9 @@ const countPosts = callback => {
   })
 }
 
+/***
+ * Crawling & web scraping operations
+ * ***/
 const isThirdPartyLink = url => {
   const nonOriginalUdemyLink =
     url.indexOf('udemyoff.com') !== -1 ||
@@ -76,10 +82,6 @@ const isThirdPartyLink = url => {
     )
   }
   return nonOriginalUdemyLink
-}
-
-const timeoutBeforeNextRequest = ms => {
-  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 const startUdemyOffParser = async url => {
