@@ -17,8 +17,8 @@ const listAllPosts = (req, callback = null) => {
   // console.log('-------- request', req)
 
   if (parsedOffset === -1) {
+    // initial value: in the first run get the total number of posts
     const queryPostsTotal = Post.estimatedDocumentCount()
-    // fist get the total number of posts
     queryPostsTotal.exec((err, results) => {
       if (err) {
         console.log('-------- estimatedDocumentCount error:\n' + err)

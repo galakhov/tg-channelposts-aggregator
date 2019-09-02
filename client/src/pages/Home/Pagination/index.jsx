@@ -27,8 +27,13 @@ class PaginationComponent extends React.Component {
       prevProps.currentPage !== this.props.currentPage
     ) {
       console.log('componentDidUpdate postsCount: ', this.props.postsCount)
-      const offset =
+      let offset =
         this.props.postsCount - this.state.limit * this.props.currentPage
+      // upper bound
+      offset =
+        offset <= 0
+          ? this.state.limit * this.props.currentPage - this.state.limit
+          : offset
       this.setState({ skip: offset })
       console.log('entries skipped for the next page: ', offset)
 
