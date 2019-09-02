@@ -45,7 +45,17 @@ class Home extends React.Component {
     this.props.getPosts(this.state.skip, this.state.limit)
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (
+      prevProps.isFetching !== this.props.isFetching &&
+      prevProps.isFetching === true
+    ) {
+      this.handleAfterPageSwitch()
+    }
+  }
+
   scrollStep = el => {
+    console.log('scrollStep -> el', el)
     if (window.pageYOffset === 0) {
       clearInterval(this.state.intervalId)
     }
@@ -57,14 +67,16 @@ class Home extends React.Component {
     window.scroll(0, window.pageYOffset - 30)
   }
 
-  handlePageSwitch = currentPageNumber => {
-    console.log('handlePageSwitch: ' + currentPageNumber)
-    this.setState({ currentPage: currentPageNumber })
-
-    // TODO: smooth transition to the top: window.scrollTo(0, 0)
+  handleAfterPageSwitch = () => {
     // delay in ms
     let intervalId = setInterval(this.scrollStep.bind(this), 20)
     this.setState({ intervalId: intervalId })
+    // TODO: smooth transition to the top: window.scrollTo(0, 0)
+  }
+
+  handlePageSwitch = currentPageNumber => {
+    console.log('handlePageSwitch: ' + currentPageNumber)
+    this.setState({ currentPage: currentPageNumber })
   }
 
   render () {
@@ -150,7 +162,8 @@ const mapStateToProps = state => ({
   searchTerm: state.dashboard.currentSearchTerm,
   searchResults: state.dashboard.currentSearchResults,
   searchResultsCount: state.dashboard.currentSearchResultsCount,
-  isModalOpen: state.dashboard.isModalOpen
+  isModalOpen: state.dashboard.isModalOpen,
+  isFetching: state.dashboard.isFetching
 })
 const mapDispatchToProps = {
   openModal,

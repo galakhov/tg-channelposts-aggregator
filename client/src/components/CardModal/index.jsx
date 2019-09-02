@@ -20,7 +20,7 @@ class CardModal extends React.Component {
   }
 
   render () {
-    console.log('currentPost', this.props.currentPost)
+    // console.log('currentPost', this.props.currentPost)
     const { currentPost, currentPostId } = this.props
 
     return (

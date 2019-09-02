@@ -17,7 +17,7 @@ class PaginationComponent extends React.Component {
   componentDidMount () {
     // this.props.getPosts(this.state.skip, this.state.limit)
     this.props.getPostsCount()
-    console.log('postsCount: ', this.props.postsCount)
+    console.log('total posts: ', this.props.postsCount)
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -40,8 +40,6 @@ class PaginationComponent extends React.Component {
     const { isFetching, filteredPosts, postsCount, currentPage } = this.props
     return (
       <div className={styles.pagination}>
-        {console.log('Pagination skip: ' + this.state.skip)}
-        {console.log('Pagination limit: ' + this.state.limit)}
         {!isFetching && filteredPosts.length <= 0 && (
           <div className={styles.paginationBlock}>
             <Pagination
