@@ -81,7 +81,10 @@ class Home extends React.Component {
   }
 
   handleLogoClick = event => {
-    console.log('logo class:', event.target.parentElement.getAttribute('class'))
+    // console.log(
+    //   'logo class:',
+    //   event.target.closest('div').getAttribute('class')
+    // )
     event.preventDefault()
     this.props.history.push('/')
   }

@@ -3,7 +3,7 @@ import React from 'react'
 import _isEmpty from 'lodash/isEmpty'
 import _get from 'lodash/get'
 import _format from 'date-fns/format'
-
+import DownArrow from '~/assets/icons/down-arrow.svg'
 // import { getCleanText, formatDate } from '~/utils'
 import { getCleanText } from '~/utils'
 import Tag from '~/components/Tag'
@@ -91,6 +91,16 @@ const Detail = ({ post }) => {
       ? 'The course is FREE of charge'
       : ''
 
+  const hadleDownArrowClick = event => {
+    event.preventDefault()
+    // console.log('closest:', event.target.closest('div').getAttribute('class'))
+    const parentDiv = event.target.closest('div')
+    parentDiv.scroll({
+      top: 820,
+      behavior: 'smooth'
+    })
+  }
+
   return _isEmpty(post) ? null : (
     <div className={styles.container}>
       <div className={styles.left}>
@@ -98,6 +108,9 @@ const Detail = ({ post }) => {
           {imgSrc && (
             <img className={styles.leadImg} src={imgSrc} alt="lead-img" />
           )}
+          <div className={styles.downIcon}>
+            <DownArrow onClick={hadleDownArrowClick} />
+          </div>
           <div className={styles.link}>
             <div className={styles.expirationDateModal}>
               {expiration || freeCourse}

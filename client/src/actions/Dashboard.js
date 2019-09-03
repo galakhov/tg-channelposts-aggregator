@@ -34,7 +34,6 @@ const search = async (term, start, limit) => {
 export const getPostsCount = () => dispatch => {
   Dashboard.Posts.count()
     .then(({ data }) => {
-      console.log('TCL: getPostsCount', data.count)
       dispatch({
         type: ACTION_TYPES.GET_POSTS_COUNT,
         data

@@ -58,6 +58,20 @@
       }
     }
 
+    .downIcon {
+      display: none;
+      position: relative;
+      top: -54px;
+      left: 50%;
+      margin-left: -15px;
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+      @media (--m) {
+        display: block;
+      }
+    }
+
     .link {
       padding: 0;
       font-size: 16px;
