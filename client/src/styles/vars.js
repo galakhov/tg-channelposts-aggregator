@@ -1,3 +1,4 @@
+const XS_BREAKPOINT = 460
 const S_BREAKPOINT = 738
 const M_BREAKPOINT = 768
 const L_BREAKPOINT = 1200
@@ -55,6 +56,7 @@ const colors = {
 exports.colors = colors
 
 const viewports = {
+  '--xxs': `(max-width: ${XS_BREAKPOINT - 1}px)`,
   '--xs': `(max-width: ${S_BREAKPOINT - 1}px)`, // small size
   '--s': `(max-width: ${M_BREAKPOINT - 1}px)`, // small size
   '--m': `(max-width: ${L_BREAKPOINT - 1}px)`, // medium size

@@ -75,8 +75,7 @@ class Nav extends React.Component {
           <div className={styles.strip} onClick={this.toggleNav}>
             <ToggleButton showClose={this.state.navOpened} />
             <span className={styles.slogan}>
-              Aggregates coupons for video courses from various Telegram
-              Channels.
+              Aggregates video courses’ coupons from various channels.
             </span>
           </div>
           <div className={styles.bg}>

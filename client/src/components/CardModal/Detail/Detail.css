@@ -59,6 +59,9 @@
     }
 
     .downIcon {
+      @media (--xxs) {
+        display: none;
+      }
       display: none;
       position: relative;
       top: -67px;
