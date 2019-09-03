@@ -61,6 +61,7 @@
     .downIcon {
       display: none;
       position: relative;
+      top: -67px;
       left: 50%;
       margin-left: -15px;
       padding: 6px;
