@@ -80,6 +80,12 @@ class Home extends React.Component {
     this.setState({ currentPage: currentPageNumber })
   }
 
+  handleLogoClick = event => {
+    console.log('logo class:', event.target.parentElement.getAttribute('class'))
+    event.preventDefault()
+    this.props.history.push('/')
+  }
+
   render () {
     this.props.isModalOpen ? noScroll.on() : noScroll.off()
 
@@ -98,7 +104,7 @@ class Home extends React.Component {
       <Page id="mainPage" className={styles.container}>
         <Nav posts={posts} />
         <AirLine />
-        <div className={styles.logo}>
+        <div className={styles.logo} onClick={this.handleLogoClick}>
           <Logo />
         </div>
         <h2 className={styles.intro}>Video Courses Aggregator</h2>
