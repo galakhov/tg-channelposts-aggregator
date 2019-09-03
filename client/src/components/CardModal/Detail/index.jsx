@@ -95,10 +95,7 @@ const Detail = ({ post }) => {
     event.preventDefault()
     // console.log('closest:', event.target.closest('div').getAttribute('class'))
     const parentDiv = event.target.closest('div')
-    parentDiv.scroll({
-      top: 820,
-      behavior: 'smooth'
-    })
+    parentDiv.scrollIntoView({ alignToTop: false, behavior: 'smooth' })
   }
 
   return _isEmpty(post) ? null : (
