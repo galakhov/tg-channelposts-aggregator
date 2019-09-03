@@ -86,7 +86,7 @@
       align-items: center;
 
       & a {
-        width: 150px;
+        width: auto;
       }
     }
 
