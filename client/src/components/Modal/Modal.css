@@ -2,7 +2,7 @@
   .ReactModal__Content {
     border: none !important;
     transform: translate(-50%, -40%);
-    @media (--l) {
+    @media (--md) {
       transform: translate(-50%, -50%);
     }
   }

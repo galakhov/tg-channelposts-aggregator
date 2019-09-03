@@ -58,6 +58,7 @@ const viewports = {
   '--xs': `(max-width: ${S_BREAKPOINT - 1}px)`, // small size
   '--s': `(max-width: ${M_BREAKPOINT - 1}px)`, // small size
   '--m': `(max-width: ${L_BREAKPOINT - 1}px)`, // medium size
+  '--md': `(min-width: ${L_BREAKPOINT}px)`, // medium size and larger screens
   '--l': `(min-width: ${L_BREAKPOINT}px)` // large size
 }
 exports.viewports = viewports

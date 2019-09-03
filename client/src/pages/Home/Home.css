@@ -3,6 +3,7 @@
   display: flex;
 }
 .logo {
+  cursor: pointer;
   margin-left: 7px;
   height: 26px;
   overflow: hidden;
