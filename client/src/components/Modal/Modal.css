@@ -2,6 +2,7 @@
   .ReactModal__Content {
     border: none !important;
     transform: translate(-50%, -40%);
+    height: 95vh;
     @media (--md) {
       transform: translate(-50%, -50%);
     }
