@@ -61,12 +61,14 @@
     .downIcon {
       display: none;
       position: relative;
-      top: -54px;
       left: 50%;
       margin-left: -15px;
-      width: 26px;
-      height: 26px;
+      padding: 6px;
+      width: 38px;
+      height: 38px;
+      border-radius: 19px;
       cursor: pointer;
+      background-color: var(--cardColor);
       @media (--m) {
         display: block;
       }
