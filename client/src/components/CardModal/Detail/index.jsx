@@ -113,7 +113,7 @@ const Detail = ({ post }) => {
               {expiration || freeCourse}
             </div>
             <a target="_blank" href={courseUrl} alt="title">
-              Join the course!
+              Join to the course
             </a>
             {courseDuration && courseDuration !== null && (
               <div className={styles.courseDuration}>

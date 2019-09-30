@@ -84,7 +84,7 @@ class UdemyCrawler {
       'User-Agent': newUserAgent,
       // url: requestUrl,
       'set-cookie': [
-        '__cfduid=d6fa31f10f333852762ac4bb4836825381565944230; expires=Sat, 30-Sep-2019 23:59:59 GMT; path=/; domain=.udemy.com; HttpOnly',
+        '__cfduid=d6fa31f10f333852762ac4bb4836825381565944230; expires=Sat, 30-Sep-2020 23:59:59 GMT; path=/; domain=.udemy.com; HttpOnly',
         '_pxhd=32c182d85232d65b2288fb48868e813a2182aaf7fa2caee59c4b16bf61105878:1b7e3621-c000-11e9-b968-3908e2c0de98; path=/;'
       ],
       'x-content-type-options': 'nosniff'
@@ -119,7 +119,7 @@ class UdemyCrawler {
         .replace(/(\n)/g, '')
         .trim()
       const metaJson = JSON.parse($('#schema_markup script').html())
-      Course.image = metaJson[0].image
+      Course.image = metaJson[0] ? metaJson[0].image : ''
       Course.date = $(
         '.main-content .container [data-purpose="last-update-date"] span'
       )
