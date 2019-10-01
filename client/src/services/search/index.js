@@ -10,78 +10,46 @@ class SearchService {
 
   async find (term, start, size) {
     try {
-      const response = await this.client.search(
-        // index: 'posts',
-        // q: elasticSearchQuery(term),
-        {
-          body: {
-            query: {
-              multi_match: {
-                query: `${term}`,
-                fuzziness: 'AUTO',
-                fields: [
-                  'preview.courseContents.title',
-                  'preview.courseContents.headline',
-                  'preview.courseContents.keywords',
-                  'preview.courseContents.text'
-                ]
-              }
-            },
-            _source: [
-              'created_date',
-              'preview.courseId',
-              'preview.courseUrl',
-              'preview.courseContents.title',
-              'preview.courseContents.headline',
-              'preview.courseContents.keywords',
-              'preview.courseContents.url',
-              'preview.courseContents.text',
-              'preview.courseContents.discountExpirationDate',
-              'preview.courseContents.discountInPercent',
-              'preview.courseContents.initialPrice',
-              'preview.courseContents.currentPrice',
-              'preview.courseContents.rating',
-              'preview.courseContents.enrolled'
-            ],
-            sort: [{ _score: 'desc' }, { created_date: 'desc' }],
-            from: `${start}`,
-            size: `${size}`
-          }
+      const response = await this.client.search({
+        body: {
+          query: {
+            multi_match: {
+              query: `${term}`,
+              fuzziness: 'AUTO',
+              fields: [
+                'preview.courseContents.title',
+                'preview.courseContents.headline',
+                'preview.courseContents.keywords',
+                'preview.courseContents.text'
+              ]
+            }
+          },
+          _source: [
+            'created_date',
+            'preview.courseId',
+            'preview.courseUrl',
+            'preview.courseContents.title',
+            'preview.courseContents.headline',
+            'preview.courseContents.keywords',
+            'preview.courseContents.url',
+            'preview.courseContents.text',
+            'preview.courseContents.discountExpirationDate',
+            'preview.courseContents.discountInPercent',
+            'preview.courseContents.initialPrice',
+            'preview.courseContents.currentPrice',
+            'preview.courseContents.rating',
+            'preview.courseContents.enrolled'
+          ],
+          sort: [{ _score: 'desc' }, { created_date: 'desc' }],
+          from: `${start}`,
+          size: `${size}`
         }
-      )
+      })
       return response
     } catch (e) {
       console.log(`find error: ${e}`)
     }
   }
-
-  /*
-    size: limit,
-    from: offset,
-    _source: [
-      'created_date',
-      'preview.courseId',
-      'preview.courseUrl',
-      'preview.courseContents.title',
-      'preview.courseContents.headline',
-      'preview.courseContents.keywords',
-      'preview.courseContents.url',
-      'preview.courseContents.discountExpirationDate'
-    ],
-    query: {
-      multi_match: {
-        query: term,
-        fuzziness: 'AUTO',
-        fields: [
-          'preview.courseContents.title',
-          'preview.courseContents.headline',
-          'preview.courseContents.keywords',
-          'preview.courseContents.text'
-        ]
-      }
-    },
-    sort: [{ _score: 'desc' }, { created_date: 'desc' }]
-  */
 
   //   delete(emailId) {
   //     return this.client.delete({
