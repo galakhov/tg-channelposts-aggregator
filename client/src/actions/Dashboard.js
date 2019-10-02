@@ -1,7 +1,7 @@
 import { showLoading, hideLoading } from 'react-redux-loading-bar'
 import _filter from 'lodash/filter'
-// import _includes from 'lodash/includes'
 import _intersection from 'lodash/intersection'
+// TODO: move elastic client into backend
 import elasticClient from '~/services/search/elasticsearch.js'
 import SearchService from '~/services/search/index.js'
 import * as ACTION_TYPES from './types'
@@ -17,7 +17,6 @@ const filterByTags = dash => {
       _intersection(post.preview.courseContents.keywords.split(', '), tagsArray)
         .length > 0
   )
-  // console.log('these posts were filtered', filtered)
   if (filtered.length > 0) {
     return filtered
   }
@@ -25,9 +24,8 @@ const filterByTags = dash => {
 
 const search = async (term, start, limit) => {
   const searchService = new SearchService(elasticClient)
-  console.log('-------- async: search -> term', term)
+  // console.log('-------- async: search -> term', term)
   const results = await searchService.find(term, start, limit)
-  // const elasticResults = results.hits.hits.map(res => res._id)
   return results
 }
 
@@ -141,7 +139,6 @@ export const handleSearch = event => (dispatch, getState) => {
   try {
     const searchResults = async () => {
       const result = await search(term, start, limit)
-      // console.log(`handleSearch ES response:\n${result}`)
       dispatch({
         type: ACTION_TYPES.SET_SEARCH_RESULTS,
         elasticResults: result.hits.hits,
