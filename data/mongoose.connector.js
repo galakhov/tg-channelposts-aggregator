@@ -8,9 +8,7 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
   db_uri = 'mongodb://localhost/TelegramChannelDB'
 } else {
   // const MongoClient = require('mongodb').MongoClient
-  db_uri = `${process.env.DB_HOST_PREFIX}${process.env.DB_USER}:${
-    process.env.DB_PASSWORD
-  }@${process.env.DB_HOST}/${process.env.DB_NAME}${process.env.DB_HOST_OPTS}`
+  db_uri = `${process.env.DB_HOST_PREFIX}${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}${process.env.DB_HOST_OPTS}`
 }
 
 mongoose
@@ -26,7 +24,7 @@ mongoose
     console.log('-------- mongoose.connection error\n', error)
   })
 
-const friendSchema = new mongoose.Schema({
+/* const friendSchema = new mongoose.Schema({
   firstName: {
     type: String
   },
@@ -52,4 +50,4 @@ const friendSchema = new mongoose.Schema({
 
 const Friends = mongoose.model('friends', friendSchema)
 
-module.exports = Friends
+module.exports = Friends */

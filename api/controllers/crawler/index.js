@@ -119,7 +119,7 @@ class UdemyCrawler {
         .replace(/(\n)/g, '')
         .trim()
       const metaJson = JSON.parse($('#schema_markup script').html())
-      Course.image = metaJson[0] ? metaJson[0].image : ''
+      Course.image = metaJson ? metaJson[0].image : ''
       Course.date = $(
         '.main-content .container [data-purpose="last-update-date"] span'
       )

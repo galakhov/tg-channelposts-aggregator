@@ -1,5 +1,3 @@
-// import elasticSearchQuery from './elasticQuery'
-
 class SearchService {
   constructor (elasticClient) {
     this.client = elasticClient

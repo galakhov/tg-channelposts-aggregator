@@ -1,4 +1,5 @@
 // import mongoose from 'mongoose';
+/*
 const Friends = require('./mongoose.connector')
 
 // resolver map
@@ -33,3 +34,4 @@ const resolvers = {
 }
 
 module.exports = resolvers
+*/

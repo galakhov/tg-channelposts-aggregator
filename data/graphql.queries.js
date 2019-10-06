@@ -1,3 +1,4 @@
+/*
 const dailyCoursesQuery = `query getDailyCourses($myDate: DateTime) {
     free: courses(
         where: { isFree: true, createdAt_gte: $myDate }
@@ -33,3 +34,4 @@ const dailyCoursesQuery = `query getDailyCourses($myDate: DateTime) {
 }`
 
 module.exports = dailyCoursesQuery
+*/
