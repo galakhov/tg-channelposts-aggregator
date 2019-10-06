@@ -69,6 +69,12 @@ Debugging a node application on a VPS, cloud, or a dedicated server can be trick
 
 Read this [pm2 documentation](http://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/) for more details.
 
+Additionally, to pipe & save all the stdout logs to a file, the following line can be added to the docker-compose.yml file right before the CMD:
+
+```
+RUN ln -sf /dev/stdout /debug.log
+```
+
 # Credits 🙏
 
 Inspired by and based on this [repo](https://github.com/foreseaz/tg-channel-dashboard).
