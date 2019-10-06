@@ -1,6 +1,6 @@
 const elasticsearch = require('elasticsearch')
 // TODO: inject ENV variable saved in the .env file into hosts:[]
-// Simulate the backend injection for the front-end: require('dotenv').config()
+// the backend injection doesn't work for the front-end: require('dotenv').config()
 // https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/16.x/host-reference.html
 
 // TODO: move Elastic Search into the server side or just import a client
