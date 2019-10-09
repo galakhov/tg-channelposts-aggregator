@@ -148,7 +148,7 @@ const parseUrl = async (url, paths = ['body a']) => {
 }
 
 const affiliateParametersCleaner = urlToCheck => {
-  const offset = urlToCheck.indexOf('LSNPUBID=') || -1
+  const offset = urlToCheck ? urlToCheck.indexOf('LSNPUBID=') : -1
   let couponCode = null
   if (offset !== -1) {
     const objUrl = new urlTools.URL(normalizeUrl(urlToCheck))
