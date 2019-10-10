@@ -2,7 +2,7 @@
 
 🚧 ...Work in progress... 🚧
 
-📩 📭 Aggregates posts from your telegram channel(s) assigned to your bot(s) (must be an admin), filters the data, saves it into MongoDB & renders the data using React (see the **client** folder).
+📩 📭 Aggregates posts from your telegram channel(s) assigned to your bot(s), filters the data, saves it into MongoDB & renders the data using React (see the **client** folder).
 
 # Features 💡
 
@@ -26,7 +26,7 @@ I'm using the [@multifeed_edge_bot](https://telegra.ph/Help---multifeed-edge-bot
 
 ## Bot #2: Data Processing 🤖
 
-I've created another bot with the Telegram's [BotFather](https://core.telegram.org/bots#6-botfather) and saved the provided BOT_TOKEN in the `.env` file. I've then assigned this bot to my channel (must be an admin), which monitors the new posts (see: bot.on(['channel_post'] ...)) and posts' changes (see: bot.on(['edited_channel_post'] ...)) on my channel.
+I've created another bot with the Telegram's [BotFather](https://core.telegram.org/bots#6-botfather) and saved the provided BOT_TOKEN in the `.env` file. I've then assigned this bot to my channel (the bot must be admin of this channel), which monitors the new posts (see: bot.on(['channel_post'] ...)) and posts' changes (see: bot.on(['edited_channel_post'] ...)).
 
 This bot is configured internally to send all new posts to the main controller first (see ./bot/index.js and ./api/controllers/dashController.js). The controller processes the incoming data accordingly.
 
@@ -63,9 +63,33 @@ BOT_TOKEN=123456789:AAH54XXXMBUXXXPz4XX-fbeXXXTXYYYY
 ES_CONNECTION_URI="https://elasticUser:elasticPassword@domain.found.io:9243/nameOfYourDbCollection"
 ```
 
+# Sync Elastic Database with the MongoDB
+
+The ElasticSearch needs its own database or a duplicate of an existing DB (in this case it's the MongoDB) in order to index the chosen collections and fields in its own manner (see the SearchService in client/src/services/search/index.js).
+
+To hold the MongoDB and ElasticSearch DB in sync in real-time, the monstache GO daemon should be either auto-started from its separate docker container and be configured in the global docker-compose.yml (e.g. with the "restart: always" option) or installed considering its dependencies and run globally.
+
+The prerequisite for the global installation is the Go Lang: https://golang.org/doc/install
+
+Monstache installation steps are well described on their official [site](https://rwynn.github.io/monstache-site/start/).
+
+Finally, the monstache must be properly configured (e.g. see the monstache.config.default.toml file). The monstache configuration options are very rich. For instance, the accurate configuration allows to [watch changes on specific fields only](https://rwynn.github.io/monstache-site/advanced/#watching-changes-on-specific-fields-only) or even apply [transformations](https://rwynn.github.io/monstache-site/advanced/#transformation) using such libraries as [otto](https://github.com/robertkrimen/otto) or [Underscore](http://underscorejs.org) to filter out or to alter some of the data in real-time.
+
+The persistent monstache process is then started like this:
+
+```
+monstache -f monstache.config.toml &
+```
+
+If monstache's docker container is the best option, the monstache.config.toml should be probably copied over (if it's not being done by default) to the monstache docker container, i.e. written in the corresponding monstache's Dockerfile as a COPY directive.
+
+Some limited docs on the monstache's Docker containers are available on their [site](https://rwynn.github.io/monstache-site/advanced/#docker).
+
+Monstache Docker container's github repo: [github.com/rwynn/monstache](https://github.com/rwynn/monstache/tree/master/docker/release).
+
 # Debugging 🐞
 
-Debugging a node application on a VPS, cloud, or a dedicated server can be tricky. As simple loggers I'd suggest to use such tools as: `pm2 logs --lines 500` or `node --inspect-brk=0.0.0.0:9229 server.js`. Both tools should start from the application's directory the node is running from. PM2 will be installed globally during `postinstall` procedure anyway (see package.json).
+Debugging a node application on a VPS, cloud, or a dedicated server can be tricky. As simple loggers I'd suggest to use such tools as: `pm2 logs --lines 500` or `node --inspect-brk=0.0.0.0:9229 server.js`. Both tools should start from the application's directory the node is running from. PM2 will be installed globally during `postinstall` procedure anyway (see package.json and its "scripts" section).
 
 Read this [pm2 documentation](http://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/) for more details.
 

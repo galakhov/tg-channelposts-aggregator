@@ -9,21 +9,24 @@ replay = true
 resume = true
 change-stream-namespaces = [""]
 
-direct-read-namespaces = ["dbname.collection", "dbname.collection"]
+direct-read-namespaces = ["dbname.collection1", "dbname.collection2"]
 change-stream-namespaces = [""]
+index-as-update = true
+exit-after-direct-reads = false # continue reading data after 1st access
 
 verbose = true
 enable-http-server = true
 
 [logs]
+# can and should be the full paths if the monstache process is run in dev env locally
 info = "/logs/monstache/info.log"
 warn = "/logs/monstache/warn.log"
 error = "/logs/monstache/error.log"
 trace = "/logs/monstache/trace.log"
 
 # [[script]]
-# namespace = "telegramchanneldb.posts"
-# path = "./monstache.posts.js"
+# namespace = "db.collection"
+# path = "./monstache.collection-transformations.js"
 
 #[[script]]
 #namespace = "not.applied"
