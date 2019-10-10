@@ -4,17 +4,19 @@
 
 📩 📭 Aggregates posts from your telegram channel(s) assigned to your bot(s), filters the data, saves it into MongoDB & renders the data using React (see the **client** folder).
 
-# Features 💡
+# Features & Technologies 💡
 
 - [telegraf.js](https://telegraf.js.org/#/?id=features)
 - [cheerio](https://www.npmjs.com/package/cheerio)
 - [sync-request](https://www.npmjs.com/package/sync-request) but consider [then-request](https://github.com/then/then-request)
 - [normalize-url](https://www.npmjs.com/package/normalize-url)
 - @multifeed_edge_bot to aggregate and [redirect](https://github.com/galakhov/tg-channelposts-aggregator/tree/master/server) messages from a set of channels
+- [ElasticSearch](https://www.elastic.co)
+- [monstache](https://rwynn.github.io/monstache-site/)
 
-# Server Tools 🔧 and DB 🗄️
+# Server Tools and DB 🔧🗄️
 
-I suggest to use Robo 3T or similar tools to monitor your local MongoDB installation.
+I suggest to choose Robo 3T or similar tool to monitor the local MongoDB installation.
 
 For testing purposes you can use the free [MongoDB Atlas Cluster](https://docs.atlas.mongodb.com/reference/free-shared-limitations/#atlas-free-tier). Just follow [this](https://docs.atlas.mongodb.com/getting-started/#create-an-service-account) tutorial.
 
@@ -65,9 +67,12 @@ ES_CONNECTION_URI="https://elasticUser:elasticPassword@domain.found.io:9243/name
 
 # Sync Elastic Database with the MongoDB
 
-The ElasticSearch needs its own database or a duplicate of an existing DB (in this case it's the MongoDB) in order to index the chosen collections and fields in its own manner (see the SearchService in client/src/services/search/index.js).
+The ElasticSearch needs its own database or a duplicate of an existing DB (in this case it's the MongoDB) in order to index the chosen collections and fields in its own manner (e.g. see the SearchService in client/src/services/search/index.js).
 
-To hold the MongoDB and ElasticSearch DB in sync in real-time, the monstache GO daemon should be either auto-started from its separate docker container and be configured in the global docker-compose.yml (e.g. with the "restart: always" option) or installed considering its dependencies and run globally.
+To hold the MongoDB and ElasticSearch DB in sync in real-time, the monstache GO daemon should be either:
+
+- auto-started from its separate docker container and be configured in the global docker-compose.yml (e.g. with the "restart: always" option) or
+- installed with its dependencies and then run globally.
 
 The prerequisite for the global installation is the Go Lang: https://golang.org/doc/install
 
