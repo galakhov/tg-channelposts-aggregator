@@ -72,15 +72,15 @@ The ElasticSearch needs its own database or a duplicate of an existing DB (in th
 To hold the MongoDB and ElasticSearch DB in sync in real-time, the monstache GO daemon should be either:
 
 - auto-started from its separate docker container and be configured in the global docker-compose.yml (e.g. with the "restart: always" option) or
-- installed with its dependencies and then run globally.
+- installed globally considering its dependencies and then run as a persistent process.
 
-The prerequisite for the global installation is the Go Lang: https://golang.org/doc/install
+The **prerequisite** for the global installation is the Go Lang: https://golang.org/doc/install
 
 Monstache installation steps are well described on their official [site](https://rwynn.github.io/monstache-site/start/).
 
-Finally, the monstache must be properly configured (e.g. see the monstache.config.default.toml file). The monstache configuration options are very rich. For instance, the accurate configuration allows to [watch changes on specific fields only](https://rwynn.github.io/monstache-site/advanced/#watching-changes-on-specific-fields-only) or even apply [transformations](https://rwynn.github.io/monstache-site/advanced/#transformation) using such libraries as [otto](https://github.com/robertkrimen/otto) or [Underscore](http://underscorejs.org) to filter out or to alter some of the data in real-time.
+Additionally, the monstache must be properly configured (for the default settings see the monstache.config.default.toml file). The monstache configuration options are very extensive. For instance, the accurate configuration allows to [watch changes on specific fields only](https://rwynn.github.io/monstache-site/advanced/#watching-changes-on-specific-fields-only) or even apply [transformations](https://rwynn.github.io/monstache-site/advanced/#transformation) using such libraries as [otto](https://github.com/robertkrimen/otto) or [Underscore](http://underscorejs.org) to filter out or to alter some of the data in real-time.
 
-The persistent monstache process is then started like this:
+The persistent monstache process can finally be started like this:
 
 ```
 monstache -f monstache.config.toml &
