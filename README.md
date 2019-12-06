@@ -18,7 +18,7 @@
 
 I suggest to choose Robo 3T or similar tool to monitor the local MongoDB installation.
 
-For testing purposes you can use the free [MongoDB Atlas Cluster](https://docs.atlas.mongodb.com/reference/free-shared-limitations/#atlas-free-tier). Just follow [this](https://docs.atlas.mongodb.com/getting-started/#create-an-service-account) tutorial.
+For testing purposes you can, for instance, use the free [MongoDB Atlas Cluster](https://docs.atlas.mongodb.com/reference/free-shared-limitations/#atlas-free-tier). Just follow [this](https://docs.atlas.mongodb.com/getting-started/#create-an-service-account) tutorial.
 
 # Architecture 🏗️🧱 and Required Puzzles 🧩
 
@@ -28,7 +28,7 @@ I'm using the [@multifeed_edge_bot](https://telegra.ph/Help---multifeed-edge-bot
 
 ## Bot #2: Data Processing 🤖
 
-I've created another bot with the Telegram's [BotFather](https://core.telegram.org/bots#6-botfather) and saved the provided BOT_TOKEN in the `.env` file. I've then assigned this bot to my channel (the bot must be admin of this channel), which monitors the new posts (see: bot.on(['channel_post'] ...)) and posts' changes (see: bot.on(['edited_channel_post'] ...)).
+I've created another bot with the Telegram's [BotFather](https://core.telegram.org/bots#6-botfather) and saved the provided BOT_TOKEN in the `.env` file. I've then assigned this bot to my channel (the bot must be admin of this channel), which monitors the new posts (see [bot.on(['channel_post'] ...)](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/bot/index.js#L15)) and posts' changes (see [bot.on(['edited_channel_post'] ...)](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/bot/index.js#L58)).
 
 This bot is configured internally to send all new posts to the main controller first (see ./bot/index.js and ./api/controllers/dashController.js). The controller processes the incoming data accordingly.
 
