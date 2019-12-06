@@ -89,17 +89,21 @@ Monstache Docker container's github repo: [github.com/rwynn/monstache](https://g
 
 ### 2. Global Installation
 
-Keep in mind that the **prerequisite** for the _global installation_ (2) is the [Go Lang](https://golang.org/doc/install) that should also be installed on your machine.
+Keep in mind that the **prerequisite** for the _global installation_ is the [Go Lang](https://golang.org/doc/install) that should also be installed on your machine.
 
-_Global_ Monstache installation steps are well described on their official [site](https://rwynn.github.io/monstache-site/start/).
+Global monstache installation steps are well described on their official [site](https://rwynn.github.io/monstache-site/start/).
 
-Additionally, the monstache should be properly configured (for the default settings see the [monstache.config.default.toml file](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml)). The monstache configuration options are very extensive. For instance, an advanced configuration allows to [watch changes of specific fields](https://rwynn.github.io/monstache-site/advanced/#watching-changes-on-specific-fields-only) or even apply [transformations](https://rwynn.github.io/monstache-site/advanced/#transformation) using such libraries as [otto](https://github.com/robertkrimen/otto) or [Underscore](http://underscorejs.org), filterin out or alterin some of the data in _real-time_ (see commented lines in [this example](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml#L27)).
+Additionally, the monstache should be properly configured (for the default settings see the [monstache.config.default.toml file](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml)).
 
 The persistent monstache process can be finally started like this:
 
 ```
 monstache -f monstache.config.toml &
 ```
+
+### The power of monstache
+
+The monstache configuration options are very extensive. For instance, an advanced configuration allows to [watch changes of specific fields](https://rwynn.github.io/monstache-site/advanced/#watching-changes-on-specific-fields-only) or even apply [transformations](https://rwynn.github.io/monstache-site/advanced/#transformation) using such libraries as [otto](https://github.com/robertkrimen/otto) or [Underscore](http://underscorejs.org), filterin out or alterin some of the data in _real-time_ (see commented lines in [this example](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml#L27)).
 
 # Debugging 🐞
 
