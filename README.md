@@ -71,8 +71,8 @@ The ElasticSearch needs its own database — a duplicate of an existing DB (in t
 
 To hold the MongoDB and ElasticSearch DBs in sync in real-time, the _monstache_ GO daemon should be either:
 
-(1) auto-started from its separate docker container and be pre-configured in the (global) [docker-compose.yml file](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) (e.g. with the "restart: always" or "restart:unless-stopped" option) OR
-(2) installed globally considering its dependencies and then run as a persistent (daemonized) process.
+1. auto-started from its separate docker container and be pre-configured in the (global) [docker-compose.yml file](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) (e.g. with the "restart: always" or "restart:unless-stopped" option) OR
+2. installed globally considering its dependencies and then run as a persistent (daemonized) process.
 
 In case of running in the docker container, the **MONGO_DB_URL** & **ELASTIC_SEARCH_URL** environment variables should be set to run in production (e.g. in your CI platform), as the monstache services depends on the MongoDB (see [mongo-0](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml#L56)) and on ElasticSearch (see [es6](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml#L93)) services.
 
