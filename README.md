@@ -32,11 +32,11 @@ I've created another bot with the Telegram's [BotFather](https://core.telegram.o
 
 This bot is configured internally to send all new posts to the main controller first (see ./bot/index.js and ./api/controllers/dashController.js). The controller processes the incoming data accordingly.
 
-Even though this setup would also work in production, I'd suggest to install and configure this 2nd bot on your VPS or elsewhere.
+Even though this setup would also work in production, I'd suggest to install and configure the second bot on your VPS, VM or elsewhere.
 
 # Set up 📋
 
-Create new file in the `./server`'s root directory:
+To run the app locally on your machine, it's enough to create new file for environment variables in the `./server`'s root directory:
 
 ```
 touch .env
@@ -55,6 +55,7 @@ DB_USER=root
 DB_PASSWORD=pass
 DB_NAME=db_name
 DB_PORT="27017"
+# see ./data/mongoose.connector.js for the complete db_uri
 
 HOST=
 PORT=
@@ -65,16 +66,18 @@ BOT_TOKEN=123456789:AAH54XXXMBUXXXPz4XX-fbeXXXTXYYYY
 ES_CONNECTION_URI="https://elasticUser:elasticPassword@domain.found.io:9243/nameOfYourDbCollection"
 ```
 
+For production you can, for instance, set the environment variables in [Travis CI in the repository settings section](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings). If you prefer the GitLab CI, you can also [define a set of your own custom environment variables in their UI](https://docs.gitlab.com/ce/ci/variables/README.html#creating-a-custom-environment-variable). Other modern CI tools like [Jenkins](https://jenkins.io/doc/book/using/using-credentials/#configuring-credentials) or [Drone](https://drone.io) do as well allow to configure [secrets keys](https://docs.drone.io/configure/secrets/repository/) for a repository or for a whole organization.
+
 # Sync Elastic Database with the MongoDB
 
 The ElasticSearch needs its own database — a duplicate of an existing DB (in this case it's the MongoDB) — in order to index the specified MongoDB collections and fields in its own manner (e.g. see the SearchService in client/src/services/search/index.js).
 
-To hold the MongoDB and ElasticSearch DBs in sync in real-time, the _monstache_ GO daemon should be either:
+To hold the MongoDB and ElasticSearch DBs in sync in real-time, the _monstache_'s GO daemon should be either:
 
 1. auto-started from its separate docker container and be pre-configured in the (global) [docker-compose.yml file](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) (e.g. with the "restart: always" or "restart:unless-stopped" option) OR
 2. installed globally considering its dependencies and then run as a persistent (daemonized) process.
 
-In case of running in the docker container, the **MONGO_DB_URL** & **ELASTIC_SEARCH_URL** environment variables should be set to run in production (e.g. in your CI platform), as the monstache services depends on the MongoDB (see [mongo-0](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml#L56)) and on ElasticSearch (see [es6](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml#L93)) services.
+In case of running in the docker container, the **MONGO_DB_URL** & **ELASTIC_SEARCH_URL** (in my case it's ES_CONNECTION_URI) environment variables should be set to run in production (e.g. inside of your CI platform), as the monstache services depends on the MongoDB (see [mongo-0](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml#L56)) and on ElasticSearch (see [es6](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml#L93)) services.
 
 Keep in mind that the **prerequisite** for the _global installation_ (2) is the [Go Lang](https://golang.org/doc/install) that should also be installed on your machine.
 
