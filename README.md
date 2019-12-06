@@ -66,11 +66,11 @@ BOT_TOKEN=123456789:AAH54XXXMBUXXXPz4XX-fbeXXXTXYYYY
 ES_CONNECTION_URI="https://elasticUser:elasticPassword@domain.found.io:9243/nameOfYourDbCollection"
 ```
 
-In production, for instance in the Travis CI UI, you can set the environment variables [in the repository settings section](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings). If you prefer GitLab CI, you can also [define a set of your own custom environment variables in their UI](https://docs.gitlab.com/ce/ci/variables/README.html#creating-a-custom-environment-variable). Other modern CI tools such as [Jenkins](https://jenkins.io/doc/book/using/using-credentials/#configuring-credentials) or [Drone](https://drone.io) do as well allow to configure [secrets keys](https://docs.drone.io/configure/secrets/repository/) (i.e. environment constants) for a repository or for a whole organization.
+In production, for instance in the Travis CI UI, you can set the environment variables [in the repository settings section](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings). If you prefer GitLab CI, you can also [define a set of your own custom environment variables in their UI](https://docs.gitlab.com/ce/ci/variables/README.html#creating-a-custom-environment-variable). Other modern CI tools such as [Jenkins](https://jenkins.io/doc/book/using/using-credentials/#configuring-credentials) or [Drone](https://drone.io) do as well allow you to configure [secrets keys](https://docs.drone.io/configure/secrets/repository/) (i.e. environment constants) for a repository or for a whole organization.
 
 # Sync Elastic Database with the MongoDB
 
-The ElasticSearch needs its own database — a duplicate of an existing DB (in this case it's the MongoDB) — in order to index the specified MongoDB collections and fields in its own manner (e.g. see the SearchService in client/src/services/search/index.js).
+The ElasticSearch needs its own database—a duplicate of an existing DB (in this case it's the MongoDB)—in order to index the specified MongoDB collections and fields in its own manner (e.g. see the SearchService in client/src/services/search/index.js).
 
 To hold the MongoDB and ElasticSearch DBs in sync in real-time, the _monstache_'s GO daemon should be either:
 
@@ -91,7 +91,7 @@ The persistent monstache process can be finally started like this:
 monstache -f monstache.config.toml &
 ```
 
-If monstache's docker container is the best option, the monstache.config.toml should be probably copied over (if it's not being done by default) to the monstache docker container, i.e. written in the corresponding monstache's Dockerfile as a COPY directive.
+If the monstache's docker container is the best option for your architecture, the monstache.config.toml should be probably copied over (if it's not being done already by default) to the monstache docker container, i.e. written in the corresponding monstache's Dockerfile as a COPY directive. Again, see their [docker-compose.yml](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) and [monstache.config.default.toml](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml) files for more details.
 
 Some limited docs on the monstache's Docker containers are available on their [site](https://rwynn.github.io/monstache-site/advanced/#docker).
 
