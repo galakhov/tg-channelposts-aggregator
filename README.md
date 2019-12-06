@@ -67,18 +67,20 @@ ES_CONNECTION_URI="https://elasticUser:elasticPassword@domain.found.io:9243/name
 
 # Sync Elastic Database with the MongoDB
 
-The ElasticSearch needs its own database or a duplicate of an existing DB (in this case it's the MongoDB) in order to index the chosen collections and fields in its own manner (e.g. see the SearchService in client/src/services/search/index.js).
+The ElasticSearch needs its own database — a duplicate of an existing DB (in this case it's the MongoDB) — in order to index the specified MongoDB collections and fields in its own manner (e.g. see the SearchService in client/src/services/search/index.js).
 
-To hold the MongoDB and ElasticSearch DB in sync in real-time, the monstache GO daemon should be either:
+To hold the MongoDB and ElasticSearch DBs in sync in real-time, the _monstache_ GO daemon should be either:
 
-- auto-started from its separate docker container and be configured in the global docker-compose.yml (e.g. with the "restart: always" option) or
-- installed globally considering its dependencies and then run as a persistent process.
+(1) auto-started from its separate docker container and be pre-configured in the (global) [docker-compose.yml file](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) (e.g. with the "restart: always" or "restart:unless-stopped" option) OR
+(2) installed globally considering its dependencies and then run as a persistent (daemonized) process.
 
-The **prerequisite** for the global installation is the Go Lang: https://golang.org/doc/install
+Keep in mind that the **prerequisite** for the _global installation_ (2) is the Go Lang: https://golang.org/doc/install
+
+In case of running in the docker container, the _MONGO_DB_URL_ & _ELASTIC_SEARCH_URL_ environment variables should be set to run in production (e.g. in your CI platform), as the monstache services depends on the MongoDB (see [mongo-0](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml)) and on ElasticSearch (see [es6](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml)) services.
 
 Monstache installation steps are well described on their official [site](https://rwynn.github.io/monstache-site/start/).
 
-Additionally, the monstache must be properly configured (for the default settings see the monstache.config.default.toml file). The monstache configuration options are very extensive. For instance, the accurate configuration allows to [watch changes on specific fields only](https://rwynn.github.io/monstache-site/advanced/#watching-changes-on-specific-fields-only) or even apply [transformations](https://rwynn.github.io/monstache-site/advanced/#transformation) using such libraries as [otto](https://github.com/robertkrimen/otto) or [Underscore](http://underscorejs.org) to filter out or to alter some of the data in real-time.
+Additionally, the monstache should be properly configured (for the default settings see the monstache.config.default.toml file). The monstache configuration options are very extensive. For instance, the accurate configuration allows to [watch changes on specific fields only](https://rwynn.github.io/monstache-site/advanced/#watching-changes-on-specific-fields-only) or even apply [transformations](https://rwynn.github.io/monstache-site/advanced/#transformation) using such libraries as [otto](https://github.com/robertkrimen/otto) or [Underscore](http://underscorejs.org) to filter out or to alter some of the data in real-time.
 
 The persistent monstache process can finally be started like this:
 
