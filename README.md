@@ -107,11 +107,13 @@ The monstache configuration options are very extensive. For instance, an advance
 
 # Monitoring & Debugging 🐞
 
-Debugging a node application on a VPS, cloud, or a dedicated server can be tricky. To start with a simple logger I'd suggest to use [pm2](http://pm2.keymetrics.io): `pm2 logs --lines 500`.
+Debugging a node application on a VPS, cloud, or a dedicated server can be tricky. To start with a simple logger I'd suggest to use [pm2](http://pm2.keymetrics.io): `pm2 logs --lines 500`. In production you would probably want to run it as a [restartable process](https://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/#complete-tutorial) that restarts itself in case if the node instance crashes: `pm2 startOrRestart pm2.config.js start server.js <app-name> -l /path/to/logs/logs.log` (see [start](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/package.json#L38) script in package.json) followed by the command to monitor that process `pm2 monit` or `pm2 plus`.
+
+To emulate an automatic load balancer, you can start your node instance in a [cluster mode](https://pm2.keymetrics.io/docs/usage/cluster-mode/): `pm2 startOrRestart pm2.config.js start server.js <app-name> -i max`
 
 Another option would be to use node itself, however, I wouldn't recommend this workaround for the production environment: `node --inspect-brk=0.0.0.0:9229 server.js`.
 
-Both tools should start from the application's directory the node is running from. PM2 will be installed globally during `postinstall` procedure anyway (see package.json and its "scripts" section).
+Both tools should start from the application's directory the node is running from. In this project PM2 will be installed globally during `postinstall` procedure anyway (see package.json and its "scripts" section for more details).
 
 Read this [pm2 documentation](http://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/) for more details.
 
