@@ -74,15 +74,15 @@ To hold the MongoDB and ElasticSearch DBs in sync in real-time, the _monstache_ 
 (1) auto-started from its separate docker container and be pre-configured in the (global) [docker-compose.yml file](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) (e.g. with the "restart: always" or "restart:unless-stopped" option) OR
 (2) installed globally considering its dependencies and then run as a persistent (daemonized) process.
 
-Keep in mind that the **prerequisite** for the _global installation_ (2) is the Go Lang: https://golang.org/doc/install
+In case of running in the docker container, the **MONGO_DB_URL** & **ELASTIC_SEARCH_URL** environment variables should be set to run in production (e.g. in your CI platform), as the monstache services depends on the MongoDB (see [mongo-0](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml#L56)) and on ElasticSearch (see [es6](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml#L93)) services.
 
-In case of running in the docker container, the _MONGO_DB_URL_ & _ELASTIC_SEARCH_URL_ environment variables should be set to run in production (e.g. in your CI platform), as the monstache services depends on the MongoDB (see [mongo-0](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml)) and on ElasticSearch (see [es6](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml)) services.
+Keep in mind that the **prerequisite** for the _global installation_ (2) is the [Go Lang](https://golang.org/doc/install) that should also be installed on your machine.
 
-Monstache installation steps are well described on their official [site](https://rwynn.github.io/monstache-site/start/).
+_Global_ Monstache installation steps are well described on their official [site](https://rwynn.github.io/monstache-site/start/).
 
-Additionally, the monstache should be properly configured (for the default settings see the monstache.config.default.toml file). The monstache configuration options are very extensive. For instance, the accurate configuration allows to [watch changes on specific fields only](https://rwynn.github.io/monstache-site/advanced/#watching-changes-on-specific-fields-only) or even apply [transformations](https://rwynn.github.io/monstache-site/advanced/#transformation) using such libraries as [otto](https://github.com/robertkrimen/otto) or [Underscore](http://underscorejs.org) to filter out or to alter some of the data in real-time.
+Additionally, the monstache should be properly configured (for the default settings see the [monstache.config.default.toml file](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml)). The monstache configuration options are very extensive. For instance, an advanced configuration allows to [watch changes of specific fields](https://rwynn.github.io/monstache-site/advanced/#watching-changes-on-specific-fields-only) or even apply [transformations](https://rwynn.github.io/monstache-site/advanced/#transformation) using such libraries as [otto](https://github.com/robertkrimen/otto) or [Underscore](http://underscorejs.org), filterin out or alterin some of the data in _real-time_ (see commented lines in [this example](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml#L27)).
 
-The persistent monstache process can finally be started like this:
+The persistent monstache process can be finally started like this:
 
 ```
 monstache -f monstache.config.toml &
