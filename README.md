@@ -107,7 +107,11 @@ The monstache configuration options are very extensive. For instance, an advance
 
 # Monitoring & Debugging 🐞
 
-Debugging a node application on a VPS, cloud, or a dedicated server can be tricky. As simple loggers I'd suggest to use such tools as: `pm2 logs --lines 500` or `node --inspect-brk=0.0.0.0:9229 server.js`. Both tools should start from the application's directory the node is running from. PM2 will be installed globally during `postinstall` procedure anyway (see package.json and its "scripts" section).
+Debugging a node application on a VPS, cloud, or a dedicated server can be tricky. To start with a simple logger I'd suggest to use [pm2](http://pm2.keymetrics.io): `pm2 logs --lines 500`.
+
+Another option would be to use node itself, however, I wouldn't recommend this workaround for the production environment: `node --inspect-brk=0.0.0.0:9229 server.js`.
+
+Both tools should start from the application's directory the node is running from. PM2 will be installed globally during `postinstall` procedure anyway (see package.json and its "scripts" section).
 
 Read this [pm2 documentation](http://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/) for more details.
 
