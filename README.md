@@ -95,7 +95,7 @@ Global monstache installation steps are well described on their official [site](
 
 Additionally, the monstache should be properly configured (for the default settings see the [monstache.config.default.toml file](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml)).
 
-The persistent monstache process can be finally started like this:
+The persistent monstache process can be finally started like that:
 
 ```
 monstache -f monstache.config.toml &
@@ -105,7 +105,7 @@ monstache -f monstache.config.toml &
 
 The monstache configuration options are very extensive. For instance, an advanced configuration allows to [watch changes of specific fields](https://rwynn.github.io/monstache-site/advanced/#watching-changes-on-specific-fields-only) or even apply [transformations](https://rwynn.github.io/monstache-site/advanced/#transformation) using such libraries as [otto](https://github.com/robertkrimen/otto) or [Underscore](http://underscorejs.org), filterin out or alterin some of the data in _real-time_ (see commented lines in [this example](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml#L27)).
 
-# Debugging 🐞
+# Monitoring & Debugging 🐞
 
 Debugging a node application on a VPS, cloud, or a dedicated server can be tricky. As simple loggers I'd suggest to use such tools as: `pm2 logs --lines 500` or `node --inspect-brk=0.0.0.0:9229 server.js`. Both tools should start from the application's directory the node is running from. PM2 will be installed globally during `postinstall` procedure anyway (see package.json and its "scripts" section).
 
