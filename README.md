@@ -77,7 +77,17 @@ To hold the MongoDB and ElasticSearch DBs in sync in real-time, the _monstache_'
 1. auto-started from its separate docker container and be pre-configured in the (global) [docker-compose.yml file](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) (e.g. with the "restart: always" or "restart:unless-stopped" option) OR
 2. installed globally considering its dependencies and then run as a persistent (daemonized) process.
 
+### 1. Docker Installation
+
+If the monstache's docker container is the best option for your architecture, the monstache.config.toml should be probably copied over (if it's not being done already by default) to the monstache docker container, i.e. written in the corresponding monstache's Dockerfile as a COPY directive. Again, see their [docker-compose.yml](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) and [monstache.config.default.toml](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml) files for more details.
+
 In case of running in the docker container, the **MONGO_DB_URL** & **ELASTIC_SEARCH_URL** (in my case it's ES_CONNECTION_URI) environment variables should be set to run in production (e.g. inside of your CI platform), as the monstache services depends on the MongoDB (see [mongo-0](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml#L56)) and on ElasticSearch (see [es6](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml#L93)) services.
+
+Some limited docs on the monstache's Docker containers are available on their [site](https://rwynn.github.io/monstache-site/advanced/#docker).
+
+Monstache Docker container's github repo: [github.com/rwynn/monstache](https://github.com/rwynn/monstache/tree/master/docker/release).
+
+### 2. Global Installation
 
 Keep in mind that the **prerequisite** for the _global installation_ (2) is the [Go Lang](https://golang.org/doc/install) that should also be installed on your machine.
 
@@ -90,12 +100,6 @@ The persistent monstache process can be finally started like this:
 ```
 monstache -f monstache.config.toml &
 ```
-
-If the monstache's docker container is the best option for your architecture, the monstache.config.toml should be probably copied over (if it's not being done already by default) to the monstache docker container, i.e. written in the corresponding monstache's Dockerfile as a COPY directive. Again, see their [docker-compose.yml](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) and [monstache.config.default.toml](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml) files for more details.
-
-Some limited docs on the monstache's Docker containers are available on their [site](https://rwynn.github.io/monstache-site/advanced/#docker).
-
-Monstache Docker container's github repo: [github.com/rwynn/monstache](https://github.com/rwynn/monstache/tree/master/docker/release).
 
 # Debugging 🐞
 
