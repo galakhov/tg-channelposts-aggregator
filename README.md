@@ -34,9 +34,9 @@ This bot is configured internally to send all new posts to the main controller f
 
 Even though this setup would also work in production, I'd suggest to install and configure the second bot on your VPS, VM or elsewhere.
 
-# Set up 📋
+# Configuration & set up 📋
 
-To run the app locally on your machine, it's enough to create new file for environment variables in the `./server`'s root directory:
+To run the app locally on your machine, it's enough to create a new file for the environment variables in the `server`'s root directory:
 
 ```
 touch .env
@@ -66,7 +66,7 @@ BOT_TOKEN=123456789:AAH54XXXMBUXXXPz4XX-fbeXXXTXYYYY
 ES_CONNECTION_URI="https://elasticUser:elasticPassword@domain.found.io:9243/nameOfYourDbCollection"
 ```
 
-For production you can, for instance, set the environment variables in [Travis CI in the repository settings section](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings). If you prefer the GitLab CI, you can also [define a set of your own custom environment variables in their UI](https://docs.gitlab.com/ce/ci/variables/README.html#creating-a-custom-environment-variable). Other modern CI tools like [Jenkins](https://jenkins.io/doc/book/using/using-credentials/#configuring-credentials) or [Drone](https://drone.io) do as well allow to configure [secrets keys](https://docs.drone.io/configure/secrets/repository/) for a repository or for a whole organization.
+In production, for instance in the Travis CI UI, you can set the environment variables [in the repository settings section](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings). If you prefer GitLab CI, you can also [define a set of your own custom environment variables in their UI](https://docs.gitlab.com/ce/ci/variables/README.html#creating-a-custom-environment-variable). Other modern CI tools such as [Jenkins](https://jenkins.io/doc/book/using/using-credentials/#configuring-credentials) or [Drone](https://drone.io) do as well allow to configure [secrets keys](https://docs.drone.io/configure/secrets/repository/) (i.e. environment constants) for a repository or for a whole organization.
 
 # Sync Elastic Database with the MongoDB
 
