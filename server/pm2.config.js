@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'tg-aggregator',
+      name: 'tg-aggregator-backend',
       instances: 1,
       script: './server.js',
       exec_mode: 'cluster',
@@ -9,7 +9,7 @@ module.exports = {
         BOT_TOKEN: process.env.BOT_TOKEN,
         PORT: 8080
       },
-      max_memory_restart: '300M',
+      max_memory_restart: '256M',
       watch: false
     }
   ]
