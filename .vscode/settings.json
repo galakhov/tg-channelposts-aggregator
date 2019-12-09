@@ -6,5 +6,7 @@
   "editor.lineHeight": 25,
   "editor.fontLigatures": true,
   "editor.fontWeight": "400",
-  "editor.fontFamily": "FiraCode-Retina"
+  "editor.fontFamily": "FiraCode-Retina",
+  "prettier.semi": false,
+  "prettier.singleQuote": true
 }

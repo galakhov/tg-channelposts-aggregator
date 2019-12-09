@@ -1,8 +1,8 @@
 module.exports = {
-  extends: "standard",
+  extends: 'standard',
   rules: {
-    "no-multiple-empty-lines": 0,
-    semi: "off",
-    quotes: "off"
+    'no-multiple-empty-lines': 0,
+    semi: 'off',
+    quotes: 'off'
   }
-};
+}
