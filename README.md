@@ -14,6 +14,10 @@
 - [ElasticSearch](https://www.elastic.co)
 - [monstache](https://rwynn.github.io/monstache-site/)
 
+# Installation
+
+See [server/README.md](server/README.md) & [client/README.md](client/README.md) files for the installation steps.
+
 # Credits 🙏
 
 Inspired by and based on this [repo](https://github.com/foreseaz/tg-channel-dashboard).
