@@ -5,7 +5,7 @@ COPY package.json package-lock.json ./frontend/
 WORKDIR /frontend
 RUN npm install
 COPY . .
-# CMD ["npm", "start"]
+RUN ls -al
 RUN npm run build
 # remove node_modules?
 
