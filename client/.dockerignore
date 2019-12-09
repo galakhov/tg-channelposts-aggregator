@@ -1,0 +1,9 @@
+node_modules/
+Dockerfile*
+docker-compose.yml
+/**/__tests__/
+.env
+# .env.production
+.gitignore
+README.md
+.git
