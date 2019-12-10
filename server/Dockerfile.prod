@@ -1,7 +1,7 @@
 FROM mhart/alpine-node:10 as back
 WORKDIR /backend
 COPY package*.json ./
-RUN npm install
+RUN npm install --only=production
 RUN npm install pm2@3.5.1 -g
 COPY . .
 
@@ -12,9 +12,8 @@ RUN ls -al
 CMD ["pm2-runtime", "start", "pm2.config.js", "start", "server.js", "--web", "9000"]
 RUN echo "\e[104mAfter running the docker container the frontend will start at: http://localhost:8080\e[0m\n\n"
 
-# to run the server container manually:
-# docker build -t development_backend -f ./Dockerfile.dev .
-# docker run -p 8080:8080 -d --name tg-backend development_backend
+# docker build -t production_backend -f ./Dockerfile.prod .
+# docker run -p 8080:8080 -d --name tg-backend -m "300M" --memory-swap "1G" production_backend
 
 ## https://github.com/keymetrics/docker-pm2
 ## https://pm2.keymetrics.io/docs/usage/deployment/

@@ -1,14 +1,14 @@
 FROM mhart/alpine-node:10 as front
-# install missing dependencies
+# install missing alpine packages
 RUN apk add --update git openssh
-COPY package.json package-lock.json ./frontend/
 WORKDIR /frontend
+COPY package*.json ./
 RUN npm install
 COPY . .
 RUN ls -al
 RUN npm run build
-# remove node_modules?
 
+# stage 2
 FROM nginx:latest
 EXPOSE 80
 # Remove default nginx website
@@ -18,7 +18,13 @@ COPY --from=front /frontend/build /usr/share/nginx/html
 # copy only static files of the react app
 
 CMD ["nginx", "-g", "daemon off;"]
-RUN echo "\e[104mAfter `docker run` the frontend will start at: localhost:3000\e[0m\n\n"
-# docker build -t production_frontend -f ./Dockerfile.dev .
-# docker run -d --name=tg-frontend -p 3000:80 production_frontend
+RUN echo "\e[104mAfter running the docker container the frontend will start at: localhost:3000\e[0m\n\n"
+
+# to run the frontend container manually:
+# docker build -t development_frontend -f ./Dockerfile.dev .
+
+# to see the logs you can either just run:
+# docker run --name=tg-frontend -p 3000:80 development_frontend
+# OR:
+# docker run -d --name=tg-frontend -p 3000:80 development_frontend
 # docker attach tg-frontend

@@ -12,6 +12,7 @@
     "clean-mark": "^0.8.0",
     "cors": "^2.8.5",
     "cron": "^1.7.1",
+    "dotenv": "^8.0.0",
     "express": "^4.16.2",
     "express-graphql": "^0.9.0",
     "get-urls": "^7.2.0",
@@ -40,7 +41,6 @@
     "postinstall": "npm install pm2 -g"
   },
   "devDependencies": {
-    "dotenv": "^8.0.0",
     "nodemon": "^1.19.1"
   },
   "engines": {

@@ -1,0 +1,40 @@
+FROM mhart/alpine-node:10 as front
+# install missing alpine packages
+RUN apk add --update git openssh
+# install latest npm, regardless of node version, for speed and fixes
+RUN npm i npm@6.9.0 -g
+RUN mkdir /frontend
+WORKDIR /frontend
+COPY package*.json ./
+# RUN npm i --only=production && npm cache clean --force
+RUN npm i --only=production
+COPY . .
+RUN npm run build
+RUN addgroup -S node && adduser -S -G node node
+RUN chown node:node -R /frontend/build
+# switch to the node:node user as a security best practice
+USER node
+RUN ls -al
+RUN ls -al /frontend/build
+
+# stage 2
+FROM nginx:latest
+EXPOSE 80
+# Remove default nginx website
+RUN rm -rf /usr/share/nginx/html/*
+# COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=front /frontend/build /usr/share/nginx/html
+# copy only static files of the react app
+
+CMD ["nginx", "-g", "daemon off;"]
+RUN ls -al
+RUN ls -al /usr/share/nginx/html
+
+RUN echo "\e[104mAfter running the docker container the frontend will start at localhost:3000\e[0m\n\n"
+
+# https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#memory
+# docker build -t production_frontend -f ./Dockerfile.prod . --no-cache
+# docker run --init --name=tg-frontend -p 3000:80 -m "300M" --memory-swap "1G" -u "node" production_frontend
+
+# docker run -d --name=tg-frontend -p 3000:80 production_frontend
+# docker attach tg-frontend
