@@ -1,15 +1,17 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 // in case you need debugging
 // mongoose.set('debug', true)
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise
 
-let db_uri;
-if (process.env.NODE_ENV && process.env.NODE_ENV === "development") {
-  db_uri = "mongodb://localhost/TelegramChannelDB";
+let db_uri
+if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
+  db_uri = 'mongodb://localhost/TelegramChannelDB'
 } else {
   // const MongoClient = require('mongodb').MongoClient
-  db_uri = `${process.env.DB_HOST_PREFIX}${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}${process.env.DB_HOST_OPTS}`;
+  db_uri = `${process.env.DB_HOST_PREFIX}${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}${process.env.DB_HOST_OPTS}`
 }
+
+// console.log('mongoose.connector: db_uri\n', db_uri)
 
 mongoose
   .connect(db_uri, {
@@ -22,8 +24,8 @@ mongoose
     // useMongoClient: true
   })
   .catch(error => {
-    console.log("-------- mongoose.connection error\n", error);
-  });
+    console.error('-------- mongoose.connection error\n', error)
+  })
 
 /* const friendSchema = new mongoose.Schema({
   firstName: {

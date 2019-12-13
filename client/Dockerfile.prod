@@ -6,28 +6,25 @@ RUN npm i npm@6.9.0 -g
 RUN mkdir /frontend
 WORKDIR /frontend
 COPY package*.json ./
+ENV NODE_ENV=production
 # RUN npm i --only=production && npm cache clean --force
 RUN npm i --only=production
 COPY . .
 RUN npm run build
-RUN addgroup -S node && adduser -S -G node node
-RUN chown node:node -R /frontend/build
-# switch to the node:node user as a security best practice
-USER node
 RUN ls -al
 RUN ls -al /frontend/build
 
 # stage 2
 FROM nginx:latest
-EXPOSE 80
+EXPOSE 3000
 # Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
-# COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=front /frontend/build /usr/share/nginx/html
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 # copy only static files of the react app
+COPY --from=front /frontend/build /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
-RUN ls -al
+RUN ls -al /etc/nginx/conf.d/
 RUN ls -al /usr/share/nginx/html
 
 RUN echo "\e[104mAfter running the docker container the frontend will start at localhost:3000\e[0m\n\n"

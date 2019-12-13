@@ -1,10 +1,9 @@
 .git
 .gitignore
 .DS_Store
-*Dockerfile*
 *docker-compose*
 node_modules/
 docker-compose.yml
 #.env*
 /**/__tests__/
-README.md
+# README.md

@@ -175,7 +175,8 @@ const prepareUdemyCourseJSON = async (url, courseId) => {
     if (err) {
       return console.error(err.message)
     }
-    console.log(getFullDate() + ' crawler contents\n', content)
+    console.log(getFullDate() + '\ncrawler url:\n', content.url)
+    console.log(' crawler title:\n', content.title + '\n')
     console.log(
       getFullDate() + ' prepareUdemyCourseJSON finished crawling...👍'
     )

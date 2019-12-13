@@ -1,13 +1,20 @@
 FROM mhart/alpine-node:10 as back
+ENV NODE_ENV=production
 WORKDIR /backend
 COPY package*.json ./
 RUN npm install --only=production
 RUN npm install pm2@3.5.1 -g
+
+RUN addgroup -S node && adduser -S -G node node
+RUN chown node:node -R /backend
+# switch to the node:node user as a security best practice
+USER node
+
 COPY . .
 
 # Show current folder structure in logs
 RUN ls -al
-
+EXPOSE 8080
 
 CMD ["pm2-runtime", "start", "pm2.config.js", "start", "server.js", "--web", "9000"]
 RUN echo "\e[104mAfter running the docker container the frontend will start at: http://localhost:8080\e[0m\n\n"
