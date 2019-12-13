@@ -54,7 +54,8 @@ ES_CONNECTION_URI="https://elasticUser:elasticPassword@domain.found.io:9243/name
 
 ```bash
 docker-compose --version
-docker-compose up --build --force-recreate
+docker-compose up -d --build --force-recreate
+# '-d' to run the process in the background
 ```
 
 ### Installation without Docker for local development
@@ -95,6 +96,42 @@ Additionally, to pipe & save all the stdout logs to a file, the following line c
 ```
 RUN ln -sf /dev/stdout /debug.log
 ```
+
+### Nginx (Mis)configuration
+
+Always try to keep your configuration in `docker-compose.yml` (e.g. the configuration of the networks) as simple as possible first, to avoid such 502's (bad gateway) or 503's Nginx errors like: `connect() failed (111: Connection refused) while connecting to upstream.` or `no live upstreams while connecting to upstream`. Very likely it's a nginx misconfiguration (listen, proxy_pass, ports, or a host name), however, the mapping of containers' ports in `docker-compose.yml` or the `EXPOSE` directive in a Dockerfile can also cause the problem.
+
+To get the recent errors:
+
+```bash
+docker ps # notice the id of the nginx or nginx-proxy container
+docker logs -f <container-id>
+```
+
+In order to see any potential errors in the console, it's also a good idea not to run the containers as the background processes first and recreate them after applied changes:
+
+```bash
+docker-compose up --build --force-recreate
+```
+
+If you use nginx-proxy, as I do, double check the volumes section in the config file:
+
+```YAML
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - '80:80'
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./default.conf:/etc/nginx/conf.d/frontend.conf:ro
+    depends_on:
+      - backend
+      - frontend
+```
+
+Yes, you can add your own config file(s) and it'll be applied. Be aware that your local dev version will also work without any SSL configurations (e.g. letsencrypt) or any certifications [if you haven't exposed the port 443 yet](https://github.com/jwilder/nginx-proxy#how-ssl-support-works).
+
+If you have some kind of DNS service that must start before the `nginx-proxy`, put it into `depends_on` section. In my case the `backend` & `frontend` services start in the first place, load their configurations, only then the nginx server can start to scan for the occupied ports.
 
 # Sync Elastic Database with the MongoDB
 
