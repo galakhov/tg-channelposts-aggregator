@@ -100,6 +100,7 @@ RUN ln -sf /dev/stdout /debug.log
 ### Nginx (Mis)configuration
 
 The nginx architecture in this project looks like this:
+
 ![Server archiceture](https://res.cloudinary.com/rootless/image/upload/v1576220080/private/nginx/architecture.jpg)
 
 Always try to keep your configuration in `docker-compose.yml` (e.g. the configuration of the networks) as simple as possible first, to avoid such 502's (bad gateway) or 503's Nginx errors like: `connect() failed (111: Connection refused) while connecting to upstream.` or `no live upstreams while connecting to upstream`.
