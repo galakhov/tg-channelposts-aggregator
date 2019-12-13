@@ -50,6 +50,15 @@ BOT_TOKEN=123456789:AAH54XXXMBUXXXPz4XX-fbeXXXTXYYYY
 ES_CONNECTION_URI="https://elasticUser:elasticPassword@domain.found.io:9243/nameOfYourDbCollection"
 ```
 
+### Installation using Docker & Docker Compose
+
+```bash
+docker-compose --version
+docker-compose up --build --force-recreate
+```
+
+### Installation without Docker to develop locally
+
 ```bash
 npm install
 ```
@@ -60,7 +69,7 @@ Local development:
 npm run dev
 ```
 
-Production (using [pm2](http://pm2.io)):
+#### To start monitoring (using [pm2](http://pm2.io)):
 
 ```bash
 npm start tg-aggregator -l ./logs/pm2/logs.log
@@ -93,7 +102,7 @@ The ElasticSearch needs its own database—a duplicate of an existing DB (in thi
 
 To hold the MongoDB and ElasticSearch DBs in sync in real-time, the _monstache_'s GO daemon should be either:
 
-1. auto-started from its separate docker container and be pre-configured in the (global) [docker-compose.yml file](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) (e.g. with the "restart: always" or "restart:unless-stopped" option) OR
+1. auto-started from its separate docker container and be pre-configured in the (global) [docker-compose.yml file](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) (this installation procedure allows to use such helpful docker features like monitoring of a process' health and auto-restart in case of errors, e.g. with the "restart: always" or `restart_policy: condition: on-failure`) OR
 2. installed globally considering its dependencies and then run as a persistent (daemonized) process.
 
 ### 1. Docker Installation
