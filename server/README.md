@@ -99,7 +99,12 @@ RUN ln -sf /dev/stdout /debug.log
 
 ### Nginx (Mis)configuration
 
-Always try to keep your configuration in `docker-compose.yml` (e.g. the configuration of the networks) as simple as possible first, to avoid such 502's (bad gateway) or 503's Nginx errors like: `connect() failed (111: Connection refused) while connecting to upstream.` or `no live upstreams while connecting to upstream`. Very likely it's a nginx misconfiguration (listen, proxy_pass, ports, or a host name), however, the mapping of containers' ports in `docker-compose.yml` or the `EXPOSE` directive in a Dockerfile can also cause the problem.
+The nginx architecture in this project looks like this:
+![Server archiceture](https://res.cloudinary.com/rootless/image/upload/v1576220080/private/nginx/architecture.jpg)
+
+Always try to keep your configuration in `docker-compose.yml` (e.g. the configuration of the networks) as simple as possible first, to avoid such 502's (bad gateway) or 503's Nginx errors like: `connect() failed (111: Connection refused) while connecting to upstream.` or `no live upstreams while connecting to upstream`.
+
+Very likely it's a nginx misconfiguration (listen, proxy_pass, ports, or a host name), however, the mapping of containers' ports in `docker-compose.yml` or the `EXPOSE` directive in a Dockerfile can also cause the problem.
 
 To get the recent errors:
 
