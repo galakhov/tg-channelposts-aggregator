@@ -20,10 +20,10 @@ Even though this setup would also work in production, I'd suggest to install and
 
 # Configuration, set up & Deployment 📋
 
-To run the app locally on your machine, it's enough to create a new file for the environment variables in the `server`'s directory:
+To run the app locally on your machine, you'll need to create a new file for the environment variables in the `server`'s directory:
 
 ```
-touch .env
+touch .env & open .env
 ```
 
 Put the required lines into the `.env` file and fill in the required constants (at least add your BOT_TOKEN hash):
@@ -57,13 +57,13 @@ docker-compose --version
 docker-compose up --build --force-recreate
 ```
 
-### Installation without Docker to develop locally
+### Installation without Docker for local development
 
 ```bash
 npm install
 ```
 
-Local development:
+Start the local development:
 
 ```bash
 npm run dev
@@ -105,7 +105,7 @@ To hold the MongoDB and ElasticSearch DBs in sync in real-time, the _monstache_'
 1. auto-started from its separate docker container and be pre-configured in the (global) [docker-compose.yml file](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) (this installation procedure allows to use such helpful docker features like monitoring of a process' health and auto-restart in case of errors, e.g. with the "restart: always" or `restart_policy: condition: on-failure`) OR
 2. installed globally considering its dependencies and then run as a persistent (daemonized) process.
 
-### 1. Docker Installation
+### 1. Installation using Docker
 
 If the monstache's docker container is the best option for your architecture, the monstache.config.toml should be probably copied over (if it's not being done already by default) to the monstache docker container, i.e. written in the corresponding monstache's Dockerfile as a COPY directive. Again, see their [docker-compose.yml](https://github.com/rwynn/monstache/blob/master/docker/test/docker-compose.test.yml) and [monstache.config.default.toml](https://github.com/galakhov/tg-channelposts-aggregator/blob/master/monstache.config.default.toml) files for more details.
 

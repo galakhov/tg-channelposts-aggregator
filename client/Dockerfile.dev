@@ -18,7 +18,7 @@ COPY --from=front /frontend/build /usr/share/nginx/html
 # copy only static files of the react app
 
 CMD ["nginx", "-g", "daemon off;"]
-RUN echo "\e[104mAfter running the docker container the frontend will start at: localhost:3000\e[0m\n\n"
+RUN echo "\e[104mAfter running the docker container the frontend will start at: localhost:80\e[0m\n\n"
 
 # to run the frontend container manually:
 # docker build -t development_frontend -f ./Dockerfile.dev .
