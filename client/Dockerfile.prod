@@ -1,4 +1,5 @@
 FROM mhart/alpine-node:10 as front
+ENV TZ="Europe/Amsterdam"
 # install missing alpine packages
 RUN apk add --update git openssh
 # install latest npm, regardless of node version, for speed and fixes

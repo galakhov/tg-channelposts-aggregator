@@ -99,7 +99,7 @@ RUN ln -sf /dev/stdout /debug.log
 
 ### Nginx (Mis)configuration
 
-The nginx architecture in this project looks like this:
+The nginx architecture in this project looks like this (where the first nginx is the so called _reverse proxy_ and is used for routing: [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy)):
 
 ![Server archiceture](https://res.cloudinary.com/rootless/image/upload/v1576220080/private/nginx/architecture.jpg)
 
@@ -137,7 +137,7 @@ If you use nginx-proxy, as I do, double check the volumes section in the config 
 
 Yes, you can add your own config file(s) and it'll be applied. Be aware that your local dev version will also work without any SSL configurations (e.g. letsencrypt) or any certifications [if you haven't exposed the port 443 yet](https://github.com/jwilder/nginx-proxy#how-ssl-support-works).
 
-If you have some kind of DNS service that must start before the `nginx-proxy`, put it into `depends_on` section. In my case the `backend` & `frontend` services start in the first place, load their configurations, only then the nginx server can start to scan for the occupied ports.
+If you have some kind of DNS service that must start before the `nginx-proxy`, put it into `depends_on` section. In my case the `backend` & `frontend` services with those configurations start first, then the nginx server starts to scan for the occupied ports (may be useful if you prefer the auto generated nginx config).
 
 # Sync Elastic Database with the MongoDB
 
