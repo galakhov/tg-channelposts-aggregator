@@ -99,7 +99,7 @@ RUN ln -sf /dev/stdout /debug.log
 
 ### Nginx (Mis)configuration
 
-The nginx architecture in this project looks like this (where the first nginx is the so called _reverse proxy_ and is used for routing: [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy)):
+The nginx architecture in this project looks like this (where the first nginx is the so called _reverse proxy_ and is used to [route any incoming requests](http://jasonwilder.com/blog/2014/03/25/automated-nginx-reverse-proxy-for-docker/): [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) based on [docker-gen](https://github.com/jwilder/docker-gen)):
 
 ![Server archiceture](https://res.cloudinary.com/rootless/image/upload/v1576220080/private/nginx/architecture.jpg)
 
@@ -114,7 +114,7 @@ docker ps # notice the id of the nginx or nginx-proxy container
 docker logs -f <container-id>
 ```
 
-In order to see any potential errors in the console, it's also a good idea not to run the containers as the background processes first and recreate them after applied changes:
+In order to see any potential errors in the console, it's also a good idea not to run the containers as the background processes first and recreate them after you apply any changes:
 
 ```bash
 docker-compose up --build --force-recreate
