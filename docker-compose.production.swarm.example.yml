@@ -5,7 +5,7 @@ services:
     image: fuzzysouls/tg-aggregator-frontend:latest
     container_name: frontend-service
     ports:
-      - '3000:3000'
+      - '3000:3000' # because of labels you don't need to map like: 80:3000
     networks:
       - front
       - traefik_proxy
@@ -18,7 +18,7 @@ services:
       labels:
         - 'traefik.enable=true'
         - 'traefik.http.routers.backend.rule=HostRegexp(`example.com`,`subdomain:[a-z]+}.example.com`)'
-        # TODO: use the the service name ('frontend-service') assigned in swarm
+        # TODO: assign the service named 'frontend-service' in swarm
         - 'traefik.http.services.frontend-service.loadbalancer.server.port=80'
         - 'traefik.http.routers.frontend.entrypoints=web'
         # - 'traefik.http.routers.frontend.entrypoints=websecure'
@@ -76,8 +76,8 @@ services:
     image: traefik:v2.1
     command: --configFile=/etc/traefik/traefik.toml # from the volume
     ports:
-      - '443:443'
       - '80:80'
+      - '443:443'
       - '8080:8080'
       - '9000:9000'
     networks:
@@ -140,3 +140,7 @@ networks:
 #     ports:
 #       - '27017:27017'
 #     # volumes:
+# ----------------------------------
+# delegate load balancing to swarm by setting:
+# - "traefik.docker.lbswarm=true"
+# https://docs.traefik.io/v2.0/routing/providers/docker/#traefikdockerlbswarm

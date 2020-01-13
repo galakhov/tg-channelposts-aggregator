@@ -16,8 +16,6 @@ RUN ls -al /frontend/build
 
 # Stage 2: the react app runs behind its own nginx instance.
 FROM nginx:1.17.7-alpine
-ENV NGINX_VERSION=1.17.7
-ENV NJS_VERSION=0.3.7
 EXPOSE 3000
 # Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
