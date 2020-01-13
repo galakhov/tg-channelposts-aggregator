@@ -1,0 +1,42 @@
+# https://docs.traefik.io/migration/v1-to-v2/
+[global]
+  sendAnonymousUsage = false
+
+[log]
+  level = "DEBUG" # ERROR|INFO
+
+[providers.docker]
+  exposedByDefault = false
+  swarmMode = true
+  endpoint = "tcp://127.0.0.1:2377"
+  network = "traefik_proxy"
+  # endpoint = "unix:///var/run/docker.sock"
+  # docker swarm mode (1.12+): https://docs.traefik.io/routing/providers/docker/
+
+[api]
+  dashboard = true
+  # insecure = true
+  # https://docs.traefik.io/operations/dashboard/#insecure-mode
+
+# https://docs.traefik.io/routing/entrypoints/#configuration
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+  [entryPoints.web-secure]
+    address = ":443"
+  [entryPoints.backend]
+    address = ":8080"
+  [entryPoints.dashboard]
+    address = ":9000"
+
+[certificatesResolvers]
+  [certificatesResolvers.default.acme]
+    email = "mail@example.com" # your e-mail used for the certificate
+    storage = "/etc/traefik/config/acme.json"
+    [certificatesResolvers.default.acme.tlsChallenge]
+
+# TODO: don't forget to do:
+# cd config/acme
+# chmod 600 acme.json
+
+# https://docs.traefik.io/https/acme/

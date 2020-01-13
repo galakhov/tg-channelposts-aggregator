@@ -6,14 +6,15 @@ COPY package*.json ./
 RUN npm install --only=production
 RUN npm install pm2@3.5.1 -g
 
+# add node user & the node group
 RUN addgroup -S node && adduser -S -G node node
 RUN chown node:node -R /backend
-# switch to the node:node user as a security best practice
+# switch to the node:node as a security best practice
 USER node
 
 COPY . .
 
-# Show current folder structure in logs
+# Show current folder's contents in logs
 RUN ls -al
 EXPOSE 8080
 

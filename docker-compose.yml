@@ -9,10 +9,10 @@ services:
       - '3000:3000'
     env_file:
       - ./client/.env.production
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
+    # deploy:
+    #   replicas: 1
+    #   restart_policy:
+    #     condition: on-failure
     networks:
       - front
     environment:
@@ -69,15 +69,15 @@ services:
   #       - '27017:27017'
   #     # volumes:
 
-  # global routing server
+  # global routing server / reverse proxy
   nginx-proxy:
-    image: jwilder/nginx-proxy
+    image: jwilder/nginx-proxy:alpine
     ports:
       - '80:80'
       # - '443:443'
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./default.conf:/etc/nginx/conf.d/frontend.conf:ro
+      - ./default.dev.conf:/etc/nginx/conf.d/frontend.conf:ro
       # - /etc/nginx/vhost.d
       # - /opt/certs:/etc/nginx/certs:ro
       # - ./web/public:/srv/www/static OR /usr/share/nginx/html

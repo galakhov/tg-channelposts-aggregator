@@ -1,0 +1,142 @@
+version: '3.7'
+
+services:
+  frontend:
+    image: fuzzysouls/tg-aggregator-frontend:latest-client
+    container_name: frontend-service
+    ports:
+      - '3000:3000'
+    networks:
+      - front
+      - traefik_proxy
+    environment:
+      # - 'ES_CONNECTION_URI=${ES_CONNECTION_URI}'
+    # command:
+    # Tell to store the certificate on a path under our volume
+    # - '--certificatesresolvers.default.acme.storage=/etc/traefik/config/acme.json'
+    deploy:
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.backend.rule=HostRegexp(`example.com`,`subdomain:[a-z]+}.example.com`)'
+        # TODO: use the the service name ('frontend-service') assigned in swarm
+        - 'traefik.http.services.frontend-service.loadbalancer.server.port=80'
+        - 'traefik.http.routers.frontend.entrypoints=web'
+        # - 'traefik.http.routers.frontend.entrypoints=websecure'
+        # - 'traefik.http.routers.frontend.tls.certresolver=default'
+        - 'traefik.docker.network=traefik_proxy'
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == worker
+
+  backend:
+    image: fuzzysouls/tg-aggregator-backend:latest-server
+    container_name: backend-service
+    ports:
+      - '8080:8080'
+    networks:
+      - back
+      - traefik_proxy
+    environment:
+      # - 'BOT_TOKEN=${BOT_TOKEN}'
+      # - 'CONNECTION_STRING=${CONNECTION_STRING}'
+      # - 'APPLICATION_KEY=${APPLICATION_KEY}'
+      # - 'APPLICATION_SECRET=${APPLICATION_SECRET}'
+    deploy:
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.frontend.rule=Host(`mydomain.com`)'
+        # TODO: use the the service name (e.g. 'backend-service') assigned in swarm
+        - 'traefik.http.services.backend-service.loadbalancer.server.port=8080'
+        - 'traefik.http.routers.backend.entrypoints=backend'
+        - 'traefik.docker.network=traefik_proxy'
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          cpus: '0.80'
+          memory: 512M
+        reservations:
+          cpus: '0.50'
+          memory: 256M
+
+  # global routing server & dashboard configuration / reverse proxy
+  # https://github.com/cbirkenbeul/docker-homelab/tree/master/traefik
+  # TODO: docker network create traefik_proxy
+  traefik:
+    container_name: traefik-svc
+    restart: unless-stopped
+    image: traefik:v2.1
+    command: --configFile=/etc/traefik/traefik.toml # from the volume
+    ports:
+      - '443:443'
+      - '80:80'
+      - '8080:8080'
+      - '9000:9000'
+    networks:
+      - traefik_proxy
+      - front
+      - back
+    deploy:
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.api.rule=Host(`traefik.example.com`) && PathPrefix(`/dashboard`)' # change to your domain
+        - 'traefik.http.routers.api.entryPoints=dashboard'
+        - 'traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)'
+        - 'traefik.http.routers.api.service=api@internal'
+        - 'traefik.http.routers.api.middlewares=auth'
+        - 'traefik.http.middlewares.auth.basicauth.users=<user>/<pass>'
+        - 'traefik.http.services.traefik-svc.loadbalancer.server.port=9000'
+        # - 'traefik.port=9000'
+        # https://docs.traefik.io/operations/dashboard/#secure-mode
+        # TODO: paste <user>/<pass> in the above line by generating with:
+        # sudo apt install apache2-utils -y
+        # echo $(htpasswd -nbB <USER> "<PASS>") | sed -e s/\\$/\\$\\$/g
+        # You can then access the dashboard at http://traefik.example.com:9000 or at http://<Traefik IP>:9000/dashboard/
+        # or just do: curl -s 127.0.0.1:9000/api/rawdata | jq .
+    depends_on:
+      - backend
+      - frontend
+    # - search
+    # - db
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/config:/etc/traefik
+      - /srv/docker/volumes/traefik/log:/log
+      - /etc/localtime:/etc/localtime
+
+networks:
+  back:
+    driver: bridge
+    # internal: true
+  front:
+    driver: bridge
+  traefik_proxy:
+    external:
+      name: traefik_proxy
+# ----------------------------------
+# services:
+#   search:
+#     build: './search'
+#     image: elasticsearch
+#     ports:
+#       - "9200:9200"
+#     ports:
+#       - '9243:9000'
+#     depends_on:
+#       - db
+#     environment:
+#       - ELASTICSEARCH_URI=
+
+#   db:
+#     image: mongo
+#     ports:
+#       - '27017:27017'
+#     # volumes:
