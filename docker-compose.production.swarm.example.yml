@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   frontend:
-    image: fuzzysouls/tg-aggregator-frontend:latest-client
+    image: fuzzysouls/tg-aggregator-frontend:latest
     container_name: frontend-service
     ports:
       - '3000:3000'
@@ -32,7 +32,7 @@ services:
           - node.role == worker
 
   backend:
-    image: fuzzysouls/tg-aggregator-backend:latest-server
+    image: fuzzysouls/tg-aggregator-backend:latest
     container_name: backend-service
     ports:
       - '8080:8080'
