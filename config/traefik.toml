@@ -4,26 +4,34 @@
 
 [log]
   level = "DEBUG" # ERROR|INFO
+  filePath = "log/traefik.log" # see 'traefik: volumes:' section in the compose file
 
 [providers.docker]
   exposedByDefault = false
   swarmMode = true
-  endpoint = "tcp://127.0.0.1:2377"
+  endpoint = "tcp://127.0.0.1:2377" # :2375
   network = "traefik_proxy"
+  watch = true # watch for new (or no longer available) containers
   # endpoint = "unix:///var/run/docker.sock"
   # docker swarm mode (1.12+): https://docs.traefik.io/routing/providers/docker/
 
 [api]
   dashboard = true
-  # insecure = true
+  insecure = true
   # https://docs.traefik.io/operations/dashboard/#insecure-mode
 
 # https://docs.traefik.io/routing/entrypoints/#configuration
 [entryPoints]
   [entryPoints.web]
     address = ":80"
+    # [entryPoints.web.redirect]
+    #  entryPoint = "web-secure"
   [entryPoints.web-secure]
     address = ":443"
+    # [entryPoints.web-secure.tls]
+    #   [[entryPoints.web-secure.tls.certificates]]
+    #     certFile = "examples/traefik.crt"
+    #     keyFile = "examples/traefik.key"
   [entryPoints.backend]
     address = ":8080"
   [entryPoints.dashboard]
