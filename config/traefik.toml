@@ -34,6 +34,8 @@
     #     keyFile = "examples/traefik.key"
   [entryPoints.backend]
     address = ":8080"
+  [entryPoints.drone]
+    address = ":8088"
   [entryPoints.dashboard]
     address = ":9000"
 

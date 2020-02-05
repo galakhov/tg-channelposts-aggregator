@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  drone-server:
+    image: drone/drone:1.2.1
+    container_name: drone-server
+    ports:
+      - 8081:80
+      - 9000
+    volumes:
+      - drone:/var/lib/drone/
+    restart: always
+    depends_on:
+      - traefik
+    env_file:
+      - ./.env.drone.server
+    networks:
+      - traefik_proxy
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.drone.rule=Host(`${DRONE_SERVER_HOST}`)'
+      - 'traefik.http.routers.drone.entrypoints=drone'
+      - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
+      - 'traefik.docker.network=traefik_proxy'
+      # - 'traefik.http.routers.drone.tls.certresolver=leresolver'
+
+  drone-agent:
+    image: drone/agent:1.2.1
+    container_name: drone-agent
+    command: agent
+    restart: always
+    depends_on:
+      - drone-server
+      - traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - drone-agent:/data
+    env_file:
+      - ./.env.drone.agent
+    networks:
+      - traefik_proxy
+
+volumes:
+  drone: {}
+  drone-agent: {}

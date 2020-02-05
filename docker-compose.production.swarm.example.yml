@@ -22,12 +22,11 @@ services:
         # TODO: assign the service named 'frontend-service' in swarm
         - 'traefik.http.services.frontend-service.loadbalancer.server.port=80'
         # - 'traefik.port=3000'
-        # - 'traefik.http.routers.frontend.entrypoints=websecure'
-        # - 'traefik.http.routers.frontend.tls.certresolver=default'
         - 'traefik.docker.network=traefik_proxy'
-        # - traefik.http.routers.appsecured.rule: Host(`example.com`)
-        # - traefik.http.routers.appsecured.entrypoints: web-secure
-        # - traefik.http.routers.appsecured.tls: true
+        # - traefik.http.routers.frontend-secured.rule: Host(`example.com`)
+        # - traefik.http.routers.frontend-secured.entrypoints: web-secure
+        # - traefik.http.routers.frontend-secured.tls: true
+        # - traefik.http.routers.frontend-secured.tls.certresolver=default
         # - traefik.http.middlewares.https_redirect.redirectscheme.scheme: https
         # - traefik.http.middlewares.https_redirect.redirectscheme.permanent: true
         # https://docs.traefik.io/migration/v1-to-v2/#http-to-https-redirection-is-now-configured-on-routers
@@ -38,6 +37,7 @@ services:
         constraints:
           - node.role == worker
 
+  # dynamic configuration: https://docs.traefik.io/reference/dynamic-configuration/docker/
   backend:
     image: fuzzysouls/tg-aggregator-backend:latest
     container_name: backend-service
@@ -79,7 +79,7 @@ services:
   # TODO: docker network create traefik_proxy
   traefik:
     container_name: traefik-svc
-    restart: unless-stopped
+    restart: always
     image: traefik:v2.1.1
     command: --configFile=/etc/traefik/traefik.toml # from the volume
     ports:
@@ -123,9 +123,11 @@ services:
     # - db
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - $PWD/config:/etc/traefik
       - /srv/docker/volumes/traefik/log:/log
       - /etc/localtime:/etc/localtime
+      - $PWD/config:/etc/traefik
+      # - ./config/traefik.toml:/etc/traefik/traefik.toml
+      # - ./config/acme/acme.json:/etc/traefik/acme.json
 
 networks:
   back:
@@ -135,7 +137,8 @@ networks:
     driver: bridge
   traefik_proxy:
     external:
-      name: traefik_proxy
+      true
+      # name: traefik_proxy
 # ----------------------------------
 # services:
 #   search:
