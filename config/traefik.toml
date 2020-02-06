@@ -23,8 +23,8 @@
 [entryPoints]
   [entryPoints.web]
     address = ":80"
-    # [entryPoints.web.redirect]
-    #  entryPoint = "web-secure"
+    [entryPoints.web.redirect]
+    entryPoint = "web-secure"
   [entryPoints.backend]
     address = ":8080"
   [entryPoints.drone_entry]

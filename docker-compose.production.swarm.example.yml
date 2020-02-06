@@ -182,6 +182,7 @@ services:
       # - ./config/acme/acme.json:/etc/traefik/acme/acme.json
 
 # do not use the 'bridge' network on swarm if you need port communications between nodes
+# https://docs.docker.com/network/overlay/
 networks:
   microservices:
     driver: overlay
