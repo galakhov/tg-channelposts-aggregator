@@ -7,7 +7,7 @@ services:
     ports:
       - 80:3000
     networks:
-      - front
+      - microservices
       - traefik_proxy
     environment:
       # - 'ES_CONNECTION_URI=${ES_CONNECTION_URI}'
@@ -51,7 +51,7 @@ services:
     ports:
       - '8080:8080'
     networks:
-      - back
+      - microservices
       - traefik_proxy
     environment:
       # - 'BOT_TOKEN=${BOT_TOKEN}'
@@ -108,8 +108,7 @@ services:
       - '9000:9000'
     networks:
       - traefik_proxy
-      - front
-      - back
+      - microservices
       - drone
     deploy:
       restart_policy:
@@ -158,17 +157,14 @@ services:
       # - ./config/acme/acme.json:/etc/traefik/acme/acme.json
 
 networks:
-  front:
+  microservices:
     driver: overlay
     external: false
-    attachable: true
-  back:
-    driver: overlay
-    external: false
+    # internal: true
     attachable: true
   drone:
     driver: overlay
-    external: false
+    external: true
     attachable: true
   traefik_proxy:
     name: traefik_proxy
