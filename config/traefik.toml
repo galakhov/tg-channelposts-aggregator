@@ -1,4 +1,3 @@
-# https://docs.traefik.io/migration/v1-to-v2/
 [global]
   sendAnonymousUsage = false
 
@@ -45,3 +44,4 @@
 # chmod 600 acme.json
 
 # https://docs.traefik.io/https/acme/
+# https://docs.traefik.io/migration/v1-to-v2/

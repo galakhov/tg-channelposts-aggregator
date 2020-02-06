@@ -11,27 +11,31 @@ services:
       - traefik_proxy
     environment:
       # - 'ES_CONNECTION_URI=${ES_CONNECTION_URI}'
-    # command:
-    # Tell to store the certificate on a path under our volume
-    # - '--certificatesresolvers.default.acme.storage=/etc/traefik/config/acme.json'
     deploy:
       labels:
+        # network
         - 'traefik.enable=true'
+        - 'traefik.docker.network=traefik_proxy'
+
+        # routers
         - 'traefik.http.routers.frontend-router.rule=HostRegexp(`example.com`,`subdomain:[a-z]+}.example.com`)'
-        #- 'traefik.http.routers.frontend-router.entrypoints=web'
-        # TODO: assign the service named 'frontend-service' in swarm
-        - 'traefik.http.services.frontend-service.loadbalancer.server.port=80'
-        # https://docs.traefik.io/routing/providers/docker/#service-definition
-        # - 'traefik.port=3000'
+        # - 'traefik.http.routers.frontend-router.entrypoints=web'
         - 'traefik.http.routers.frontend-router.tls=true'
         - 'traefik.http.routers.frontend-router.entrypoints=web-secure'
         - 'traefik.http.routers.frontend-router.tls.certresolver=mycert'
         # - 'traefik.http.routers.http_catchall.rule=HostRegexp(`{any:.+}`)'
         # - 'traefik.http.routers.http_catchall.entrypoints=web'
         # - 'traefik.http.routers.http_catchall.middlewares=https_redirect'
+
+        # services
+        - 'traefik.http.services.frontend-service.loadbalancer.server.port=80'
+        - 'traefik.http.services.frontend-service.loadbalancer.server.scheme=https'
+        # TODO: assign the service named 'frontend-service' in swarm
+        # https://docs.traefik.io/routing/providers/docker/#service-definition
+        # - 'traefik.port=3000'
+        # middlewares
         # - 'traefik.http.middlewares.https_redirect.redirectscheme.scheme=https'
         # - 'traefik.http.middlewares.https_redirect.redirectscheme.permanent=true'
-        - 'traefik.docker.network=traefik_proxy'
         # https://docs.traefik.io/migration/v1-to-v2/#http-to-https-redirection-is-now-configured-on-routers
       replicas: 2
       restart_policy:
@@ -56,17 +60,23 @@ services:
       # - 'APPLICATION_SECRET=${APPLICATION_SECRET}'
     deploy:
       labels:
+        # network
         - 'traefik.enable=true'
+        - 'traefik.docker.network=traefik_proxy'
+
+        # routers
         - 'traefik.http.routers.backend-router.rule=Host(`mydomain.com`)'
         - 'traefik.http.routers.backend-router.entrypoints=backend'
-        # no need for tls for the backend, as it's in internal network anyway
+        # no need for TLS on the backend, as it's in internal network anyway
         # - 'traefik.http.routers.backend-router.tls=true'
         # - "traefik.http.routers.backend-router.entrypoints=back-secure"
         # - 'traefik.http.routers.backend-router.tls.certresolver=mycert'
+
+        # services
         - 'traefik.http.services.backend-service.loadbalancer.server.port=8080'
+        - 'traefik.http.services.backend-service.loadbalancer.server.scheme=http'
         # TODO: use the the service name (e.g. 'backend-service') assigned in swarm
         # https://docs.traefik.io/routing/providers/docker/#service-definition
-        - 'traefik.docker.network=traefik_proxy'
       mode: replicated
       replicas: 1
       restart_policy:
@@ -86,7 +96,7 @@ services:
   # https://github.com/cbirkenbeul/docker-homelab/tree/master/traefik
   # TODO: docker network create traefik_proxy
   traefik:
-    container_name: traefik-svc
+    container_name: traefik-service
     restart: always
     image: traefik:v2.1.1
     command: --configFile=/etc/traefik/traefik.toml # from the volume
@@ -110,15 +120,23 @@ services:
         constraints:
           - node.role == manager
       labels:
+        # network
         - 'traefik.enable=true'
+        - 'traefik.docker.network=traefik_proxy'
+
+        # routers
         - 'traefik.http.routers.api.rule=Host(`traefik.example.com`) && PathPrefix(`/dashboard`)' # change to your domain
         - 'traefik.http.routers.api.entryPoints=dashboard'
         - 'traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)'
         - 'traefik.http.routers.api.service=api@internal'
         # - 'traefik.http.routers.api.middlewares=auth'
-        # - 'traefik.http.middlewares.auth.basicauth.users=<user>/<pass>'
-        - 'traefik.http.services.traefik-svc.loadbalancer.server.port=9000'
+
+        # services
+        - 'traefik.http.services.traefik-service.loadbalancer.server.port=9000'
+        - 'traefik.http.services.traefik-service.loadbalancer.server.scheme=https'
         # - 'traefik.port=9000'
+        # middlewares
+        # - 'traefik.http.middlewares.auth.basicauth.users=<user>/<pass>'
         # configuration example: https://docs.traefik.io/migration/v1-to-v2/
         # https://docs.traefik.io/operations/dashboard/#secure-mode
         # TODO: paste <user>/<pass> in the above line by generating with:
