@@ -5,10 +5,9 @@ services:
     image: drone/drone:1.2.1
     container_name: drone-server
     ports:
-      - 8081:80
-      - 9000
+      - 8088:80
     volumes:
-      - drone-server:/var/lib/drone/
+      - drone-server-sqlite:/var/lib/drone/
     logging:
       driver: json-file
       options:
@@ -22,6 +21,7 @@ services:
       - drone
       - drone_ci
     deploy:
+      endpoint_mode: dnsrr # drone-server:8088
       labels:
         - 'traefik.enable=true'
         - 'traefik.http.routers.drone.rule=Host(`${DRONE_SERVER_HOST}`)'
@@ -29,7 +29,6 @@ services:
         - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
         - 'traefik.docker.network=drone'
         # - 'traefik.http.routers.drone.tls.certresolver=leresolver'
-      # endpoint_mode: dnsrr
       placement:
         constraints:
           - node.role != manager
@@ -37,7 +36,7 @@ services:
       replicas: 1
       update_config:
         parallelism: 1
-        delay: 10s
+        delay: 5s
         failure_action: pause
         order: start-first
         monitor: 10s
@@ -57,7 +56,6 @@ services:
         max-file: '3'
     depends_on:
       - drone-server
-      - traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - drone-agent:/data
@@ -72,10 +70,10 @@ services:
         preferences:
           - spread: node.labels.drone_ci
       mode: replicated
-      replicas: 10
+      replicas: 1
       update_config:
-        parallelism: 2
-        delay: 10s
+        parallelism: 1
+        delay: 5s
         failure_action: pause
         order: start-first
         monitor: 10s
@@ -85,5 +83,5 @@ services:
         max_attempts: 3
 
 volumes:
-  drone-server: {}
+  drone-server-sqlite: {}
   drone-agent: {}

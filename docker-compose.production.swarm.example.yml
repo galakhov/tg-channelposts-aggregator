@@ -117,6 +117,7 @@ services:
       - traefik_proxy
       - microservices
       - drone
+      - drone_ci
     logging:
       driver: json-file
       options:
@@ -127,6 +128,12 @@ services:
         condition: any
       mode: replicated
       replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        order: start-first
+        monitor: 30s
       placement:
         constraints:
           - node.role == manager
@@ -158,8 +165,10 @@ services:
     depends_on:
       - backend
       - frontend
-    # - search
-    # - db
+      # - drone-server
+      # - drone-agent
+      # - search
+      # - db
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /srv/docker/volumes/traefik/log:/log
@@ -168,17 +177,22 @@ services:
       # - ./config/traefik.toml:/etc/traefik/traefik.toml
       # - ./config/acme/acme.json:/etc/traefik/acme/acme.json
 
+# do not use the 'bridge' network on swarm if you need port communications between nodes
 networks:
   microservices:
     driver: overlay
-    external: false # TODO: will the frontend service still be reachable (&back crawls shit)?
+    external: false # TODO: will the frontend service still be reachable (crawling requests)?
     # internal: true
     attachable: true
   drone:
     driver: overlay
     external: true
     attachable: true
+  drone_ci:
+    driver: overlay
+    external: true
   traefik_proxy:
+    driver: overlay
     name: traefik_proxy
     external: true
 # ----------------------------------
