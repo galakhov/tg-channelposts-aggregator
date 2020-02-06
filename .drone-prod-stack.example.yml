@@ -5,7 +5,7 @@ services:
     image: drone/drone:1.2.1
     container_name: drone-server
     ports:
-      - 8088:80
+      - 8088:80/tcp
     volumes:
       - drone-server-sqlite:/var/lib/drone/
     logging:
@@ -21,6 +21,8 @@ services:
       - drone
       - drone_ci
     deploy:
+      # To use an external load balancer without the routing mesh:
+      # https://docs.docker.com/engine/swarm/ingress/#without-the-routing-mesh
       endpoint_mode: dnsrr # drone-server:8088
       labels:
         - 'traefik.enable=true'
@@ -85,3 +87,13 @@ services:
 volumes:
   drone-server-sqlite: {}
   drone-agent: {}
+
+networks:
+  drone:
+    driver: overlay
+    external: true
+    attachable: true
+  drone_ci:
+    driver: overlay
+    external: true
+    attachable: true

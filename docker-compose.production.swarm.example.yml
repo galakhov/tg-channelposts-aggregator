@@ -6,6 +6,10 @@ services:
     container_name: frontend-service
     ports:
       - 80:3000
+      # published=<PUBLISHED-PORT>,target=<CONTAINER-PORT>
+      - published: 80
+      - target: 3000
+      - protocol: tcp
     networks:
       - microservices
       - traefik_proxy
@@ -93,11 +97,11 @@ services:
           - node.role == worker
       resources:
         limits:
-          cpus: '0.80'
-          memory: 512M
-        reservations:
           cpus: '0.50'
           memory: 256M
+        reservations:
+          cpus: '0.33'
+          memory: 128M
 
   # global routing server & dashboard configuration / reverse proxy
   # https://github.com/cbirkenbeul/docker-homelab/tree/master/traefik
@@ -106,18 +110,18 @@ services:
     container_name: traefik-service
     restart: always
     image: traefik:v2.1.1
-    command: --configFile=/etc/traefik/traefik.toml # from the volume
+    command: --configFile=/etc/traefik/traefik.toml # read it from the volume
     ports:
-      - '80:80'
-      # - '443:443'
-      - '8080:8080' # backend
-      - '8088:8088' # drone_entry
-      - '9000:9000' # traefik dashboard
+      - '80:80/tcp'
+      - '443:443/tcp'
+      - '8080:8080/tcp' # backend
+      - '8088:8088/tcp' # drone entry-point
+      - '9000:9000/tcp' # traefik dashboard
     networks:
       - traefik_proxy
       - microservices
       - drone
-      - drone_ci
+      # - drone_ci # no need to load balance that network
     logging:
       driver: json-file
       options:
@@ -182,19 +186,12 @@ networks:
   microservices:
     driver: overlay
     external: false # TODO: will the frontend service still be reachable (crawling requests)?
-    # internal: true
     attachable: true
-  drone:
-    driver: overlay
-    external: true
-    attachable: true
-  drone_ci:
-    driver: overlay
-    external: true
+    # internal: true # to block access to the outside world
   traefik_proxy:
     driver: overlay
-    name: traefik_proxy
     external: true
+    attachable: true
 # ----------------------------------
 # services:
 #   search:
