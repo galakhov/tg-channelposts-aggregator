@@ -15,7 +15,7 @@ services:
     env_file:
       - ./.env.drone.server
     networks:
-      - traefik_proxy
+      - drone
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.drone.rule=Host(`${DRONE_SERVER_HOST}`)'
@@ -38,7 +38,7 @@ services:
     env_file:
       - ./.env.drone.agent
     networks:
-      - traefik_proxy
+      - drone
 
 volumes:
   drone: {}

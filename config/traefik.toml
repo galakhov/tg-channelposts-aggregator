@@ -26,24 +26,19 @@
     address = ":80"
     # [entryPoints.web.redirect]
     #  entryPoint = "web-secure"
-  [entryPoints.web-secure]
-    address = ":443"
-    # [entryPoints.web-secure.tls]
-    #   [[entryPoints.web-secure.tls.certificates]]
-    #     certFile = "examples/traefik.crt"
-    #     keyFile = "examples/traefik.key"
   [entryPoints.backend]
     address = ":8080"
   [entryPoints.drone]
     address = ":8088"
   [entryPoints.dashboard]
     address = ":9000"
-
-[certificatesResolvers]
-  [certificatesResolvers.default.acme]
-    email = "mail@example.com" # your e-mail used for the certificate
-    storage = "/etc/traefik/config/acme.json"
-    [certificatesResolvers.default.acme.tlsChallenge]
+  [entryPoints.web-secure]
+    address = ":443"
+    [certificatesResolvers.mycert.acme]
+      email = "your-email@your-domain.org"
+      storage = "/etc/traefik/acme/acme.json"
+      [certificatesResolvers.mycert.acme.httpChallenge]
+        entryPoint = "web" # used during the challenge
 
 # TODO: don't forget to do:
 # cd config/acme

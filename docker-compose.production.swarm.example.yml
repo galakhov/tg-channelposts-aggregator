@@ -18,17 +18,20 @@ services:
       labels:
         - 'traefik.enable=true'
         - 'traefik.http.routers.frontend-router.rule=HostRegexp(`example.com`,`subdomain:[a-z]+}.example.com`)'
-        - 'traefik.http.routers.frontend-router.entrypoints=web'
+        #- 'traefik.http.routers.frontend-router.entrypoints=web'
         # TODO: assign the service named 'frontend-service' in swarm
         - 'traefik.http.services.frontend-service.loadbalancer.server.port=80'
+        # https://docs.traefik.io/routing/providers/docker/#service-definition
         # - 'traefik.port=3000'
+        - 'traefik.http.routers.frontend-router.tls=true'
+        - 'traefik.http.routers.frontend-router.entrypoints=web-secure'
+        - 'traefik.http.routers.frontend-router.tls.certresolver=mycert'
+        # - 'traefik.http.routers.http_catchall.rule=HostRegexp(`{any:.+}`)'
+        # - 'traefik.http.routers.http_catchall.entrypoints=web'
+        # - 'traefik.http.routers.http_catchall.middlewares=https_redirect'
+        # - 'traefik.http.middlewares.https_redirect.redirectscheme.scheme=https'
+        # - 'traefik.http.middlewares.https_redirect.redirectscheme.permanent=true'
         - 'traefik.docker.network=traefik_proxy'
-        # - traefik.http.routers.frontend-secured.rule: Host(`example.com`)
-        # - traefik.http.routers.frontend-secured.entrypoints: web-secure
-        # - traefik.http.routers.frontend-secured.tls: true
-        # - traefik.http.routers.frontend-secured.tls.certresolver=default
-        # - traefik.http.middlewares.https_redirect.redirectscheme.scheme: https
-        # - traefik.http.middlewares.https_redirect.redirectscheme.permanent: true
         # https://docs.traefik.io/migration/v1-to-v2/#http-to-https-redirection-is-now-configured-on-routers
       replicas: 2
       restart_policy:
@@ -56,8 +59,13 @@ services:
         - 'traefik.enable=true'
         - 'traefik.http.routers.backend-router.rule=Host(`mydomain.com`)'
         - 'traefik.http.routers.backend-router.entrypoints=backend'
-        # TODO: use the the service name (e.g. 'backend-service') assigned in swarm
+        # no need for tls for the backend, as it's in internal network anyway
+        # - 'traefik.http.routers.backend-router.tls=true'
+        # - "traefik.http.routers.backend-router.entrypoints=back-secure"
+        # - 'traefik.http.routers.backend-router.tls.certresolver=mycert'
         - 'traefik.http.services.backend-service.loadbalancer.server.port=8080'
+        # TODO: use the the service name (e.g. 'backend-service') assigned in swarm
+        # https://docs.traefik.io/routing/providers/docker/#service-definition
         - 'traefik.docker.network=traefik_proxy'
       mode: replicated
       replicas: 1
@@ -86,11 +94,13 @@ services:
       - '80:80'
       # - '443:443'
       - '8080:8080'
+      - '8088:8088'
       - '9000:9000'
     networks:
       - traefik_proxy
       - front
       - back
+      - drone
     deploy:
       restart_policy:
         condition: any
@@ -125,20 +135,26 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /srv/docker/volumes/traefik/log:/log
       - /etc/localtime:/etc/localtime
-      - $PWD/config:/etc/traefik
+      - ${PWD}/config:/etc/traefik
       # - ./config/traefik.toml:/etc/traefik/traefik.toml
-      # - ./config/acme/acme.json:/etc/traefik/acme.json
+      # - ./config/acme/acme.json:/etc/traefik/acme/acme.json
 
 networks:
-  back:
-    driver: bridge
-    # internal: true
   front:
-    driver: bridge
+    driver: overlay
+    external: false
+    attachable: true
+  back:
+    driver: overlay
+    external: false
+    attachable: true
+  drone:
+    driver: overlay
+    external: false
+    attachable: true
   traefik_proxy:
-    external:
-      true
-      # name: traefik_proxy
+    name: traefik_proxy
+    external: true
 # ----------------------------------
 # services:
 #   search:
