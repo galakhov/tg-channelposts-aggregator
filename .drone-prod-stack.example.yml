@@ -8,27 +8,53 @@ services:
       - 8081:80
       - 9000
     volumes:
-      - drone:/var/lib/drone/
-    restart: always
+      - drone-server:/var/lib/drone/
+    logging:
+      driver: json-file
+      options:
+        max-size: '5m'
+        max-file: '3'
     depends_on:
       - traefik
     env_file:
       - ./.env.drone.server
     networks:
       - drone
-    labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.drone.rule=Host(`${DRONE_SERVER_HOST}`)'
-      - 'traefik.http.routers.drone.entrypoints=drone'
-      - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
-      - 'traefik.docker.network=traefik_proxy'
-      # - 'traefik.http.routers.drone.tls.certresolver=leresolver'
+      - drone_ci
+    deploy:
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.drone.rule=Host(`${DRONE_SERVER_HOST}`)'
+        - 'traefik.http.routers.drone.entrypoints=drone_entry'
+        - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
+        - 'traefik.docker.network=drone'
+        # - 'traefik.http.routers.drone.tls.certresolver=leresolver'
+      # endpoint_mode: dnsrr
+      placement:
+        constraints:
+          - node.role != manager
+      mode: replicated
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        order: start-first
+        monitor: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
 
   drone-agent:
     image: drone/agent:1.2.1
     container_name: drone-agent
     command: agent
-    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: '5m'
+        max-file: '3'
     depends_on:
       - drone-server
       - traefik
@@ -38,8 +64,26 @@ services:
     env_file:
       - ./.env.drone.agent
     networks:
-      - drone
+      - drone_ci
+    deploy:
+      placement:
+        constraints:
+          - node.role != manager
+        preferences:
+          - spread: node.labels.drone_ci
+      mode: replicated
+      replicas: 10
+      update_config:
+        parallelism: 2
+        delay: 10s
+        failure_action: pause
+        order: start-first
+        monitor: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
 
 volumes:
-  drone: {}
+  drone-server: {}
   drone-agent: {}

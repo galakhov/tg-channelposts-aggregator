@@ -27,7 +27,7 @@
     #  entryPoint = "web-secure"
   [entryPoints.backend]
     address = ":8080"
-  [entryPoints.drone]
+  [entryPoints.drone_entry]
     address = ":8088"
   [entryPoints.dashboard]
     address = ":9000"

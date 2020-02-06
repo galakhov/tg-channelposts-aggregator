@@ -81,6 +81,13 @@ services:
       replicas: 1
       restart_policy:
         condition: on-failure
+        max_attempts: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        order: start-first
+        monitor: 30s
       placement:
         constraints:
           - node.role == worker
@@ -103,13 +110,18 @@ services:
     ports:
       - '80:80'
       # - '443:443'
-      - '8080:8080'
-      - '8088:8088'
-      - '9000:9000'
+      - '8080:8080' # backend
+      - '8088:8088' # drone_entry
+      - '9000:9000' # traefik dashboard
     networks:
       - traefik_proxy
       - microservices
       - drone
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
     deploy:
       restart_policy:
         condition: any
@@ -159,7 +171,7 @@ services:
 networks:
   microservices:
     driver: overlay
-    external: false
+    external: false # TODO: will the frontend service still be reachable (&back crawls shit)?
     # internal: true
     attachable: true
   drone:
