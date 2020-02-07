@@ -7,30 +7,33 @@ services:
     ports:
       - 8088:80/tcp
     volumes:
-      - drone-server-sqlite:/var/lib/drone/
+      - /var/swarm/drone/server/sqlite-data:/var/lib/drone:rw
+      - /var/swarm/drone/server/config:/config:ro
+      # https://docs.docker.com/storage/bind-mounts/
     logging:
       driver: json-file
       options:
         max-size: '5m'
         max-file: '3'
-    depends_on:
-      - traefik
+    # depends_on:
+    #   - traefik
     env_file:
-      - ./.env.drone.server
+      - /config/.env.drone.server
     networks:
       - drone
       - drone_ci
     deploy:
-      # To use an external load balancer without the routing mesh:
+      # Switching to dnsrr, to use an external load balancer without the routing mesh:
       # https://docs.docker.com/engine/swarm/ingress/#without-the-routing-mesh
       endpoint_mode: dnsrr # drone-server:8088
       labels:
         - 'traefik.enable=true'
         - 'traefik.http.routers.drone.rule=Host(`${DRONE_SERVER_HOST}`)'
         - 'traefik.http.routers.drone.entrypoints=drone_entry'
+        - 'traefik.http.routers.drone.tls=true'
+        - 'traefik.http.routers.drone.tls.certresolver=mycert'
         - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
         - 'traefik.docker.network=drone'
-        # - 'traefik.http.routers.drone.tls.certresolver=leresolver'
       placement:
         constraints:
           - node.role != manager
@@ -60,9 +63,10 @@ services:
       - drone-server
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - drone-agent:/data
+      - /var/swarm/drone/agent/data:/data:rw
+      - /var/swarm/drone/agent/config:/config:ro
     env_file:
-      - ./.env.drone.agent
+      - /config/.env.drone.agent
     networks:
       - drone_ci
     deploy:
@@ -84,9 +88,97 @@ services:
         delay: 5s
         max_attempts: 3
 
-volumes:
-  drone-server-sqlite: {}
-  drone-agent: {}
+  # global routing server & dashboard configuration / reverse proxy
+  # https://github.com/cbirkenbeul/docker-homelab/tree/master/traefik
+  # TODO: docker network create traefik_proxy
+  traefik:
+    container_name: traefik-service
+    restart: always
+    image: traefik:v2.1.1
+    command:
+      - '--configFile=/etc/traefik/config/traefik.toml' # read it from the mounted volume
+      # - "--certificatesResolvers.mycert.acme.dnsChallenge=true"
+    ports:
+      - '80:80/tcp'
+      - '443:443/tcp'
+      - '8080:8080/tcp' # backend
+      - '8088:8088/tcp' # drone entry-point
+      - '9000:9000/tcp' # traefik dashboard
+    networks:
+      - traefik_proxy
+      - microservices
+      - drone
+      # - drone_ci # no need to load balance that network
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'
+    env_file:
+      - /etc/traefik/.env.provider
+    deploy:
+      restart_policy:
+        condition: any
+      mode: replicated
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        order: start-first
+        monitor: 30s
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        # network
+        - 'traefik.enable=true'
+        - 'traefik.docker.network=traefik_proxy'
+
+        # routers
+        - 'traefik.http.routers.api.rule=Host(`${TRAEFIK_HOST}`) && PathPrefix(`/dashboard`)' # change to your domain
+        - 'traefik.http.routers.api.entryPoints=dashboard'
+        - 'traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)'
+        - 'traefik.http.routers.api.service=api@internal'
+        - 'traefik.http.routers.api.tls=true'
+        - 'traefik.http.routers.api.tls.certresolver=mycert'
+        # - 'traefik.http.routers.api.tls.domains[0].main=traefik.example.com'
+        # - 'traefik.http.routers.blog.tls.domains[0].sans=*.company.org'
+        # - 'traefik.http.routers.api.middlewares=auth'
+
+        # services
+        - 'traefik.http.services.traefik-service.loadbalancer.server.port=`${TRAEFIK_DASHBOARD_PORT}`'
+        - 'traefik.http.services.traefik-service.loadbalancer.server.scheme=https'
+        # - 'traefik.port=`${TRAEFIK_DASHBOARD_PORT}`'
+        # middlewares
+        # - 'traefik.http.middlewares.auth.basicauth.users=<user>/<pass>'
+        # configuration example: https://docs.traefik.io/migration/v1-to-v2/
+        # https://docs.traefik.io/operations/dashboard/#secure-mode
+        # TODO: paste <user>/<pass> in the above line by generating with:
+        # sudo apt install apache2-utils -y
+        # echo $(htpasswd -nbB <USER> "<PASS>") | sed -e s/\\$/\\$\\$/g
+        # You can then access the dashboard at http://traefik.example.com:9000 or at http://<Traefik IP>:9000/dashboard/
+        # or just do: curl -s 127.0.0.1:9000/api/rawdata | jq .
+    depends_on:
+      # - backend
+      # - frontend
+      - drone-server
+      # - drone-agent
+      # - search
+      # - db
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /srv/docker/volumes/traefik/log:/log
+      - /etc/localtime:/etc/localtime
+      - /run/docker.sock:/var/run/docker.sock:ro
+      - /var/swarm/traefik/:/etc/traefik
+      - /var/swarm/traefik/logs:/logs
+      # - /var/swarm/traefik/access.log:/traefik.access.log
+      - /var/swarm/traefik/.htpasswd:/.htpasswd
+
+# volumes:
+#   drone-server-sqlite: {}
+#   drone-agent: {}
 
 networks:
   drone:
@@ -94,6 +186,10 @@ networks:
     external: true
     attachable: true
   drone_ci:
+    driver: overlay
+    external: true
+    attachable: true
+  traefik_proxy:
     driver: overlay
     external: true
     attachable: true

@@ -6,7 +6,7 @@ For testing purposes you can, for instance, use the free [MongoDB Atlas Cluster]
 
 # Architecture 🏗️🧱 and Required Puzzles 🧩
 
-## Bot #1: Posts Collector 🤖
+## Bot #1: Posts’ Collector 🤖
 
 I'm using the [@multifeed_edge_bot](https://telegra.ph/Help---multifeed-edge-bot-07-06) bot to [redirect messages automatically](https://telegra.ph/Add-new-redirection-on-multifeed-edge-bot-07-06) from a set of chosen Telegram channels to my own private channel I've created.
 
@@ -77,7 +77,7 @@ npm start tg-aggregator -l ./logs/pm2/logs.log
 pm2 monit # to start the console-based monitoring (see below)
 ```
 
-In production, for instance in the Travis CI UI, you can set the environment variables [in the repository settings section](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings). If you prefer GitLab CI, you can also [define a set of your own custom environment variables in their UI](https://docs.gitlab.com/ce/ci/variables/README.html#creating-a-custom-environment-variable). Other modern CI tools such as [Jenkins](https://jenkins.io/doc/book/using/using-credentials/#configuring-credentials) or [Drone](https://drone.io) do as well allow you to configure [secrets keys](https://docs.drone.io/configure/secrets/repository/) (i.e. environment constants) for a repository or for a whole organization.
+In production, for instance in the Travis CI UI, you can set the environment variables [in the repository settings section](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings). If you prefer GitLab CI, you can also [define a set of your own custom environment variables in their UI](https://docs.gitlab.com/ce/ci/variables/README.html#creating-a-custom-environment-variable). Other modern CI tools such as [Jenkins](https://jenkins.io/doc/book/using/using-credentials/#configuring-credentials) or the lightweight [Drone](https://drone.io) do as well allow you to configure [secrets keys](https://docs.drone.io/configure/secrets/repository/) (i.e. environment constants) for a repository or for a whole organization.
 
 # Monitoring & Debugging 🐞
 
@@ -99,9 +99,9 @@ RUN ln -sf /dev/stdout /debug.log
 
 ### Nginx (Mis)configuration
 
-The nginx architecture in this project looks like this (where the first nginx is the so-called _reverse proxy_ and is used to [route any incoming requests](http://jasonwilder.com/blog/2014/03/25/automated-nginx-reverse-proxy-for-docker/): [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) based on [docker-gen](https://github.com/jwilder/docker-gen)):
+The architecture of this project (at least of the development version) looks like this (where the first nginx is the so-called _reverse proxy_, which is used to [route any incoming requests](http://jasonwilder.com/blog/2014/03/25/automated-nginx-reverse-proxy-for-docker/): [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) based on [docker-gen](https://github.com/jwilder/docker-gen)):
 
-![Server archiceture](https://res.cloudinary.com/rootless/image/upload/v1576220080/private/nginx/architecture.jpg)
+![Server archiceture](https://res.cloudinary.com/rootless/image/upload/v1576220080/private/nginx/architecture.jpg | width=1024)
 
 Always try to keep your configuration in `docker-compose.yml` (e.g. the configuration of the networks) as simple as possible first, to avoid such 502's (bad gateway) or 503's Nginx errors like: `connect() failed (111: Connection refused) while connecting to upstream.` or `no live upstreams while connecting to upstream`.
 

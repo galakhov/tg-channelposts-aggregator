@@ -5,7 +5,7 @@ services:
     image: fuzzysouls/tg-aggregator-frontend:latest
     container_name: frontend-service
     ports:
-      - 80:3000
+      # - 80:3000 # old syntax
       # published=<PUBLISHED-PORT>,target=<CONTAINER-PORT>
       - published: 80
       - target: 3000
@@ -25,8 +25,8 @@ services:
         - 'traefik.http.routers.frontend-router.rule=HostRegexp(`example.com`,`subdomain:[a-z]+}.example.com`)'
         # - 'traefik.http.routers.frontend-router.entrypoints=web'
         - 'traefik.http.routers.frontend-router.tls=true'
-        - 'traefik.http.routers.frontend-router.entrypoints=web-secure'
         - 'traefik.http.routers.frontend-router.tls.certresolver=mycert'
+        - 'traefik.http.routers.frontend-router.entrypoints=web-secure'
         # - 'traefik.http.routers.http_catchall.rule=HostRegexp(`{any:.+}`)'
         # - 'traefik.http.routers.http_catchall.entrypoints=web'
         # - 'traefik.http.routers.http_catchall.middlewares=https_redirect'
@@ -103,96 +103,13 @@ services:
           cpus: '0.33'
           memory: 128M
 
-  # global routing server & dashboard configuration / reverse proxy
-  # https://github.com/cbirkenbeul/docker-homelab/tree/master/traefik
-  # TODO: docker network create traefik_proxy
-  traefik:
-    container_name: traefik-service
-    restart: always
-    image: traefik:v2.1.1
-    command: --configFile=/etc/traefik/traefik.toml # read it from the volume
-    ports:
-      - '80:80/tcp'
-      - '443:443/tcp'
-      - '8080:8080/tcp' # backend
-      - '8088:8088/tcp' # drone entry-point
-      - '9000:9000/tcp' # traefik dashboard
-    networks:
-      - traefik_proxy
-      - microservices
-      - drone
-      # - drone_ci # no need to load balance that network
-    logging:
-      driver: json-file
-      options:
-        max-size: '10m'
-        max-file: '3'
-    deploy:
-      restart_policy:
-        condition: any
-      mode: replicated
-      replicas: 1
-      update_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: pause
-        order: start-first
-        monitor: 30s
-      placement:
-        constraints:
-          - node.role == manager
-      labels:
-        # network
-        - 'traefik.enable=true'
-        - 'traefik.docker.network=traefik_proxy'
-
-        # routers
-        - 'traefik.http.routers.api.rule=Host(`traefik.example.com`) && PathPrefix(`/dashboard`)' # change to your domain
-        - 'traefik.http.routers.api.entryPoints=dashboard'
-        - 'traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)'
-        - 'traefik.http.routers.api.service=api@internal'
-        # - 'traefik.http.routers.api.middlewares=auth'
-
-        # services
-        - 'traefik.http.services.traefik-service.loadbalancer.server.port=9000'
-        - 'traefik.http.services.traefik-service.loadbalancer.server.scheme=https'
-        # - 'traefik.port=9000'
-        # middlewares
-        # - 'traefik.http.middlewares.auth.basicauth.users=<user>/<pass>'
-        # configuration example: https://docs.traefik.io/migration/v1-to-v2/
-        # https://docs.traefik.io/operations/dashboard/#secure-mode
-        # TODO: paste <user>/<pass> in the above line by generating with:
-        # sudo apt install apache2-utils -y
-        # echo $(htpasswd -nbB <USER> "<PASS>") | sed -e s/\\$/\\$\\$/g
-        # You can then access the dashboard at http://traefik.example.com:9000 or at http://<Traefik IP>:9000/dashboard/
-        # or just do: curl -s 127.0.0.1:9000/api/rawdata | jq .
-    depends_on:
-      - backend
-      - frontend
-      # - drone-server
-      # - drone-agent
-      # - search
-      # - db
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /srv/docker/volumes/traefik/log:/log
-      - /etc/localtime:/etc/localtime
-      - ${PWD}/config:/etc/traefik
-      # - ./config/traefik.toml:/etc/traefik/traefik.toml
-      # - ./config/acme/acme.json:/etc/traefik/acme/acme.json
-
-# do not use the 'bridge' network on swarm if you need port communications between nodes
-# https://docs.docker.com/network/overlay/
+# do not use the 'bridge' network on swarm in production if you need port communications between nodes: https://docs.docker.com/network/overlay/
 networks:
   microservices:
     driver: overlay
     external: false # TODO: will the frontend service still be reachable (crawling requests)?
     attachable: true
     # internal: true # to block access to the outside world
-  traefik_proxy:
-    driver: overlay
-    external: true
-    attachable: true
 # ----------------------------------
 # services:
 #   search:

@@ -3,7 +3,9 @@
 
 [log]
   level = "DEBUG" # ERROR|INFO
-  filePath = "log/traefik.log" # see 'traefik: volumes:' section in the compose file
+  filePath = "/logs/traefik.log" # see 'traefik: volumes:' section in the compose file
+  # format = "json"
+  # https://docs.traefik.io/observability/access-logs/
 
 [providers.docker]
   exposedByDefault = false
@@ -36,8 +38,16 @@
     [certificatesResolvers.mycert.acme]
       email = "your-email@your-domain.org"
       storage = "/etc/traefik/acme/acme.json"
-      [certificatesResolvers.mycert.acme.httpChallenge]
-        entryPoint = "web" # used during the challenge
+      # caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+      # # https://docs.traefik.io/https/acme/#caserver
+      # [certificatesResolvers.mycert.acme.httpChallenge]
+      #   entryPoint = "web" # used during the challenge
+      [certificatesResolvers.mycert.acme.dnsChallenge]
+        provider = "godaddy"
+        delayBeforeCheck = 365
+      [[certificatesResolvers.mycert.acme.domains]]
+        main = "*.yourdomain.com"
+        sans = ["yourdomain.com"]
 
 # TODO: don't forget to do:
 # cd config/acme

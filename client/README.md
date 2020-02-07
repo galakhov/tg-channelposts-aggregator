@@ -10,6 +10,7 @@ Add these lines into the file:
 
 ```
 NODE_ENV=development
+ES_CONNECTION_URI="https://..."
 ```
 
 ### Design by
