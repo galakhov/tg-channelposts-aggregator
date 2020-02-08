@@ -183,9 +183,9 @@ class UdemyCrawler {
           )
           Course.curriculum.courseLength =
             jsonData.curriculum.data.estimated_content_length_text
-          Course.topics = jsonData.topic_menu.menu_data.map(
-            m => m.title || m.display_name
-          )
+          Course.topics = jsonData.topic_menu
+            ? jsonData.topic_menu.menu_data.map(m => m.title || m.display_name)
+            : ''
 
           Course.rating = parseFloat(
             jsonData.instructor_bio.data.instructors_info[0].avg_rating_recent
