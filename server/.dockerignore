@@ -1,9 +1,11 @@
 .git
 .gitignore
 .DS_Store
+_.env*
+.env*
 *docker-compose*
 node_modules/
 docker-compose.yml
-#.env*
+monstache.config.*
 /**/__tests__/
 # README.md

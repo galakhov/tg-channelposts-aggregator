@@ -7,6 +7,7 @@ node_modules/
 # Dockerfile*
 docker-compose.yml
 /**/__tests__/
+_.env*
 .env*
 # .env.production
 # README.md
