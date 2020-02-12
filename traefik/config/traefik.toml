@@ -32,7 +32,7 @@
   [entryPoints.drone_entry]
     address = ":8088"
   [entryPoints.dashboard]
-    address = ":9000"
+    address = ":9009"
   [entryPoints.web-secure]
     address = ":443"
     [certificatesResolvers.mycert.acme]

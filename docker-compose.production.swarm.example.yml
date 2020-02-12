@@ -118,7 +118,7 @@ networks:
 #     ports:
 #       - "9200:9200"
 #     ports:
-#       - '9243:9000'
+#       - '9243:9100'
 #     depends_on:
 #       - db
 #     environment:

@@ -214,7 +214,10 @@ const populateUdemyCourseData = contents => {
     NewPost.preview.courseContents.enrolled = contents.enrollmentNumber
     NewPost.preview.courseContents.rating = contents.rating
     NewPost.preview.courseContents.lectures = contents.curriculum
-    NewPost.preview.courseContents.keywords = contents.topics.join(', ')
+    NewPost.preview.courseContents.keywords =
+      contents.topics && contents.topics !== ''
+        ? contents.topics.join(', ')
+        : ''
     NewPost.preview.courseContents.language = contents.language
     NewPost.preview.courseContents.url = contents.image
   } else {

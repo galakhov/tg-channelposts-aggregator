@@ -7,6 +7,14 @@
   "editor.fontLigatures": true,
   "editor.fontWeight": "400",
   "editor.fontFamily": "FiraCode-Retina",
+  "editor.wrappingIndent": "same",
   "prettier.semi": false,
-  "prettier.singleQuote": true
+  "prettier.singleQuote": true,
+  "prettier.jsxBracketSameLine": true,
+  "prettier.vueIndentScriptAndStyle": true,
+  "prettier.useTabs": false,
+  "prettier.tabWidth": 2,
+  "prettier.bracketSpacing": true,
+  "prettier.useEditorConfig": false,
+  "prettier.proseWrap": "preserve"
 }

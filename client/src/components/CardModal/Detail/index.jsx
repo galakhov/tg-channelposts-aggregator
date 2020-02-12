@@ -37,7 +37,7 @@ const getCourseDuration = courseDurationStr => {
         ? `and ${seconds} second`
         : `and ${seconds} seconds`
       : ``
-    // yes, no space between hours and minutes (hours are optional)
+    // yes, no space between hours and minutes (as hours are optional)
     courseDuration = `${hours}${minutes} ${seconds}`
   }
   return courseDuration
@@ -49,15 +49,15 @@ const Detail = ({ post }) => {
   let targetAudiences = _get(post, 'preview.courseContents.audiences')
   targetAudiences = targetAudiences
     ? `<hr><p class='detail-audience'>The course is best suited to:<br />${targetAudiences.join(
-      ', '
-    )}</p>`
+        ', '
+      )}</p>`
     : ''
   const author = _get(post, 'preview.courseContents.author')
   // const date = _get(post, 'preview.courseContents.date')
   const lastUpdate = _get(post, 'preview.courseContents.date')
   const courseUrl = _get(post, 'preview.courseUrl') // || _get(post, 'preview.url')
   let keywords = _get(post, 'preview.courseContents.keywords')
-  if (keywords) {
+  if (keywords && keywords.length > 0) {
     keywords = keywords.split(', ')
   }
   let courseDurationText = _get(
@@ -82,9 +82,9 @@ const Detail = ({ post }) => {
   const expiration =
     expirationDate !== null
       ? `${discounted}discount coupon code is valid until ${_format(
-        new Date(expirationDate),
-        'DD.MM.YYYY HH:mm'
-      )}`
+          new Date(expirationDate),
+          'DD.MM.YYYY HH:mm'
+        )}`
       : ''
   const freeCourse =
     _get(post, 'preview.courseContents.initialPrice') === 0
@@ -139,6 +139,7 @@ const Detail = ({ post }) => {
         </div>
         <ul className={styles.tags}>
           {keywords &&
+            keywords.length > 0 &&
             keywords.map(tag => (
               <Tag key={tag} text={tag} onTagClick={onTagClick} />
             ))}
@@ -165,7 +166,9 @@ const Detail = ({ post }) => {
           {/* <ReactMarkdown source={courseContent} className={styles.course} /> */}
           <div
             className={styles.courseContent}
-            dangerouslySetInnerHTML={{ __html: unescapeHTML(courseContent) }}
+            dangerouslySetInnerHTML={{
+              __html: unescapeHTML(courseContent)
+            }}
           />
         </div>
       )}

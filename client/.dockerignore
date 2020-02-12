@@ -1,6 +1,7 @@
 .git
 .gitignore
 .DS_Store
+build/.DS_Store
 *docker-compose*
 node_modules/
 # Dockerfile*

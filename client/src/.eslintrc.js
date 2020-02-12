@@ -3,6 +3,7 @@ module.exports = {
   rules: {
     'no-multiple-empty-lines': 0,
     semi: 'off',
-    quotes: 'off'
+    quotes: 'off',
+    indent: 'off'
   }
 }

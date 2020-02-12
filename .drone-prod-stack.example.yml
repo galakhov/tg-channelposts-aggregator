@@ -103,7 +103,8 @@ services:
       - '443:443/tcp'
       - '8080:8080/tcp' # backend
       - '8088:8088/tcp' # drone entry-point
-      - '9000:9000/tcp' # traefik dashboard
+      - '9000:9000/tcp' # ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
+      - '9009:9009/tcp' # traefik dashboard
     networks:
       - traefik_proxy
       - microservices
@@ -157,8 +158,8 @@ services:
         # TODO: paste <user>/<pass> in the above line by generating with:
         # sudo apt install apache2-utils -y
         # echo $(htpasswd -nbB <USER> "<PASS>") | sed -e s/\\$/\\$\\$/g
-        # You can then access the dashboard at http://traefik.example.com:9000 or at http://<Traefik IP>:9000/dashboard/
-        # or just do: curl -s 127.0.0.1:9000/api/rawdata | jq .
+        # You can then access the dashboard at http://traefik.example.com:9009 or at http://<Traefik IP>:9009/dashboard/
+        # or just do: curl -s 127.0.0.1:9009/api/rawdata | jq .
     depends_on:
       # - backend
       # - frontend
@@ -168,7 +169,6 @@ services:
       # - db
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /srv/docker/volumes/traefik/log:/log
       - /etc/localtime:/etc/localtime
       - /run/docker.sock:/var/run/docker.sock:ro
       - /var/swarm/traefik/:/etc/traefik
