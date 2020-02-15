@@ -3,7 +3,6 @@ version: '3.7'
 services:
   frontend:
     image: fuzzysouls/tg-aggregator-frontend:latest
-    container_name: frontend-service
     ports:
       # - 80:3000 # old syntax
       # published=<PUBLISHED-PORT>,target=<CONTAINER-PORT>
@@ -25,15 +24,15 @@ services:
         - 'traefik.http.routers.frontend-router.rule=HostRegexp(`example.com`,`subdomain:[a-z]+}.example.com`)'
         # - 'traefik.http.routers.frontend-router.entrypoints=web'
         - 'traefik.http.routers.frontend-router.tls=true'
-        - 'traefik.http.routers.frontend-router.tls.certresolver=mycert'
+        - 'traefik.http.routers.frontend-router.tls.certresolver=godaddy-resolver'
         - 'traefik.http.routers.frontend-router.entrypoints=web-secure'
         # - 'traefik.http.routers.http_catchall.rule=HostRegexp(`{any:.+}`)'
         # - 'traefik.http.routers.http_catchall.entrypoints=web'
         # - 'traefik.http.routers.http_catchall.middlewares=https_redirect'
 
         # services
-        - 'traefik.http.services.frontend-service.loadbalancer.server.port=80'
-        - 'traefik.http.services.frontend-service.loadbalancer.server.scheme=https'
+        - 'traefik.http.services.frontend.loadbalancer.server.port=80'
+        - 'traefik.http.services.frontend.loadbalancer.server.scheme=https'
         # TODO: assign the service named 'frontend-service' in swarm
         # https://docs.traefik.io/routing/providers/docker/#service-definition
         # - 'traefik.port=3000'
@@ -51,7 +50,6 @@ services:
   # dynamic configuration: https://docs.traefik.io/reference/dynamic-configuration/docker/
   backend:
     image: fuzzysouls/tg-aggregator-backend:latest
-    container_name: backend-service
     ports:
       - '8080:8080'
     networks:
@@ -74,11 +72,11 @@ services:
         # no need for TLS on the backend, as it's in internal network anyway
         # - 'traefik.http.routers.backend-router.tls=true'
         # - "traefik.http.routers.backend-router.entrypoints=back-secure"
-        # - 'traefik.http.routers.backend-router.tls.certresolver=mycert'
+        # - 'traefik.http.routers.backend-router.tls.certresolver=godaddy-resolver'
 
         # services
-        - 'traefik.http.services.backend-service.loadbalancer.server.port=8080'
-        - 'traefik.http.services.backend-service.loadbalancer.server.scheme=http'
+        - 'traefik.http.services.backend.loadbalancer.server.port=8080'
+        - 'traefik.http.services.backend.loadbalancer.server.scheme=http'
         # TODO: use the the service name (e.g. 'backend-service') assigned in swarm
         # https://docs.traefik.io/routing/providers/docker/#service-definition
       mode: replicated
@@ -102,14 +100,13 @@ services:
         reservations:
           cpus: '0.33'
           memory: 128M
-
 # do not use the 'bridge' network on swarm in production if you need port communications between nodes: https://docs.docker.com/network/overlay/
-networks:
-  microservices:
-    driver: overlay
-    external: false # TODO: will the frontend service still be reachable (crawling requests)?
-    attachable: true
-    # internal: true # to block access to the outside world
+# networks:
+#   microservices:
+#     driver: overlay
+#     external: false # TODO: will the frontend service still be reachable (crawling requests)?
+#     attachable: true
+# internal: true # to block access to the outside world
 # ----------------------------------
 # services:
 #   search:

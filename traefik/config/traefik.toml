@@ -10,9 +10,11 @@
 [providers.docker]
   exposedByDefault = false
   swarmMode = true
-  endpoint = "tcp://127.0.0.1:2377" # :2375
+  endpoint = "tcp://127.0.0.1:2377"
+  # if it doesn't work, try ':2375'
   network = "traefik_proxy"
-  watch = true # watch for new (or no longer available) containers
+  watch = true
+  # watch for new (or no longer available) containers
   # endpoint = "unix:///var/run/docker.sock"
   # docker swarm mode (1.12+): https://docs.traefik.io/routing/providers/docker/
 
@@ -25,8 +27,6 @@
 [entryPoints]
   [entryPoints.web]
     address = ":80"
-    [entryPoints.web.redirect]
-    entryPoint = "web-secure"
   [entryPoints.backend]
     address = ":8080"
   [entryPoints.drone_entry]
@@ -36,18 +36,17 @@
   [entryPoints.web-secure]
     address = ":443"
     [certificatesResolvers.mycert.acme]
+      # email to notify you in case of issues or expiring certificates
       email = "your-email@your-domain.org"
       storage = "/etc/traefik/acme/acme.json"
-      # caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
-      # # https://docs.traefik.io/https/acme/#caserver
+      caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+      # https://docs.traefik.io/https/acme/#caserver
       # [certificatesResolvers.mycert.acme.httpChallenge]
       #   entryPoint = "web" # used during the challenge
       [certificatesResolvers.mycert.acme.dnsChallenge]
+        # dnsChallenge is to generate wildcard certificates using ACME V2
         provider = "godaddy"
-        delayBeforeCheck = 365
-      [[certificatesResolvers.mycert.acme.domains]]
-        main = "*.yourdomain.com"
-        sans = ["yourdomain.com"]
+        delayBeforeCheck = 0
 
 # TODO: don't forget to do:
 # cd config/acme

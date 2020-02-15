@@ -3,7 +3,6 @@ version: '3.7'
 services:
   drone-server:
     image: drone/drone:1.2.1
-    container_name: drone-server
     ports:
       - 8088:80/tcp
     volumes:
@@ -18,25 +17,36 @@ services:
     # depends_on:
     #   - traefik
     env_file:
-      - /config/.env.drone.server
+      - /var/swarm/drone/server/config/.env.drone.server
     networks:
       - drone
       - drone_ci
     deploy:
       # Switching to dnsrr, to use an external load balancer without the routing mesh:
       # https://docs.docker.com/engine/swarm/ingress/#without-the-routing-mesh
-      endpoint_mode: dnsrr # drone-server:8088
+      # endpoint_mode: dnsrr # drone-server:8088
       labels:
+        # network
         - 'traefik.enable=true'
-        - 'traefik.http.routers.drone.rule=Host(`${DRONE_SERVER_HOST}`)'
+        - 'traefik.docker.network=drone'
+
+        # routers
+        - 'traefik.http.routers.drone.rule=Host(`$DRONE_SERVER_HOST`)'
         - 'traefik.http.routers.drone.entrypoints=drone_entry'
         - 'traefik.http.routers.drone.tls=true'
         - 'traefik.http.routers.drone.tls.certresolver=mycert'
-        - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
-        - 'traefik.docker.network=drone'
-      placement:
-        constraints:
-          - node.role != manager
+        - 'traefik.http.routers.drone.middlewares=https_redirect'
+
+        # middlewares
+        - 'traefik.http.middlewares.https_redirect.redirectscheme.scheme=https'
+        - 'traefik.http.middlewares.https_redirect.redirectscheme.permanent=true'
+
+        # services
+        - 'traefik.http.services.drone-server.loadbalancer.server.port=$DRONE_SERVER_PORT'
+
+      # placement:
+      # constraints:
+      #   - node.role != manager
       mode: replicated
       replicas: 1
       update_config:
@@ -52,7 +62,6 @@ services:
 
   drone-agent:
     image: drone/agent:1.2.1
-    container_name: drone-agent
     command: agent
     logging:
       driver: json-file
@@ -66,13 +75,13 @@ services:
       - /var/swarm/drone/agent/data:/data:rw
       - /var/swarm/drone/agent/config:/config:ro
     env_file:
-      - /config/.env.drone.agent
+      - /var/swarm/drone/agent/config/.env.drone.agent
     networks:
       - drone_ci
     deploy:
       placement:
-        constraints:
-          - node.role != manager
+        # constraints:
+        #   - node.role != manager
         preferences:
           - spread: node.labels.drone_ci
       mode: replicated
@@ -91,10 +100,8 @@ services:
   # global routing server & dashboard configuration / reverse proxy
   # https://github.com/cbirkenbeul/docker-homelab/tree/master/traefik
   # TODO: docker network create traefik_proxy
-  traefik:
-    container_name: traefik-service
-    restart: always
-    image: traefik:v2.1.1
+  traefik-svc:
+    image: traefik:v2.1.4
     command:
       - '--configFile=/etc/traefik/config/traefik.toml' # read it from the mounted volume
       # - "--certificatesResolvers.mycert.acme.dnsChallenge=true"
@@ -102,7 +109,7 @@ services:
       - '80:80/tcp'
       - '443:443/tcp'
       - '8080:8080/tcp' # backend
-      - '8088:8088/tcp' # drone entry-point
+      - '8090:8088/tcp' # drone entry-point
       - '9000:9000/tcp' # ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
       - '9009:9009/tcp' # traefik dashboard
     networks:
@@ -116,10 +123,11 @@ services:
         max-size: '10m'
         max-file: '3'
     env_file:
-      - /etc/traefik/.env.provider
+      - /var/swarm/traefik/.env.provider
     deploy:
       restart_policy:
-        condition: any
+        condition: on-failure
+        # condition: any
       mode: replicated
       replicas: 1
       update_config:
@@ -137,20 +145,19 @@ services:
         - 'traefik.docker.network=traefik_proxy'
 
         # routers
-        - 'traefik.http.routers.api.rule=Host(`${TRAEFIK_HOST}`) && PathPrefix(`/dashboard`)' # change to your domain
+        - 'traefik.http.routers.api.rule=Host(`$TRAEFIK_HOST`) && PathPrefix(`/dashboard`)' # change to your domain
         - 'traefik.http.routers.api.entryPoints=dashboard'
-        - 'traefik.http.routers.api.rule=PathPrefix(`/api`) || PathPrefix(`/dashboard`)'
         - 'traefik.http.routers.api.service=api@internal'
         - 'traefik.http.routers.api.tls=true'
         - 'traefik.http.routers.api.tls.certresolver=mycert'
-        # - 'traefik.http.routers.api.tls.domains[0].main=traefik.example.com'
-        # - 'traefik.http.routers.blog.tls.domains[0].sans=*.company.org'
+        - 'traefik.http.routers.api.tls.domains[0].main=traefik.company.com'
+        - 'traefik.http.routers.api.tls.domains[0].sans=*.company.org'
         # - 'traefik.http.routers.api.middlewares=auth'
 
         # services
-        - 'traefik.http.services.traefik-service.loadbalancer.server.port=`${TRAEFIK_DASHBOARD_PORT}`'
-        - 'traefik.http.services.traefik-service.loadbalancer.server.scheme=https'
-        # - 'traefik.port=`${TRAEFIK_DASHBOARD_PORT}`'
+        - 'traefik.http.services.traefik-svc.loadbalancer.server.port=$TRAEFIK_DASHBOARD_PORT'
+        - 'traefik.http.services.traefik-svc.loadbalancer.server.scheme=https'
+        # - 'traefik.port=`$TRAEFIK_DASHBOARD_PORT`'
         # middlewares
         # - 'traefik.http.middlewares.auth.basicauth.users=<user>/<pass>'
         # configuration example: https://docs.traefik.io/migration/v1-to-v2/
@@ -168,10 +175,10 @@ services:
       # - search
       # - db
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /etc/localtime:/etc/localtime
-      - /run/docker.sock:/var/run/docker.sock:ro
-      - /var/swarm/traefik/:/etc/traefik
+      - /var/swarm/traefik/acme:/etc/traefik/acme
+      - /var/swarm/traefik/config:/etc/traefik/config
       - /var/swarm/traefik/logs:/logs
       # - /var/swarm/traefik/access.log:/traefik.access.log
       - /var/swarm/traefik/.htpasswd:/.htpasswd
@@ -192,4 +199,8 @@ networks:
   traefik_proxy:
     driver: overlay
     external: true
+    attachable: true
+  microservices:
+    driver: overlay
+    external: false
     attachable: true
