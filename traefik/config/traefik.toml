@@ -1,3 +1,4 @@
+# configuration example: https://docs.traefik.io/v2.0/reference/static-configuration/file/
 [global]
   sendAnonymousUsage = false
 
@@ -7,16 +8,17 @@
   # format = "json"
   # https://docs.traefik.io/observability/access-logs/
 
-[providers.docker]
-  exposedByDefault = false
-  swarmMode = true
-  endpoint = "tcp://127.0.0.1:2377"
-  # if it doesn't work, try ':2375'
-  network = "traefik_proxy"
-  watch = true
-  # watch for new (or no longer available) containers
-  # endpoint = "unix:///var/run/docker.sock"
-  # docker swarm mode (1.12+): https://docs.traefik.io/routing/providers/docker/
+[providers]
+  [providers.docker]
+    exposedByDefault = false
+    swarmMode = true
+    # endpoint = "tcp://127.0.0.1:2377"
+    # if it doesn't work, try ':2375'
+    network = "traefik_proxy"
+    watch = true
+    # watch for new (or no longer available) containers
+    endpoint = "unix:///var/run/docker.sock"
+    # docker swarm mode (1.12+): https://docs.traefik.io/routing/providers/docker/
 
 [api]
   dashboard = true
@@ -30,7 +32,7 @@
   [entryPoints.backend]
     address = ":8080"
   [entryPoints.drone_entry]
-    address = ":8088"
+    address = ":8090"
   [entryPoints.dashboard]
     address = ":9009"
   [entryPoints.web-secure]

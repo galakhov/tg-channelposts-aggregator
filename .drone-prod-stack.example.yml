@@ -31,18 +31,19 @@ services:
         - 'traefik.docker.network=drone'
 
         # routers
-        - 'traefik.http.routers.drone.rule=Host(`$DRONE_SERVER_HOST`)'
-        - 'traefik.http.routers.drone.entrypoints=drone_entry'
-        - 'traefik.http.routers.drone.tls=true'
-        - 'traefik.http.routers.drone.tls.certresolver=mycert'
-        - 'traefik.http.routers.drone.middlewares=https_redirect'
+        - 'traefik.http.routers.drone_http.entrypoints=drone_entry'
+        - 'traefik.http.routers.drone_http.rule=Host(`${DRONE_SERVER_HOST}`)'
+        - 'traefik.http.routers.drone_http.middlewares=https_redirect'
+        - 'traefik.http.routers.drone_https.rule=Host(`${DRONE_SERVER_HOST}`)'
+        - 'traefik.http.routers.drone_https.tls=true'
+        # - 'traefik.http.routers.drone_router_https.tls.certresolver=mycert'
 
         # middlewares
         - 'traefik.http.middlewares.https_redirect.redirectscheme.scheme=https'
         - 'traefik.http.middlewares.https_redirect.redirectscheme.permanent=true'
 
         # services
-        - 'traefik.http.services.drone-server.loadbalancer.server.port=$DRONE_SERVER_PORT'
+        - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
 
       # placement:
       # constraints:
@@ -145,17 +146,18 @@ services:
         - 'traefik.docker.network=traefik_proxy'
 
         # routers
-        - 'traefik.http.routers.api.rule=Host(`$TRAEFIK_HOST`) && PathPrefix(`/dashboard`)' # change to your domain
+        - 'traefik.http.routers.api.rule=Host(`${TRAEFIK_HOST}`) && PathPrefix(`/dashboard`)' # change to your domain
         - 'traefik.http.routers.api.entryPoints=dashboard'
         - 'traefik.http.routers.api.service=api@internal'
-        - 'traefik.http.routers.api.tls=true'
-        - 'traefik.http.routers.api.tls.certresolver=mycert'
-        - 'traefik.http.routers.api.tls.domains[0].main=traefik.company.com'
-        - 'traefik.http.routers.api.tls.domains[0].sans=*.company.org'
+        - 'traefik.http.routers.api_tls.rule=Host(`${TRAEFIK_HOST}`) && PathPrefix(`/dashboard`)'
+        - 'traefik.http.routers.api_tls.tls=true'
+        - 'traefik.http.routers.api_tls.tls.domains[0].main=traefik.company.com'
+        # - 'traefik.http.routers.api.tls.domains[0].sans=*.company.org'
+        # - 'traefik.http.routers.api.tls.certresolver=mycert'
         # - 'traefik.http.routers.api.middlewares=auth'
 
         # services
-        - 'traefik.http.services.traefik-svc.loadbalancer.server.port=$TRAEFIK_DASHBOARD_PORT'
+        - 'traefik.http.services.traefik-svc.loadbalancer.server.port=`${TRAEFIK_DASHBOARD_PORT}`'
         - 'traefik.http.services.traefik-svc.loadbalancer.server.scheme=https'
         # - 'traefik.port=`$TRAEFIK_DASHBOARD_PORT`'
         # middlewares
