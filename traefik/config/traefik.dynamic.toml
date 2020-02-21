@@ -1,0 +1,8 @@
+[tls]
+  [[tls.certificates]]
+    certFile = "/etc/traefik/certs/my-app.com.crt"
+    keyFile = "/etc/traefik/certs/my-app.com.key" # or .pem
+    # https://docs.traefik.io/v2.0/https/tls/#user-defined
+    # https://containo.us/blog/traefik-2-tls-101-23b4fbee81f1/
+    # https://community.containo.us/t/trouble-understanding-how-traefik-picks-up-a-custom-ssl-certificate-for-a-domain/1867/2
+    # https://dev.to/nflamel/how-to-have-https-on-development-with-docker-traefik-v2-and-mkcert-2jh3

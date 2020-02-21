@@ -30,17 +30,23 @@ services:
         - 'traefik.enable=true'
         - 'traefik.docker.network=drone'
 
-        # routers
+        # routers http
         - 'traefik.http.routers.drone_http.entrypoints=drone_entry'
         - 'traefik.http.routers.drone_http.rule=Host(`${DRONE_SERVER_HOST}`)'
-        - 'traefik.http.routers.drone_http.middlewares=https_redirect'
+        # - 'traefik.http.routers.drone_http.middlewares=https_redirect'
+        - 'traefik.http.routers.drone_http.middlewares=drone_https_mdlwr@docker'
+
+        # routers https
+        - 'traefik.http.routers.drone_https.entrypoints=drone_entry'
         - 'traefik.http.routers.drone_https.rule=Host(`${DRONE_SERVER_HOST}`)'
         - 'traefik.http.routers.drone_https.tls=true'
-        # - 'traefik.http.routers.drone_router_https.tls.certresolver=mycert'
+        - 'traefik.http.routers.drone_https.tls.certresolver=default'
+        # - 'traefik.http.routers.drone_https.tls.certresolver=my-resolver'
 
         # middlewares
-        - 'traefik.http.middlewares.https_redirect.redirectscheme.scheme=https'
-        - 'traefik.http.middlewares.https_redirect.redirectscheme.permanent=true'
+        - 'traefik.http.middlewares.drone_https_mdlwr.redirectscheme.scheme=https'
+        # - 'traefik.http.middlewares.https_redirect.redirectscheme.scheme=https'
+        # - 'traefik.http.middlewares.https_redirect.redirectscheme.permanent=true'
 
         # services
         - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
@@ -105,7 +111,7 @@ services:
     image: traefik:v2.1.4
     command:
       - '--configFile=/etc/traefik/config/traefik.toml' # read it from the mounted volume
-      # - "--certificatesResolvers.mycert.acme.dnsChallenge=true"
+      # - "--certificatesResolvers.my-resolver.acme.dnsChallenge=true"
     ports:
       - '80:80/tcp'
       - '443:443/tcp'
@@ -145,22 +151,34 @@ services:
         - 'traefik.enable=true'
         - 'traefik.docker.network=traefik_proxy'
 
-        # routers
-        - 'traefik.http.routers.api.rule=Host(`${TRAEFIK_HOST}`) && PathPrefix(`/dashboard`)' # change to your domain
+        # routers http
+        - 'traefik.http.routers.api.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`)))' # change to your domain
         - 'traefik.http.routers.api.entryPoints=dashboard'
         - 'traefik.http.routers.api.service=api@internal'
-        - 'traefik.http.routers.api_tls.rule=Host(`${TRAEFIK_HOST}`) && PathPrefix(`/dashboard`)'
+        - 'traefik.http.routers.api.middlewares=api_tls_mdlwr@docker'
+        # - 'traefik.http.routers.api.middlewares=https_redirect'
+        # http://www.htaccesstools.com/htpasswd-generator/
+
+        # routers https
         - 'traefik.http.routers.api_tls.tls=true'
-        - 'traefik.http.routers.api_tls.tls.domains[0].main=traefik.company.com'
+        - 'traefik.http.routers.api_tls.entryPoints=dashboard'
+        - 'traefik.http.routers.api_tls.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`)))'
+        - 'traefik.http.routers.api_tls.tls.certresolver=default'
+        # - 'traefik.http.routers.api.tls.certresolver=my-resolver'
+        # - 'traefik.http.routers.api_tls.tls.domains[0].main=traefik.company.com'
         # - 'traefik.http.routers.api.tls.domains[0].sans=*.company.org'
-        # - 'traefik.http.routers.api.tls.certresolver=mycert'
-        # - 'traefik.http.routers.api.middlewares=auth'
 
         # services
         - 'traefik.http.services.traefik-svc.loadbalancer.server.port=`${TRAEFIK_DASHBOARD_PORT}`'
-        - 'traefik.http.services.traefik-svc.loadbalancer.server.scheme=https'
+        # - 'traefik.http.services.traefik-svc.loadbalancer.server.scheme=https'
         # - 'traefik.port=`$TRAEFIK_DASHBOARD_PORT`'
+
         # middlewares
+        - 'traefik.http.middlewares.api_tls_mdlwr.redirectscheme.scheme=https'
+
+        # auth
+        - 'traefik.http.routers.api.middlewares=myauth'
+        - 'traefik.http.middlewares.myauth.basicauth.users=admin:${TRAEFIK_ADMIN_PASSWORD}'
         # - 'traefik.http.middlewares.auth.basicauth.users=<user>/<pass>'
         # configuration example: https://docs.traefik.io/migration/v1-to-v2/
         # https://docs.traefik.io/operations/dashboard/#secure-mode
@@ -181,6 +199,7 @@ services:
       - /etc/localtime:/etc/localtime
       - /var/swarm/traefik/acme:/etc/traefik/acme
       - /var/swarm/traefik/config:/etc/traefik/config
+      - /var/swarm/traefik/certs:/etc/traefik/certs
       - /var/swarm/traefik/logs:/logs
       # - /var/swarm/traefik/access.log:/traefik.access.log
       - /var/swarm/traefik/.htpasswd:/.htpasswd

@@ -8,6 +8,10 @@
   # format = "json"
   # https://docs.traefik.io/observability/access-logs/
 
+[serversTransport]
+  insecureSkipVerify = true
+  # https://docs.traefik.io/user-guides/grpc/#with-https
+
 [providers]
   [providers.docker]
     exposedByDefault = false
@@ -19,6 +23,9 @@
     # watch for new (or no longer available) containers
     endpoint = "unix:///var/run/docker.sock"
     # docker swarm mode (1.12+): https://docs.traefik.io/routing/providers/docker/
+    [providers.file]
+      filename = "/etc/traefik/config/traefik.dynamic.toml"
+      watch = true
 
 [api]
   dashboard = true
@@ -37,18 +44,27 @@
     address = ":9009"
   [entryPoints.web-secure]
     address = ":443"
-    [certificatesResolvers.mycert.acme]
-      # email to notify you in case of issues or expiring certificates
-      email = "your-email@your-domain.org"
-      storage = "/etc/traefik/acme/acme.json"
-      caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
-      # https://docs.traefik.io/https/acme/#caserver
-      # [certificatesResolvers.mycert.acme.httpChallenge]
-      #   entryPoint = "web" # used during the challenge
-      [certificatesResolvers.mycert.acme.dnsChallenge]
-        # dnsChallenge is to generate wildcard certificates using ACME V2
-        provider = "godaddy"
-        delayBeforeCheck = 0
+
+[certificatesResolvers]
+  [certificatesResolvers.my-resolver.acme]
+    # email to notify you in case of issues or expiring certificates
+    email = "your-email@your-domain.org"
+    storage = "/etc/traefik/acme/acme.json"
+    caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+    # https://docs.traefik.io/v2.1/user-guides/docker-compose/acme-dns/
+    # https://docs.traefik.io/https/acme/#caserver
+    # [certificatesResolvers.my-resolver.acme.httpChallenge]
+    #   entryPoint = "web" # used during the challenge
+    [certificatesResolvers.my-resolver.acme.dnsChallenge]
+      # dnsChallenge is to generate wildcard certificates using ACME V2
+      provider = "godaddy"
+      delayBeforeCheck = 0
+
+# [certificatesResolvers]
+#   [certificatesResolvers.default.acme]
+#     email = "contact@myemail.com"
+#     storage = "acme.json"
+#     [certificatesResolvers.default.acme.tlsChallenge]
 
 # TODO: don't forget to do:
 # cd config/acme
