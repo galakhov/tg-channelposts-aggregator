@@ -5,7 +5,7 @@
 [log]
   level = "DEBUG" # ERROR|INFO
   filePath = "/logs/traefik.log" # see 'traefik: volumes:' section in the compose file
-  # format = "json"
+  format = "json"
   # https://docs.traefik.io/observability/access-logs/
 
 [serversTransport]
@@ -16,6 +16,7 @@
   [providers.docker]
     exposedByDefault = false
     swarmMode = true
+    useBindPortIP = true
     # endpoint = "tcp://127.0.0.1:2377"
     # if it doesn't work, try ':2375'
     network = "traefik_proxy"
@@ -39,8 +40,10 @@
   [entryPoints.backend]
     address = ":8080"
   [entryPoints.drone_entry]
+    address = ":3000"
+  [entryPoints.drone_server_entry]
     address = ":8090"
-  [entryPoints.dashboard]
+  [entryPoints.dashboard_entry]
     address = ":9009"
   [entryPoints.web-secure]
     address = ":443"

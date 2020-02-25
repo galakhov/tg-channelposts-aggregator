@@ -74,6 +74,9 @@ services:
         # - "traefik.http.routers.backend-router.entrypoints=back-secure"
         # - 'traefik.http.routers.backend-router.tls.certresolver=godaddy-resolver'
 
+        # prefix api/v1/posts:
+        # https://docs.traefik.io/migration/v1-to-v2/#strip-and-rewrite-path-prefixes
+
         # services
         - 'traefik.http.services.backend.loadbalancer.server.port=8080'
         - 'traefik.http.services.backend.loadbalancer.server.scheme=http'

@@ -2,11 +2,14 @@ version: '3.7'
 
 services:
   drone-server:
-    image: drone/drone:1.2.1
+    image: drone/drone:1.6.2
     ports:
-      - 8088:80/tcp
+      - target: 80
+        published: 8090
+        protocol: tcp
+        mode: host
     volumes:
-      - /var/swarm/drone/server/sqlite-data:/var/lib/drone:rw
+      - /var/swarm/drone/server/sqlite-data:/data:rw
       - /var/swarm/drone/server/config:/config:ro
       # https://docs.docker.com/storage/bind-mounts/
     logging:
@@ -18,27 +21,31 @@ services:
     #   - traefik
     env_file:
       - /var/swarm/drone/server/config/.env.drone.server
+    environment:
+      - DRONE_SERVER_HOST
+      - DRONE_SERVER_PORT
     networks:
-      - drone
-      - drone_ci
+      drone:
+        aliases:
+          - drone-server-net
     deploy:
-      # Switching to dnsrr, to use an external load balancer without the routing mesh:
-      # https://docs.docker.com/engine/swarm/ingress/#without-the-routing-mesh
-      # endpoint_mode: dnsrr # drone-server:8088
       labels:
         # network
         - 'traefik.enable=true'
         - 'traefik.docker.network=drone'
 
         # routers http
-        - 'traefik.http.routers.drone_http.entrypoints=drone_entry'
-        - 'traefik.http.routers.drone_http.rule=Host(`${DRONE_SERVER_HOST}`)'
+        - 'traefik.http.routers.drone_http.entrypoints=drone_server_entry'
+        - 'traefik.http.routers.drone_http.rule=(Host(`${DRONE_SERVER_HOST}:${DRONE_SERVER_PORT}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`)))'
+        - 'traefik.http.middlewares.drone-strip-prefix.stripPrefix.prefixes=/authorize'
+        - 'traefik.http.routers.drone_http.middlewares=drone-strip-prefix@docker'
+        - 'traefik.http.routers.drone_http.service=drone-server@docker'
         # - 'traefik.http.routers.drone_http.middlewares=https_redirect'
         - 'traefik.http.routers.drone_http.middlewares=drone_https_mdlwr@docker'
 
         # routers https
-        - 'traefik.http.routers.drone_https.entrypoints=drone_entry'
-        - 'traefik.http.routers.drone_https.rule=Host(`${DRONE_SERVER_HOST}`)'
+        - 'traefik.http.routers.drone_https.entrypoints=drone_server_entry'
+        - 'traefik.http.routers.drone_https.rule=(Host(`${DRONE_SERVER_HOST}:${DRONE_SERVER_PORT}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`)))'
         - 'traefik.http.routers.drone_https.tls=true'
         - 'traefik.http.routers.drone_https.tls.certresolver=default'
         # - 'traefik.http.routers.drone_https.tls.certresolver=my-resolver'
@@ -55,6 +62,9 @@ services:
       # constraints:
       #   - node.role != manager
       mode: replicated
+      # Switching to dnsrr, to use an external load balancer without the routing mesh:
+      # https://docs.docker.com/engine/swarm/ingress/#without-the-routing-mesh
+      # endpoint_mode: dnsrr # drone-server:8088
       replicas: 1
       update_config:
         parallelism: 1
@@ -68,7 +78,12 @@ services:
         max_attempts: 3
 
   drone-agent:
-    image: drone/agent:1.2.1
+    image: drone/agent:1.6.2
+    ports:
+      - target: 80
+        published: 8100
+        protocol: tcp
+        mode: host
     command: agent
     logging:
       driver: json-file
@@ -83,15 +98,29 @@ services:
       - /var/swarm/drone/agent/config:/config:ro
     env_file:
       - /var/swarm/drone/agent/config/.env.drone.agent
+    environment:
+      - DRONE_UI_HOST
+      - DRONE_UI_PORT
     networks:
-      - drone_ci
+      drone_ci:
+        aliases:
+          - drone-agent-net
     deploy:
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.docker.network=drone'
+
+        # routers http
+        - 'traefik.http.routers.drone_ci.entrypoints=drone_entry'
+        - 'traefik.http.routers.drone_ci.rule=Host(`${DRONE_UI_HOST}:${DRONE_UI_PORT}`)'
+        - 'traefik.http.services.drone-agent.loadbalancer.server.port=${DRONE_UI_PORT}'
       placement:
         # constraints:
         #   - node.role != manager
         preferences:
           - spread: node.labels.drone_ci
       mode: replicated
+      # endpoint_mode: dnsrr
       replicas: 1
       update_config:
         parallelism: 1
@@ -115,20 +144,31 @@ services:
     ports:
       - '80:80/tcp'
       - '443:443/tcp'
-      - '8080:8080/tcp' # backend
-      - '8090:8088/tcp' # drone entry-point
+      # - '8080:8080/tcp' # backend
+      # - '8090:8090/tcp' # drone entry-point
       - '9000:9000/tcp' # ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
       - '9009:9009/tcp' # traefik dashboard
     networks:
-      - traefik_proxy
-      - microservices
-      - drone
-      # - drone_ci # no need to load balance that network
+      traefik_proxy:
+        aliases:
+          - traefik-net
+      microservices:
+        aliases:
+          - microservices-net
+      drone:
+        aliases:
+          - drone-server-net
+      drone_ci:
+        aliases:
+          - drone-agent-net
     logging:
       driver: json-file
       options:
         max-size: '10m'
         max-file: '3'
+    environment:
+      - TRAEFIK_HOST
+      - TRAEFIK_DASHBOARD_PORT
     env_file:
       - /var/swarm/traefik/.env.provider
     deploy:
@@ -153,7 +193,7 @@ services:
 
         # routers http
         - 'traefik.http.routers.api.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`)))' # change to your domain
-        - 'traefik.http.routers.api.entryPoints=dashboard'
+        - 'traefik.http.routers.api.entryPoints=dashboard_entry'
         - 'traefik.http.routers.api.service=api@internal'
         - 'traefik.http.routers.api.middlewares=api_tls_mdlwr@docker'
         # - 'traefik.http.routers.api.middlewares=https_redirect'
@@ -161,7 +201,7 @@ services:
 
         # routers https
         - 'traefik.http.routers.api_tls.tls=true'
-        - 'traefik.http.routers.api_tls.entryPoints=dashboard'
+        - 'traefik.http.routers.api_tls.entryPoints=dashboard_entry'
         - 'traefik.http.routers.api_tls.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`)))'
         - 'traefik.http.routers.api_tls.tls.certresolver=default'
         # - 'traefik.http.routers.api.tls.certresolver=my-resolver'
@@ -180,6 +220,7 @@ services:
         - 'traefik.http.routers.api.middlewares=myauth'
         - 'traefik.http.middlewares.myauth.basicauth.users=admin:${TRAEFIK_ADMIN_PASSWORD}'
         # - 'traefik.http.middlewares.auth.basicauth.users=<user>/<pass>'
+        # https://blog.creekorful.com/how-to-expose-traefik-2-dashboard-securely-docker-swarm/
         # configuration example: https://docs.traefik.io/migration/v1-to-v2/
         # https://docs.traefik.io/operations/dashboard/#secure-mode
         # TODO: paste <user>/<pass> in the above line by generating with:
