@@ -39,9 +39,7 @@
     address = ":80"
   [entryPoints.backend]
     address = ":8080"
-  [entryPoints.drone_entry]
-    address = ":3000"
-  [entryPoints.drone_server_entry]
+  [entryPoints.drone-server]
     address = ":8090"
   [entryPoints.dashboard_entry]
     address = ":9009"

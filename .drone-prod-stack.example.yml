@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   drone-server:
-    image: drone/drone:1.6.2
+    image: drone/drone:1.6.5
     ports:
       - target: 80
         published: 8090
@@ -25,18 +25,18 @@ services:
       - DRONE_SERVER_HOST
       - DRONE_SERVER_PORT
     networks:
-      drone:
+      drone_ci:
         aliases:
-          - drone-server-net
+          - drone-traefik-net
     deploy:
       labels:
         # network
         - 'traefik.enable=true'
-        - 'traefik.docker.network=drone'
+        - 'traefik.docker.network=drone_ci'
 
         # routers http
         - 'traefik.http.routers.drone_http.entrypoints=drone_server_entry'
-        - 'traefik.http.routers.drone_http.rule=(Host(`${DRONE_SERVER_HOST}:${DRONE_SERVER_PORT}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`)))'
+        - 'traefik.http.routers.drone_http.rule=(Host(`${DRONE_SERVER_HOST}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`)))'
         - 'traefik.http.middlewares.drone-strip-prefix.stripPrefix.prefixes=/authorize'
         - 'traefik.http.routers.drone_http.middlewares=drone-strip-prefix@docker'
         - 'traefik.http.routers.drone_http.service=drone-server@docker'
@@ -77,11 +77,12 @@ services:
         delay: 5s
         max_attempts: 3
 
+  # drone/drone-runner-docker:1.2
   drone-agent:
-    image: drone/agent:1.6.2
+    image: drone/drone-runner-docker:1.2.1
     ports:
-      - target: 80
-        published: 8100
+      - target: 3000
+        published: 3002
         protocol: tcp
         mode: host
     command: agent
@@ -104,15 +105,15 @@ services:
     networks:
       drone_ci:
         aliases:
-          - drone-agent-net
+          - drone-traefik-net
     deploy:
       labels:
         - 'traefik.enable=true'
-        - 'traefik.docker.network=drone'
+        - 'traefik.docker.network=drone_ci'
 
         # routers http
         - 'traefik.http.routers.drone_ci.entrypoints=drone_entry'
-        - 'traefik.http.routers.drone_ci.rule=Host(`${DRONE_UI_HOST}:${DRONE_UI_PORT}`)'
+        - 'traefik.http.routers.drone_ci.rule=Host(`${DRONE_UI_HOST}`)'
         - 'traefik.http.services.drone-agent.loadbalancer.server.port=${DRONE_UI_PORT}'
       placement:
         # constraints:
@@ -149,18 +150,12 @@ services:
       - '9000:9000/tcp' # ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
       - '9009:9009/tcp' # traefik dashboard
     networks:
-      traefik_proxy:
+      drone_ci:
         aliases:
-          - traefik-net
+          - drone-traefik-net
       microservices:
         aliases:
           - microservices-net
-      drone:
-        aliases:
-          - drone-server-net
-      drone_ci:
-        aliases:
-          - drone-agent-net
     logging:
       driver: json-file
       options:
@@ -189,7 +184,7 @@ services:
       labels:
         # network
         - 'traefik.enable=true'
-        - 'traefik.docker.network=traefik_proxy'
+        - 'traefik.docker.network=drone_ci'
 
         # routers http
         - 'traefik.http.routers.api.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`)))' # change to your domain
@@ -250,15 +245,7 @@ services:
 #   drone-agent: {}
 
 networks:
-  drone:
-    driver: overlay
-    external: true
-    attachable: true
   drone_ci:
-    driver: overlay
-    external: true
-    attachable: true
-  traefik_proxy:
     driver: overlay
     external: true
     attachable: true
