@@ -34,7 +34,7 @@ services:
       labels:
       # network
       ## - 'traefik.enable=true'
-      ## - 'traefik.docker.network=drone_ci'
+      ## - 'traefik.docker.network=drone_rpc'
 
       # routers http
       ## - 'traefik.http.routers.drone_http.entrypoints=drone_server_entry'
@@ -107,7 +107,7 @@ services:
     deploy:
       # labels:
       #   - 'traefik.enable=true'
-      #   - 'traefik.docker.network=drone_ci'
+      #   - 'traefik.docker.network=drone_rpc'
 
       #   # routers http
       #   - 'traefik.http.routers.drone_ci.entrypoints=drone_entry'
@@ -134,7 +134,6 @@ services:
 
   # global routing server & dashboard configuration / reverse proxy
   # https://github.com/cbirkenbeul/docker-homelab/tree/master/traefik
-  # TODO: docker network create traefik_proxy
   traefik-svc:
     image: traefik:v2.1.4
     command:
@@ -148,9 +147,9 @@ services:
       - '9000:9000/tcp' # ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
       - '9009:9009/tcp' # traefik dashboard
     networks:
-      traefik_ci:
+      traefik_proxy:
         aliases:
-          - traefik-ci-net
+          - traefik-proxy-net
       # microservices:
       #   aliases:
       #     - microservices-net
@@ -182,7 +181,7 @@ services:
       labels:
         # network
         - 'traefik.enable=true'
-        - 'traefik.docker.network=traefik_ci'
+        - 'traefik.docker.network=traefik_proxy'
 
         # routers http
         - 'traefik.http.routers.api.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`)))' # change to your domain
@@ -243,15 +242,18 @@ services:
 #   drone-agent: {}
 
 networks:
-  traefik_ci:
+  traefik_proxy:
     driver: overlay
     external: true
     attachable: false
   drone_rpc:
     driver: overlay
     external: true
-    attachable: true
+    attachable: false
   microservices:
     driver: overlay
     external: false
     attachable: true
+# docker network create --scope=swarm --driver=overlay traefik_proxy
+# docker network create --scope=swarm --driver=overlay drone_rpc
+# docker network create --scope=swarm --driver=overlay --attachable microservices
