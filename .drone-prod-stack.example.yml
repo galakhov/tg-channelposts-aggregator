@@ -4,10 +4,10 @@ services:
   drone-server:
     image: drone/drone:1.6.5
     ports:
-      - target: 80
+      - protocol: tcp
         published: 8090
-        protocol: tcp
-        mode: host
+        target: 80
+    # hostname: drone-server
     volumes:
       - /var/swarm/drone/server/sqlite-data:/data:rw
       - /var/swarm/drone/server/config:/config:ro
@@ -23,40 +23,39 @@ services:
       - /var/swarm/drone/server/config/.env.drone.server
     environment:
       - DRONE_SERVER_HOST
-      - DRONE_SERVER_PORT
+      # - DRONE_SERVER_PORT
+      - DRONE_SERVER_PROXY_HOST
+      - DRONE_SERVER_PROXY_PROTO
     networks:
-      drone_ci:
+      drone_rpc:
         aliases:
-          - drone-traefik-net
+          - drone-net
     deploy:
       labels:
-        # network
-        - 'traefik.enable=true'
-        - 'traefik.docker.network=drone_ci'
+      # network
+      ## - 'traefik.enable=true'
+      ## - 'traefik.docker.network=drone_ci'
 
-        # routers http
-        - 'traefik.http.routers.drone_http.entrypoints=drone_server_entry'
-        - 'traefik.http.routers.drone_http.rule=(Host(`${DRONE_SERVER_HOST}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`)))'
-        - 'traefik.http.middlewares.drone-strip-prefix.stripPrefix.prefixes=/authorize'
-        - 'traefik.http.routers.drone_http.middlewares=drone-strip-prefix@docker'
-        - 'traefik.http.routers.drone_http.service=drone-server@docker'
-        # - 'traefik.http.routers.drone_http.middlewares=https_redirect'
-        - 'traefik.http.routers.drone_http.middlewares=drone_https_mdlwr@docker'
-
-        # routers https
-        - 'traefik.http.routers.drone_https.entrypoints=drone_server_entry'
-        - 'traefik.http.routers.drone_https.rule=(Host(`${DRONE_SERVER_HOST}:${DRONE_SERVER_PORT}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`)))'
-        - 'traefik.http.routers.drone_https.tls=true'
-        - 'traefik.http.routers.drone_https.tls.certresolver=default'
-        # - 'traefik.http.routers.drone_https.tls.certresolver=my-resolver'
-
-        # middlewares
-        - 'traefik.http.middlewares.drone_https_mdlwr.redirectscheme.scheme=https'
-        # - 'traefik.http.middlewares.https_redirect.redirectscheme.scheme=https'
-        # - 'traefik.http.middlewares.https_redirect.redirectscheme.permanent=true'
-
-        # services
-        - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
+      # routers http
+      ## - 'traefik.http.routers.drone_http.entrypoints=drone_server_entry'
+      ## - 'traefik.http.routers.drone_http.rule=(Host(`${DRONE_SERVER_HOST}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`)))'
+      ## - 'traefik.http.middlewares.drone-strip-prefix.stripPrefix.prefixes=/authorize'
+      ## - 'traefik.http.routers.drone_http.middlewares=drone-strip-prefix@docker'
+      ## - 'traefik.http.routers.drone_http.service=drone-server@docker'
+      ## - 'traefik.http.routers.drone_http.middlewares=drone_https_mdlwr@docker'
+      # - 'traefik.http.routers.drone_http.middlewares=https_redirect'
+      # routers https
+      ## - 'traefik.http.routers.drone_https.entrypoints=drone_server_entry'
+      ## - 'traefik.http.routers.drone_https.rule=(Host(`${DRONE_SERVER_HOST}:${DRONE_SERVER_PORT}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`)))'
+      ## - 'traefik.http.routers.drone_https.tls=true'
+      ## - 'traefik.http.routers.drone_https.tls.certresolver=default'
+      # - 'traefik.http.routers.drone_https.tls.certresolver=my-resolver'
+      # middlewares
+      ## - 'traefik.http.middlewares.drone_https_mdlwr.redirectscheme.scheme=https'
+      # - 'traefik.http.middlewares.https_redirect.redirectscheme.scheme=https'
+      # - 'traefik.http.middlewares.https_redirect.redirectscheme.permanent=true'
+      # services
+      ## - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
 
       # placement:
       # constraints:
@@ -81,10 +80,9 @@ services:
   drone-agent:
     image: drone/drone-runner-docker:1.2.1
     ports:
-      - target: 3000
+      - protocol: tcp
         published: 3002
-        protocol: tcp
-        mode: host
+        target: 3000
     command: agent
     logging:
       driver: json-file
@@ -103,18 +101,18 @@ services:
       - DRONE_UI_HOST
       - DRONE_UI_PORT
     networks:
-      drone_ci:
+      drone_rpc:
         aliases:
-          - drone-traefik-net
+          - drone-net
     deploy:
-      labels:
-        - 'traefik.enable=true'
-        - 'traefik.docker.network=drone_ci'
+      # labels:
+      #   - 'traefik.enable=true'
+      #   - 'traefik.docker.network=drone_ci'
 
-        # routers http
-        - 'traefik.http.routers.drone_ci.entrypoints=drone_entry'
-        - 'traefik.http.routers.drone_ci.rule=Host(`${DRONE_UI_HOST}`)'
-        - 'traefik.http.services.drone-agent.loadbalancer.server.port=${DRONE_UI_PORT}'
+      #   # routers http
+      #   - 'traefik.http.routers.drone_ci.entrypoints=drone_entry'
+      #   - 'traefik.http.routers.drone_ci.rule=Host(`${DRONE_UI_HOST}`)'
+      #   - 'traefik.http.services.drone-agent.loadbalancer.server.port=${DRONE_UI_PORT}'
       placement:
         # constraints:
         #   - node.role != manager
@@ -150,12 +148,12 @@ services:
       - '9000:9000/tcp' # ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
       - '9009:9009/tcp' # traefik dashboard
     networks:
-      drone_ci:
+      traefik_ci:
         aliases:
-          - drone-traefik-net
-      microservices:
-        aliases:
-          - microservices-net
+          - traefik-ci-net
+      # microservices:
+      #   aliases:
+      #     - microservices-net
     logging:
       driver: json-file
       options:
@@ -184,21 +182,23 @@ services:
       labels:
         # network
         - 'traefik.enable=true'
-        - 'traefik.docker.network=drone_ci'
+        - 'traefik.docker.network=traefik_ci'
 
         # routers http
         - 'traefik.http.routers.api.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`)))' # change to your domain
         - 'traefik.http.routers.api.entryPoints=dashboard_entry'
         - 'traefik.http.routers.api.service=api@internal'
-        - 'traefik.http.routers.api.middlewares=api_tls_mdlwr@docker'
+        ## - 'traefik.http.routers.api.middlewares=api_tls_mdlwr@docker'
         # - 'traefik.http.routers.api.middlewares=https_redirect'
         # http://www.htaccesstools.com/htpasswd-generator/
 
         # routers https
-        - 'traefik.http.routers.api_tls.tls=true'
-        - 'traefik.http.routers.api_tls.entryPoints=dashboard_entry'
-        - 'traefik.http.routers.api_tls.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`)))'
-        - 'traefik.http.routers.api_tls.tls.certresolver=default'
+        ## - 'traefik.http.routers.api_tls.tls=true'
+        ## - 'traefik.http.routers.api_tls.entryPoints=dashboard_entry'
+        ## - 'traefik.http.routers.api_tls.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`)))'
+        ## - 'traefik.http.routers.api_tls.tls.certresolver=default'
+
+        # optional certificate's configuration
         # - 'traefik.http.routers.api.tls.certresolver=my-resolver'
         # - 'traefik.http.routers.api_tls.tls.domains[0].main=traefik.company.com'
         # - 'traefik.http.routers.api.tls.domains[0].sans=*.company.org'
@@ -207,13 +207,11 @@ services:
         - 'traefik.http.services.traefik-svc.loadbalancer.server.port=`${TRAEFIK_DASHBOARD_PORT}`'
         # - 'traefik.http.services.traefik-svc.loadbalancer.server.scheme=https'
         # - 'traefik.port=`$TRAEFIK_DASHBOARD_PORT`'
-
         # middlewares
-        - 'traefik.http.middlewares.api_tls_mdlwr.redirectscheme.scheme=https'
-
+        ## - 'traefik.http.middlewares.api_tls_mdlwr.redirectscheme.scheme=https'
         # auth
-        - 'traefik.http.routers.api.middlewares=myauth'
-        - 'traefik.http.middlewares.myauth.basicauth.users=admin:${TRAEFIK_ADMIN_PASSWORD}'
+        ## - 'traefik.http.routers.api.middlewares=myauth'
+        ## - 'traefik.http.middlewares.myauth.basicauth.users=admin:${TRAEFIK_ADMIN_PASSWORD}'
         # - 'traefik.http.middlewares.auth.basicauth.users=<user>/<pass>'
         # https://blog.creekorful.com/how-to-expose-traefik-2-dashboard-securely-docker-swarm/
         # configuration example: https://docs.traefik.io/migration/v1-to-v2/
@@ -245,7 +243,11 @@ services:
 #   drone-agent: {}
 
 networks:
-  drone_ci:
+  traefik_ci:
+    driver: overlay
+    external: true
+    attachable: false
+  drone_rpc:
     driver: overlay
     external: true
     attachable: true
