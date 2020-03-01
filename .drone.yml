@@ -1,0 +1,26 @@
+kind: pipeline
+type: docker
+name: deploy
+
+steps:
+  # - name: deply-drone-ci-to-swarm
+  #   commands:
+  #     - echo "the deployment is being triggered"
+
+  # ssh into the machine and deploy the docker image (pseudo code).
+  - name: deploy
+  image: appleboy/drone-ssh
+  settings:
+    host: foo.com
+    username: root
+    password: password
+    script:
+      # - docker stop myprogram
+      # - docker pull company/project:${DRONE_COMMIT}
+      # - docker run -d company/project:${DRONE_COMMIT} myprogram
+      docker stack deploy -c .drone-prod-stack.example.yml stack-name
+    # when:
+    #   event: [ custom ]
+
+# trigger:
+#   event: [promote]
