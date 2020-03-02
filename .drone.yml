@@ -3,23 +3,87 @@ type: docker
 name: deploy
 
 steps:
-  # - name: deply-drone-ci-to-swarm
-  #   commands:
-  #     - echo "the deployment is being triggered"
-
   # ssh into the machine and deploy the docker image (pseudo code).
+  # http://plugins.drone.io/appleboy/drone-ssh/
   - name: deploy
     image: appleboy/drone-ssh
+    when:
+      branch:
+        - dockerized
+      event:
+        - tag
+        # - deployment
+        # - promote
+        # - custom
+        exclude:
+          - push
+      target:
+        - production
+      # https://docs.drone.io/pipeline/docker/syntax/conditions/#by-status
+      # https://docs.drone.io/promote/
+    # environment:
+    #   USERNAME:
+    #     from_secret: docker_username
+    #   PASSWORD:
+    #     from_secret: docker_password
+    # https://docs.drone.io/secret/repository/
     settings:
       host: foo.com
-      username: root
-      password: password
+      username:
+        from_secret: ssh_username
+      password:
+        from_secret: ssh_password
+      # key:
+      #   from_secret: ssh_key
+      # passphrase: 1234
+      port: 22
+      # envs:
+      #   - date
+      # script:
+      #   - export BUILD_DATE=$DATE
       script:
+        - echo "the deployment has been triggered"
         # - docker stop myprogram
         # - docker pull company/project:${DRONE_COMMIT}
         # - docker run -d company/project:${DRONE_COMMIT} myprogram
-        docker stack deploy -c .drone-prod-stack.example.yml stack-name
-      # when:
-      #   event: [ custom ]
+        - docker stack deploy -c drone-prod-stack.example.yml stack-name
+  # https://discourse.drone.io/t/triggering-promotion-event/6634/7
+
+  # Notify Telegram about the deployment status
+  - name: telgram_notify
+    image: appleboy/drone-telegram
+    when:
+      status:
+        - success
+        - failure
+    settings:
+      # The secrets below can be entered from the Drone UI for this repo
+      token:
+        from_secret: telegram_token
+      to:
+        from_secret: telegram_chat_id
+      format: markdown
+      message: >
+        {{#success build.status}}
+        ✅ Build #{{build.number}} of `{{repo.name}}` succeeded.
+        📝 Commit by {{commit.author}} on `{{commit.branch}}`:
+        ```
+        {{commit.message}}
+        ```
+        🌐 {{ build.link }}
+        {{else}}
+        ❌ Build #{{build.number}} of `{{repo.name}}` failed.
+        📝 Commit by {{commit.author}} on `{{commit.branch}}`:
+        ```
+        {{commit.message}}
+        ```
+        🌐 {{ build.link }}
+        {{/success}}
 # trigger:
 #   event: [promote]
+
+# ---
+#   kind: secret
+#   name: foo
+#   data: EUgsPFbn0xyNdsxKtbB6nwR2w7RdG1pzo299qmI4zQ==
+# https://gist.github.com/phildionne/790d90a390c7d345bba71c20f56c0026
