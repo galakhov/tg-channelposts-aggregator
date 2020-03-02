@@ -11,12 +11,13 @@ steps:
       branch:
         - dockerized
       event:
-        - tag
-        # - deployment
-        # - promote
+        - promote
+        # - cron
         # - custom
-        exclude:
-          - push
+        # - push
+        # - pull_request
+        # - tag
+        # - rollback
       target:
         - production
       # https://docs.drone.io/pipeline/docker/syntax/conditions/#by-status
@@ -49,7 +50,7 @@ steps:
         - docker stack deploy -c drone-prod-stack.example.yml stack-name
   # https://discourse.drone.io/t/triggering-promotion-event/6634/7
 
-  # Notify Telegram about the deployment status
+  # Notify Telegram about the deployment status (about the github commit)
   - name: telgram_notify
     image: appleboy/drone-telegram
     when:
@@ -79,9 +80,13 @@ steps:
         ```
         🌐 {{ build.link }}
         {{/success}}
-# trigger:
-#   event: [promote]
 
+# https://docs.drone.io/pipeline/triggers/#by-event
+trigger:
+  event:
+    exclude:
+      - push
+    # [ pull_request, tag, promote, rollback, custom ]
 # ---
 #   kind: secret
 #   name: foo
