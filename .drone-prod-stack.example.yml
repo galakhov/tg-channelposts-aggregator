@@ -245,11 +245,11 @@ networks:
   traefik_proxy:
     driver: overlay
     external: true
-    attachable: false
+    attachable: true
   drone_rpc:
     driver: overlay
     external: true
-    attachable: false
+    attachable: true
   microservices:
     driver: overlay
     external: false

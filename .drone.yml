@@ -2,6 +2,14 @@ kind: pipeline
 type: docker
 name: deploy
 
+# Any step can be triggered from the docker hub (or from any other CI tool / registry) using the outgoing webhook:
+# http://IP_OR_DNS:PORT/api/repos/<github-user>/<github-repo>/builds?branch=<branch-name>&access_token=32-characters-long-hash
+# The personal token can be found in here: http://IP_OR_DNS:PORT/account
+# See for more parameters and other details: https://docs.drone.io/api/builds/build_create/
+# Finally, add that url (webhook) in docker hub here: https://hub.docker.com/repository/docker/<organization/repo-name>/webhooks
+
+# Deployments using GitHub's actions and plugins: https://probot.github.io/docs/deployment/
+
 steps:
   # ssh into the machine and deploy the docker image (pseudo code).
   # http://plugins.drone.io/appleboy/drone-ssh/
@@ -11,9 +19,9 @@ steps:
       branch:
         - dockerized
       event:
-        - promote
+        - custom
+        # - promote
         # - cron
-        # - custom
         # - push
         # - pull_request
         # - tag
@@ -29,7 +37,8 @@ steps:
     #     from_secret: docker_password
     # https://docs.drone.io/secret/repository/
     settings:
-      host: foo.com
+      host:
+        from_secret: ssh_host
       username:
         from_secret: ssh_username
       password:
@@ -43,10 +52,11 @@ steps:
       # script:
       #   - export BUILD_DATE=$DATE
       script:
-        - echo "the deployment has been triggered"
+        - echo "The deployment has been triggered."
         # - docker stop myprogram
         # - docker pull company/project:${DRONE_COMMIT}
         # - docker run -d company/project:${DRONE_COMMIT} myprogram
+        - cd docker-swarm-stack/
         - docker stack deploy -c drone-prod-stack.example.yml stack-name
   # https://discourse.drone.io/t/triggering-promotion-event/6634/7
 
