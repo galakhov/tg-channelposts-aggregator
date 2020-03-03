@@ -31,12 +31,13 @@ steps:
       #   - production
       # https://docs.drone.io/pipeline/docker/syntax/conditions/#by-status
       # https://docs.drone.io/promote/
-    # environment:
-    #   USERNAME:
-    #     from_secret: docker_username
-    #   PASSWORD:
-    #     from_secret: docker_password
-    # https://docs.drone.io/secret/repository/
+    environment:
+      FILE_PATH:
+        from_secret: file_path
+      FILE_NAME:
+        from_secret: file_name
+      STACK_NAME:
+        from_secret: stack_name
     settings:
       host:
         from_secret: ssh_host
@@ -48,22 +49,12 @@ steps:
       #   from_secret: ssh_key
       # passphrase: 1234
       port: 22
-      # envs:
-      #   - date
-      # script:
-      #   - export BUILD_DATE=$DATE
-      envs:
-        - file_path
-        - file_name
-        - stack_name
+      envs: [FILE_PATH, FILE_NAME, STACK_NAME]
       script:
-        - export FILE_PATH=$FILE_PATH
-        - export FILE_NAME=$FILE_NAME
-        - export STACK_NAME=$STACK_NAME
         - echo "The deployment has been started."
-        - echo "Docker Compose file:"
+        - echo "Docker Compose file path is:"
         - echo $FILE_PATH/$FILE_NAME
-        - echo "The name of the stack:"
+        - echo "The name of the stack file:"
         - echo $STACK_NAME
         # - docker stop myprogram
         # - docker pull company/project:${DRONE_COMMIT}
