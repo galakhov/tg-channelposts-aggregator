@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: deploy
+name: Re-deploy Swarm Stack
 
 # Any step can be triggered from the docker hub (or from any other CI tool / registry) using the outgoing webhook:
 # http://IP_OR_DNS:PORT/api/repos/<github-user>/<github-repo>/builds?branch=<branch-name>&access_token=32-characters-long-hash
@@ -9,15 +9,21 @@ name: deploy
 # Finally, add that url (webhook) in docker hub here: https://hub.docker.com/repository/docker/<organization/repo-name>/webhooks
 
 # Deployments using GitHub's actions and plugins: https://probot.github.io/docs/deployment/
+# https://developer.github.com/webhooks/#events
 
 steps:
   # ssh into the machine and deploy the docker image (pseudo code).
   # http://plugins.drone.io/appleboy/drone-ssh/
   - name: deploy
     image: appleboy/drone-ssh
+    environment:
+      FILE_PATH:
+        from_secret: file_path
+      FILE_NAME:
+        from_secret: file_name
+      STACK_NAME:
+        from_secret: stack_name
     when:
-      branch:
-        - dockerized
       event:
         - custom
         # - promote
@@ -26,8 +32,10 @@ steps:
         # - pull_request
         # - tag
         # - rollback
-      target:
-        - production
+      # branch:
+      #   - dockerized
+      # target:
+      #   - production
       # https://docs.drone.io/pipeline/docker/syntax/conditions/#by-status
       # https://docs.drone.io/promote/
     # environment:
@@ -52,12 +60,15 @@ steps:
       # script:
       #   - export BUILD_DATE=$DATE
       script:
-        - echo "The deployment has been triggered."
+        - echo "The deployment has been started."
+        - echo "Docker Compose file:"
+        - echo $FILE_PATH/$FILE_NAME
+        - echo "The name of the stack:"
+        - echo $STACK_NAME
         # - docker stop myprogram
         # - docker pull company/project:${DRONE_COMMIT}
         # - docker run -d company/project:${DRONE_COMMIT} myprogram
-        - cd docker-swarm-stack/
-        - docker stack deploy -c drone-prod-stack.example.yml stack-name
+        - docker stack deploy -c $FILE_PATH/$FILE_NAME $STACK_NAME
   # https://discourse.drone.io/t/triggering-promotion-event/6634/7
 
   # Notify Telegram about the deployment status (about the github commit)
