@@ -16,13 +16,6 @@ steps:
   # http://plugins.drone.io/appleboy/drone-ssh/
   - name: deploy
     image: appleboy/drone-ssh
-    environment:
-      FILE_PATH:
-        from_secret: file_path
-      FILE_NAME:
-        from_secret: file_name
-      STACK_NAME:
-        from_secret: stack_name
     when:
       event:
         - custom
@@ -59,7 +52,14 @@ steps:
       #   - date
       # script:
       #   - export BUILD_DATE=$DATE
+      envs:
+        - file_path
+        - file_name
+        - stack_name
       script:
+        - export FILE_PATH=$FILE_PATH
+        - export FILE_NAME=$FILE_NAME
+        - export STACK_NAME=$STACK_NAME
         - echo "The deployment has been started."
         - echo "Docker Compose file:"
         - echo $FILE_PATH/$FILE_NAME
