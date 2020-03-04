@@ -25,7 +25,11 @@ See [server/README.md](server/README.md) & [client/README.md](client/README.md) 
 
 ## The Set-Up
 
-My set-up of the self-hosted Drone CI platform is inspired by the [post](https://habr.com/ru/post/476368/) that describes CI/CD using GitHub Actions and some bash scripts on a VPS. However, I'm using Docker Hub's [automated builds](https://docs.docker.com/docker-hub/builds/) instead of the step 5 described in the figure 1 and Docker Swarm for the orchestration on the VPS.
+My set-up of the self-hosted Drone CI platform is inspired by the [post](https://habr.com/ru/post/476368/) that describes CI/CD using GitHub Actions with a bash scripts executed on a VPS. I'm using Docker Hub's [automated builds](https://docs.docker.com/docker-hub/builds/) instead of the step 5 (named as 'build_and_pub' in this article) shown in the figure 1. [Drone CI](https://docs.drone.io) is responsible for the deployment of the Docker Swarm services on the VPS of your choice instead of the console scripts, which are hard-coded in the GitHub Actions as a custom webhook (curl POST request to a endpoint in the 'deploy' step):
+
+```bash
+docker stack deploy -c /path/to/docker-compose-stack-file.yml <stack-name>
+```
 
 ## Posts with similar set-ups:
 
@@ -54,9 +58,8 @@ Docs of the Drone [plugin that executes commands on a remote server via SSH](htt
 
 [The Drone Telegram Plugin](http://plugins.drone.io/appleboy/drone-telegram/) to send notifications about the build status to a chat in Telegram:
 
-- [Get the token — app's api_hash — from the API development tools](https://my.telegram.org/apps)
+- [Get the token by creating and starting your bot](https://angristan.xyz/2018/08/setup-telegram-bot-for-drone-ci-cd-builds/)
 - Chat ID for the 'to' parameter can be obtained by starting the @userinfobot in Telegram.
-- [Create and start your bot](https://angristan.xyz/2018/08/setup-telegram-bot-for-drone-ci-cd-builds/)
 
 # Credits 🙏
 

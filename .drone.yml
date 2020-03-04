@@ -100,9 +100,8 @@ steps:
 # https://docs.drone.io/pipeline/triggers/#by-event
 trigger:
   event:
-    exclude:
-      - push
-    # [ pull_request, tag, promote, rollback, custom ]
+    exclude: [push, tag]
+    # [ pull_request, promote, rollback, custom ]
 # ---
 #   kind: secret
 #   name: foo
