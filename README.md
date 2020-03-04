@@ -27,21 +27,25 @@ See [server/README.md](server/README.md) & [client/README.md](client/README.md) 
 
 ## The Set-Up
 
-My set-up is a healthy combination of the containers in a Docker Swarm Stack, the Docker Hub Registry's [automated builds](https://docs.docker.com/docker-hub/builds/), [Traefik (v2)](https://docs.traefik.io) and the lightweight self-hosted [Drone CI/CD platform](https://drone.io) with some [plugins](http://plugins.drone.io).
+My set-up is a healthy combination of the containers arranged into a Docker Swarm Stack, the Docker Hub Registry's with [automated builds](https://docs.docker.com/docker-hub/builds/), [Traefik (v2)](https://docs.traefik.io) and the self-hosted lightweight container-first CI/CD platform called [Drone.io](https://drone.io) with couple of [plugins](http://plugins.drone.io).
 
-The set-up is somewhat similar to the one presented in this [post](https://habr.com/ru/post/476368/), which describes a CI/CD pipeline based entirely on the GitHub Actions and some bash scripts, executed via SSH on a VPS. The author [hard-coded](https://github.com/dementevda/actions_ci_example/blob/master/.github/workflows/pub_on_release.yaml) a deployment webhook (i.e. _curl_ POST request to his custom endpoint) into the `deploy` step of the pipeline.
+The set-up is somewhat similar to the one presented in this [post](https://habr.com/ru/post/476368/), which outlines a CI/CD pipeline entirely based on the GitHub Actions and some bash scripts, executed via SSH on a VPS. Besides the redundant configuration of the Docker Hub's secrets and the recurring logins, author [hard-codes](https://github.com/dementevda/actions_ci_example/blob/master/.github/workflows/pub_on_release.yaml) a deployment webhook, i.e. a full _curl_ POST request to his own custom endpoint, into the `deploy` step of the pipeline. That's an overkill.
 
-If you connect your Docker Hub account with a GitHub repository you actually don't need to use any GitHub Actions, nor any commands to build & push containers (**step 5**, _Figure 1_). With a pre-configured automated build for each microservice, Docker Hub (re-)builds and (re-)places its container after the push event. For instance, I have two containers in the current GitHub repository with the corresponding Dockerfiles for the frontend and for the backend: `./client/Dockerfile.prod` and `./server/Dockerfile.prod`. The configuration of the frontend's container is shown in the image below:
+If you connect your Docker Hub account with a GitHub repository you actually don't need to configure any secrets, use any GitHub Actions, nor any commands to build & push containers (**step 5**, _Figure 1_). With a pre-configured automated build for each microservice, Docker Hub Registry (re-)builds and (re-)places a container by itself, provided there was a push event.
+
+For instance, I have two containers in the current GitHub repository with the corresponding Dockerfiles for the frontend and for the backend: `./client/Dockerfile.prod` and `./server/Dockerfile.prod`. The configuration of the frontend's container is shown in the image below:
 
 <img src="./_manual/images/02 Docker Hub — Automated Frontend Builds Configuration (Dockerfile in Production).jpg" width="1024" alt="Automated Frontend Configuration of the Docker Build">
 
-In my case [Drone CI](https://docs.drone.io) is only responsible for the [(re-)deployment](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) of the Docker Swarm Stack on the VPS of my choice, executed via the [Drone SSH plugin](http://plugins.drone.io/appleboy/drone-ssh/):
+These two containers are (re-)built and saved in the Docker Hub Registry every time I push any new changes to the repository.
+
+As for the (re-)deployment, in my case [Drone CI](https://docs.drone.io) is responsible for it as well as for the build's status notification. The new Docker containers are pulled and the Docker Swarm Stack on the VPS of my choice is updated after the [execution of one single command](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) via the [Drone SSH plugin](http://plugins.drone.io/appleboy/drone-ssh/):
 
 ```bash
-docker stack deploy -c /path/to/docker-compose-stack-file.yml <stack-name>
+docker stack deploy -c /path/to/docker-compose-stack-file.yml {stack-name}
 ```
 
-> To avoid any mis-configuration, it's recommended to check up the GitHub's Webhooks (https://github.com/<github-user>/<github-repo>/settings/hooks) after the set-up of the automated build(s), configured in the Docker Account (https://hub.docker.com/repository/docker/<organisation-name>/<repo-name>/builds/edit).
+> To avoid any mis-configuration, it's recommended to check up the GitHub's Webhooks (https://github.com/{github-user}/{github-repo}/settings/hooks) after the set-up of the automated build(s), configured in the Docker Account (https://hub.docker.com/repository/docker/{organisation-name}/{repo-name}/builds/edit).
 
 <br />
 
@@ -54,7 +58,7 @@ The **step 6** of the Figure 1 is all about Docker Hub Webhooks that by default 
 To trigger the _deploy_ step in the self-hosted Drone CI platform after the containers were built, you need to set up the webhook in the Docker Hub in one of your repositories, preferably in the repository that's being built last of all:
 
 ```bash
-https://hub.docker.com/repository/docker/<organisation-name>/<repo-name>/webhooks
+https://hub.docker.com/repository/docker/{organisation-name}/{repo-name}/webhooks
 ```
 
 The Webhook name is not important, but the Webhook URL is crucial and is explained in detail in the next section.
@@ -66,7 +70,7 @@ To process an external call we use the built-in [Drone CI's REST API endpoint](h
 Accessing this endpoint, you can, for instance, view the list of the recent deployments (the deployments in the Drone CI platform are called _builds_) in your repository by sending the following **GET** request using _curl_ or just by opening this page in your browser:
 
 ```bash
-http://YOUR_IP_OR_DNS:PORT/api/repos/{github-owner}/{repo}/builds
+http://YOUR_IP_OR_DNS:PORT/api/repos/{github-owner}/{repo-name}/builds
 ```
 
 However, we need to trigger our pipeline and start a new _build_, which will then pull all the required newly built containers from Docker Hub. To run the [pipeline](./.drone.yml) and the deploy step in particular, a build needs to be [invoked](https://docs.drone.io/api/builds/build_create/) with the `custom` [event type](https://docs.drone.io/pipeline/triggers/#by-event). A new build with the corresponding pipeline commands will then be started after the webhook in form of the **POST** request is received:
@@ -82,7 +86,7 @@ In the Docker Hub there is, however, no way to send POST requests like you would
 It turns out, you can send an authorized POST request by passing over the **?access_token=** parameter that, among [other parameters](https://github.com/drone/drone/issues/2679), is being [validated during the creation of a build](https://github.com/drone/drone/blob/3fcbf1c78f44c4b592d17b009982578215994bd1/handler/api/repos/builds/create.go#L91). The final _Webhook URL_, triggering a new build, is then should look like this:
 
 ```bash
-http://YOUR_IP_OR_DNS:PORT/api/repos/{github-owner}/{repo-name}/builds?branch={branch-in-the-repo-with-the-drone-yml-pipeline-file}&access_token=<authorization-token>
+http://YOUR_IP_OR_DNS:PORT/api/repos/{github-owner}/{repo-name}/builds?branch={branch-in-the-repo-with-the-drone-yml-pipeline-file}&access_token={authorization-token}
 ```
 
 You can omit the `branch` parameter and use the default GitHub's repo branch instead.
