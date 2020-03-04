@@ -27,19 +27,21 @@ See [server/README.md](server/README.md) & [client/README.md](client/README.md) 
 
 ## The Set-Up
 
-My set-up is the healthy combination of the docker files, [automated builds](https://docs.docker.com/docker-hub/builds/) in the Docker Registry and the self-hosted Drone CI platform. The set-up is similar to the one in this [post](https://habr.com/ru/post/476368/), which describes CI/CD pipeline built entirely on the GitHub Actions with the execution of some bash scripts via SSH on a VPS.
+My set-up is a healthy combination of the docker files, [automated builds](https://docs.docker.com/docker-hub/builds/) in the Docker Registry, Traefik (v2) and the self-hosted Drone CI platform.
 
-Again, I'm using Docker Hub's _automated builds_ instead of the step 5, which is shown in the _Figure 1_ and named as 'build_and_pub' in the before-mentioned post. Docker Hub builds containers according to the configuration from a Dockerfile in the `./client/` folder of the chosen GitHub repository, as it's shown in the image below:
+The set-up is similar to the one in this [post](https://habr.com/ru/post/476368/), which describes CI/CD pipeline based entirely on the GitHub Actions and some bash scripts, executed via SSH on a VPS. They [hard-coded](https://github.com/dementevda/actions_ci_example/blob/master/.github/workflows/pub_on_release.yaml) the deployment webhook (i.e. _curl_ POST request to an endpoint) into the `deploy` step of the pipeline.
+
+I'm not using GitHub Actions nor any commands to build containers (step 5, _Figure 1_). After the push to the repository, Docker Hub (re-)builds and replaces containers in the registry according to the Dockerfiles of the frontend and backend: `./client/Dockerfile.prod` and `./server/Dockerfile.prod`. The frontend's configuration of the current GitHub repository is shown in the image below:
 
 <img src="./_manual/images/02 Docker Hub — Automated Frontend Builds Configuration (Dockerfile in Production).jpg" width="1024" alt="Automated Frontend Configuration of the Docker Build">
 
-[Drone CI](https://docs.drone.io) is responsible for the deployment of the Docker Swarm services on the VPS of your choice instead of the console scripts, which are hard-coded in the GitHub Actions as a custom webhook (curl POST request to a endpoint in the 'deploy' step):
+In my case [Drone CI](https://docs.drone.io) is only responsible for the [(re-)deployment](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) of the Docker Swarm stack executed via SSH on the VPS of my choice:
 
 ```bash
 docker stack deploy -c /path/to/docker-compose-stack-file.yml <stack-name>
 ```
 
-To avoid any mis-configuration, it's recommended to check up the GitHub's Webhooks (https://github.com/<github-user>/<github-repo>/settings/hooks) after the set-up of the automated build(s) in the Docker Account (https://hub.docker.com/repository/docker/<organisation-name>/<repo-name>/builds/edit).
+> To avoid any mis-configuration, it's recommended to check up the GitHub's Webhooks (https://github.com/<github-user>/<github-repo>/settings/hooks) after the set-up of the automated build(s), configured in the Docker Account (https://hub.docker.com/repository/docker/<organisation-name>/<repo-name>/builds/edit).
 
 ## Posts with similar set-ups:
 
@@ -58,7 +60,7 @@ To avoid any mis-configuration, it's recommended to check up the GitHub's Webhoo
 
 <br />
 
-### Insights on Drone CI
+### Insights into Drone CI
 
 #### Docker Hub Webhooks
 
