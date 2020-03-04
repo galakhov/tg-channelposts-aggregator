@@ -39,6 +39,7 @@ For instance, I have two containers in the current GitHub repository with the co
 <sub><strong>Figure 2. Automated docker build: frontend container's configuration.</strong></sub>
 
 <br />
+<br />
 These two containers are (re-)built and saved in the Docker Hub Registry every time I push any new changes to the repository.
 
 > To avoid any mis-configuration, it's recommended to verify the GitHub's Webhooks (https://github.com/{github-user}/{github-repo}/settings/hooks), which are being added by Docker Hub, after the set-up of the automated build(s) in the Docker Account: https://hub.docker.com/repository/docker/{organisation-name}/{repo-name}/builds/edit.
