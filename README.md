@@ -27,22 +27,23 @@ See [server/README.md](server/README.md) & [client/README.md](client/README.md) 
 
 ## The Setup
 
-My set-up is a healthy combination of the containers arranged into a Docker Swarm Stack, the Docker Hub Registry's with [automated builds](https://docs.docker.com/docker-hub/builds/), [Traefik (v2)](https://docs.traefik.io) and the self-hosted lightweight container-first CI/CD platform called [Drone.io](https://drone.io) with couple of [plugins](http://plugins.drone.io).
+My set-up is a healthy combination of the containers arranged into a Docker Swarm Stack, the Docker Hub Registry's with [automated builds](https://docs.docker.com/docker-hub/builds/), [Traefik (v2)](https://docs.traefik.io) and the self-hosted lightweight container-native CI/CD platform called [Drone.io](https://drone.io) with couple of [plugins](http://plugins.drone.io).
 
 The set-up is somewhat similar to the one presented in this [post](https://habr.com/ru/post/476368/), which outlines a CI/CD pipeline entirely based on the GitHub Actions and some bash scripts, executed via SSH on a VPS. Besides the redundant configuration of the Docker Hub's secrets and the recurring logins, author [hard-codes](https://github.com/dementevda/actions_ci_example/blob/master/.github/workflows/pub_on_release.yaml) a deployment webhook, i.e. a full _curl_ POST request to his own custom endpoint, into the `deploy` step of the pipeline. That's an overkill.
 
-If you connect your Docker Hub account with a GitHub repository you actually don't need to configure any secrets, use any GitHub Actions, nor any commands to build & push containers (**step 5**, _Figure 1_). With a pre-configured automated build for each microservice, Docker Hub Registry (re-)builds and (re-)places a container by itself, provided there was a push event.
+If you connect your Docker Hub account with a GitHub repository you actually don't need to configure any secrets, use any GitHub Actions, nor any commands to build & push containers (**step 5**, _Figure 1_). With a pre-configured automated build for each microservice, Docker Hub Registry (re-)builds and (re-)places a container by itself, provided there was a push event (**step 1**).
 
 For instance, I have two containers in the current GitHub repository with the corresponding Dockerfiles for the frontend and for the backend: `./client/Dockerfile.prod` and `./server/Dockerfile.prod`. The configuration of the frontend's container is shown in the image below:
 
 <img src="./_manual/images/02 Docker Hub — Automated Frontend Builds Configuration (Dockerfile in Production).jpg" width="1024" alt="Automated Frontend Configuration of the Docker Build">
 <sub><strong>Figure 2. Automated docker build: frontend container's configuration.</strong></sub>
 
+<br />
 These two containers are (re-)built and saved in the Docker Hub Registry every time I push any new changes to the repository.
 
 > To avoid any mis-configuration, it's recommended to verify the GitHub's Webhooks (https://github.com/{github-user}/{github-repo}/settings/hooks), which are being added by Docker Hub, after the set-up of the automated build(s) in the Docker Account: https://hub.docker.com/repository/docker/{organisation-name}/{repo-name}/builds/edit.
 
-As for the (re-)deployment, in my case [Drone CI/CD tool](https://docs.drone.io) is responsible for it as well as for the notification about the build's status. The new Docker containers are pulled and the Docker Swarm Stack is updated after the [execution of one single command](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) in the end via the [Drone SSH plugin](http://plugins.drone.io/appleboy/drone-ssh/) on a VPS:
+As for the (re-)deployment, the [Drone CI/CD tool](https://docs.drone.io) is responsible for it (**step 8**) as well as for the notification about the build's status (**step 9**). The new Docker containers are pulled (**step 7**) and the Docker Swarm Stack is updated after the [execution of one single command](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) in the end via the [Drone SSH plugin](http://plugins.drone.io/appleboy/drone-ssh/) on a VPS:
 
 ```bash
 docker stack deploy -c /path/to/docker-compose-stack-file.yml {stack-name}
