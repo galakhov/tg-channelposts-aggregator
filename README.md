@@ -18,6 +18,10 @@
 
 See [server/README.md](server/README.md) & [client/README.md](client/README.md) files for the installation steps.
 
+# CI/CD and the architecture
+
+<img src="./_manual/images/05-Deployment.jpg" alt="CI and architecture" width="600">
+
 # Credits 🙏
 
 Inspired by and based on this [repo](https://github.com/foreseaz/tg-channel-dashboard).

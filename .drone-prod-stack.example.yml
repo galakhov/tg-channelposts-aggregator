@@ -237,10 +237,6 @@ services:
       # - /var/swarm/traefik/access.log:/traefik.access.log
       - /var/swarm/traefik/.htpasswd:/.htpasswd
 
-# volumes:
-#   drone-server-sqlite: {}
-#   drone-agent: {}
-
 networks:
   traefik_proxy:
     driver: overlay
@@ -254,6 +250,6 @@ networks:
     driver: overlay
     external: false
     attachable: true
-# docker network create --scope=swarm --driver=overlay traefik_proxy
-# docker network create --scope=swarm --driver=overlay drone_rpc
+# docker network create --scope=swarm --driver=overlay --attachable traefik_proxy
+# docker network create --scope=swarm --driver=overlay --attachable drone_rpc
 # docker network create --scope=swarm --driver=overlay --attachable microservices

@@ -101,7 +101,7 @@ RUN ln -sf /dev/stdout /debug.log
 
 The architecture of this project (at least of the development version) looks like this (where the first nginx is the so-called _reverse proxy_, which is used to [route any incoming requests](http://jasonwilder.com/blog/2014/03/25/automated-nginx-reverse-proxy-for-docker/): [jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy) based on [docker-gen](https://github.com/jwilder/docker-gen)):
 
-![Server archiceture](https://res.cloudinary.com/rootless/image/upload/v1576220080/private/nginx/architecture.jpg | width=1024)
+<img src="https://res.cloudinary.com/rootless/image/upload/v1576220080/private/nginx/architecture.jpg" alt="Server archiceture" width="1024">
 
 Always try to keep your configuration in `docker-compose.yml` (e.g. the configuration of the networks) as simple as possible first, to avoid such 502's (bad gateway) or 503's Nginx errors like: `connect() failed (111: Connection refused) while connecting to upstream.` or `no live upstreams while connecting to upstream`.
 

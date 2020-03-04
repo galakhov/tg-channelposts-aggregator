@@ -2,6 +2,7 @@
 data/comidoc.schema.graphql
 
 deploy_scripts/*
+_manual/_graphics/*
 
 # Logs
 *.log

@@ -2,14 +2,17 @@ kind: pipeline
 type: docker
 name: Re-deploy Swarm Stack
 
-# Any step can be triggered from the docker hub (or from any other CI tool / registry) using the outgoing webhook:
-# http://IP_OR_DNS:PORT/api/repos/<github-user>/<github-repo>/builds?branch=<branch-name>&access_token=32-characters-long-hash
-# The personal token can be found in here: http://IP_OR_DNS:PORT/account
-# See for more parameters and other details: https://docs.drone.io/api/builds/build_create/
-# Finally, add that url (webhook) in docker hub here: https://hub.docker.com/repository/docker/<organization/repo-name>/webhooks
+# After you push the changes to the GitHub repository, the preconfigured automated build process is started in the Docker Hub. When the container are successfully built from the chosen Dockerfiles, the pipeline can then proceed with the next deployment step. In that step the new versions of the containers are being pulled and re-deployed in the swarm stack.
+# Any pipeline step can be triggered on the so-called 'custom' event coming from the docker hub using it's outgoing webhook (or from any other CI tool or container registry, such as GitHub registry or similar: https://github.com/features/packages):
+# http://IP_OR_DNS:PORT/api/repos/<github-user>/<github-repo>/builds?branch=<branch-name>&access_token=<32-characters-long-hash>
+# This personal bearer auth token can be found in your Drone account: http://IP_OR_DNS:PORT/account
+# See this page for more pipeline parameters and other details: https://docs.drone.io/api/builds/build_create/
+# Finally, set up that url in the docker hub webhook's tab in the repository that's being built last of all: https://hub.docker.com/repository/docker/<organization/repo-name>/webhooks
 
-# Deployments using GitHub's actions and plugins: https://probot.github.io/docs/deployment/
+# Deployments can also be triggered using GitHub's actions and/or plugins:
+# https://probot.github.io/docs/deployment/
 # https://developer.github.com/webhooks/#events
+# https://developer.github.com/v3/repos/deployments/
 
 steps:
   # ssh into the machine and deploy the docker image (pseudo code).
@@ -38,6 +41,7 @@ steps:
         from_secret: file_name
       STACK_NAME:
         from_secret: stack_name
+    # https://github.com/appleboy/drone-ssh/issues/130
     settings:
       host:
         from_secret: ssh_host
