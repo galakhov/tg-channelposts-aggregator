@@ -27,36 +27,21 @@ See [server/README.md](server/README.md) & [client/README.md](client/README.md) 
 
 ## The Set-Up
 
-My set-up is a healthy combination of the docker files, [automated builds](https://docs.docker.com/docker-hub/builds/) in the Docker Registry, Traefik (v2) and the self-hosted Drone CI platform.
+My set-up is a healthy combination of the containers in a Docker Swarm Stack, the Docker Hub Registry's [automated builds](https://docs.docker.com/docker-hub/builds/), [Traefik (v2)](https://docs.traefik.io) and the lightweight self-hosted [Drone CI/CD platform](https://drone.io) with some [plugins](http://plugins.drone.io).
 
-The set-up is similar to the one in this [post](https://habr.com/ru/post/476368/), which describes CI/CD pipeline based entirely on the GitHub Actions and some bash scripts, executed via SSH on a VPS. They [hard-coded](https://github.com/dementevda/actions_ci_example/blob/master/.github/workflows/pub_on_release.yaml) the deployment webhook (i.e. _curl_ POST request to an endpoint) into the `deploy` step of the pipeline.
+The set-up is somewhat similar to the one presented in this [post](https://habr.com/ru/post/476368/), which describes a CI/CD pipeline based entirely on the GitHub Actions and some bash scripts, executed via SSH on a VPS. The author [hard-coded](https://github.com/dementevda/actions_ci_example/blob/master/.github/workflows/pub_on_release.yaml) a deployment webhook (i.e. _curl_ POST request to his custom endpoint) into the `deploy` step of the pipeline.
 
-I'm not using GitHub Actions nor any commands to build containers (step 5, _Figure 1_). After the push to the repository, Docker Hub (re-)builds and replaces containers in the registry according to the Dockerfiles of the frontend and backend: `./client/Dockerfile.prod` and `./server/Dockerfile.prod`. The frontend's configuration of the current GitHub repository is shown in the image below:
+If you connect your Docker Hub account with a GitHub repository you actually don't need to use any GitHub Actions, nor any commands to build & push containers (**step 5**, _Figure 1_). With a pre-configured automated build for each microservice, Docker Hub (re-)builds and (re-)places its container after the push event. For instance, I have two containers in the current GitHub repository with the corresponding Dockerfiles for the frontend and for the backend: `./client/Dockerfile.prod` and `./server/Dockerfile.prod`. The configuration of the frontend's container is shown in the image below:
 
 <img src="./_manual/images/02 Docker Hub — Automated Frontend Builds Configuration (Dockerfile in Production).jpg" width="1024" alt="Automated Frontend Configuration of the Docker Build">
 
-In my case [Drone CI](https://docs.drone.io) is only responsible for the [(re-)deployment](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) of the Docker Swarm stack executed via SSH on the VPS of my choice:
+In my case [Drone CI](https://docs.drone.io) is only responsible for the [(re-)deployment](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) of the Docker Swarm Stack on the VPS of my choice, executed via the [Drone SSH plugin](http://plugins.drone.io/appleboy/drone-ssh/):
 
 ```bash
 docker stack deploy -c /path/to/docker-compose-stack-file.yml <stack-name>
 ```
 
 > To avoid any mis-configuration, it's recommended to check up the GitHub's Webhooks (https://github.com/<github-user>/<github-repo>/settings/hooks) after the set-up of the automated build(s), configured in the Docker Account (https://hub.docker.com/repository/docker/<organisation-name>/<repo-name>/builds/edit).
-
-## Posts with similar set-ups:
-
-- [Setup Gitea and Drone on Docker 2020 Edition](https://blog.ruanbekker.com/blog/2020/02/04/setup-gitea-and-drone-on-docker-2020-edition/) / [Source code 1](https://gist.github.com/ruanbekker/27d2cb2e3f4194ee5cfe2bcdc9c4bf52) / [Source code 2](https://gist.github.com/ruanbekker/3847bbf1b961efc568b93ccbf5c6f9f6)
-- [Using Drone CI to Build a Jekyll Site and Deploy to Docker Swarm](https://blog.ruanbekker.com/blog/2019/04/23/using-drone-ci-to-build-a-jekyll-site-and-deploy-to-docker-swarm/)
-- [Setup a Drone CICD Environment on Docker With Letsencrypt](https://blog.ruanbekker.com/blog/2019/04/18/setup-a-drone-cicd-environment-on-docker-with-letsencrypt/)
-- [Self Hosted Git and CICD Platform with Gitea and Drone on Docker](https://sysadmins.co.za/self-hosted-git-and-cicd-platform-with-gitea-and-drone-on-docker/)
-
-### Posts on Docker Swarm Clusters
-
-[Create a Docker Swarm Cluster on DigitalOcean](https://lunar.computer/posts/docker-swarm-digitalocean/)
-
-### Posts on Traefik v2
-
-[Traefik v2 with the static and dynamic configuration](https://dev.to/nflamel/how-to-have-https-on-development-with-docker-traefik-v2-and-mkcert-2jh3)
 
 <br />
 
@@ -101,6 +86,23 @@ http://YOUR_IP_OR_DNS:PORT/api/repos/{github-owner}/{repo-name}/builds?branch={b
 ```
 
 You can omit the `branch` parameter and use the default GitHub's repo branch instead.
+
+<br />
+
+## Posts with similar set-ups:
+
+- [Setup Gitea and Drone on Docker 2020 Edition](https://blog.ruanbekker.com/blog/2020/02/04/setup-gitea-and-drone-on-docker-2020-edition/) / [Source code 1](https://gist.github.com/ruanbekker/27d2cb2e3f4194ee5cfe2bcdc9c4bf52) / [Source code 2](https://gist.github.com/ruanbekker/3847bbf1b961efc568b93ccbf5c6f9f6)
+- [Using Drone CI to Build a Jekyll Site and Deploy to Docker Swarm](https://blog.ruanbekker.com/blog/2019/04/23/using-drone-ci-to-build-a-jekyll-site-and-deploy-to-docker-swarm/)
+- [Setup a Drone CICD Environment on Docker With Letsencrypt](https://blog.ruanbekker.com/blog/2019/04/18/setup-a-drone-cicd-environment-on-docker-with-letsencrypt/)
+- [Self Hosted Git and CICD Platform with Gitea and Drone on Docker](https://sysadmins.co.za/self-hosted-git-and-cicd-platform-with-gitea-and-drone-on-docker/)
+
+### Posts on Docker Swarm Clusters
+
+[Create a Docker Swarm Cluster on DigitalOcean](https://lunar.computer/posts/docker-swarm-digitalocean/)
+
+### Posts on Traefik v2
+
+[Traefik v2 with the static and dynamic configuration](https://dev.to/nflamel/how-to-have-https-on-development-with-docker-traefik-v2-and-mkcert-2jh3)
 
 ### Other Drone CI sources
 
