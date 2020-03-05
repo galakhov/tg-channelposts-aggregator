@@ -15,6 +15,7 @@
 - [monstache](https://rwynn.github.io/monstache-site/)
 - Docker Hub Registry
 - Drone.io: CI/CD Tool
+- Telegram
 
 # Installation
 
@@ -41,10 +42,10 @@ For instance, I have two containers in the current GitHub repository with the co
 <br />
 <br />
 These two containers are (re-)built and saved in the Docker Hub Registry every time I push any new changes to the repository.
-
+<br />
 > To avoid any mis-configuration, it's recommended to verify the GitHub's Webhooks (https://github.com/{github-user}/{github-repo}/settings/hooks), which are being added by Docker Hub, after the set-up of the automated build(s) in the Docker Account: https://hub.docker.com/repository/docker/{organisation-name}/{repo-name}/builds/edit.
 
-As for the (re-)deployment, the [Drone CI/CD tool](https://docs.drone.io) is responsible for it (**step 8**) as well as for the notification about the build's status (**step 9**). The new Docker containers are pulled (**step 7**) and the Docker Swarm Stack is updated after the [execution of one single command](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) in the end via the [Drone SSH plugin](http://plugins.drone.io/appleboy/drone-ssh/) on a VPS:
+As for the (re-)deployment (**step 8**), the [Drone CI/CD tool](https://docs.drone.io) is responsible for it as well as for the notification about the build's status (**step 9**) at least in the pipeline of this repo. The new Docker containers are pulled (**step 7**) and the Docker Swarm Stack is updated after the [execution of one single command](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) in the end via the [Drone SSH plugin](http://plugins.drone.io/appleboy/drone-ssh/) on a VPS:
 
 ```bash
 docker stack deploy -c /path/to/docker-compose-stack-file.yml {stack-name}
@@ -72,11 +73,11 @@ https://hub.docker.com/repository/docker/{organisation-name}/{repo-name}/webhook
 
 The Webhook name is not important, but the Webhook URL is crucial and is explained in detail in the next section.
 
-#### What Webhook URLs are allowed by the Drone.io's API?
+#### What Webhook URLs are valid to use with the Drone.io's API?
 
 To process an external call we use the built-in [Drone.io's REST API endpoint](https://docs.drone.io/api/overview/), which receives GET, POST, DELETE and other external requests.
 
-Accessing this endpoint, you can, for instance, view the list of the recent deployments (the deployments in the Drone CI/CD platform are called _builds_) in your repository by sending the following **GET** request using _curl_ or just by opening this page in your browser:
+Accessing the endpoint, you can, for instance, view the list of the recent deployments (the deployments in the Drone CI/CD platform are called _builds_) in one of your repositories by sending the following **GET** request using _curl_ or just by opening this page in your browser:
 
 ```bash
 http://YOUR_IP_OR_DNS:PORT/api/repos/{github-owner}/{repo-name}/builds
@@ -131,6 +132,8 @@ Docs of the Drone [plugin that executes commands on a remote server via SSH](htt
 
 - [Get the token by creating and starting your bot](https://angristan.xyz/2018/08/setup-telegram-bot-for-drone-ci-cd-builds/)
 - Chat ID for the 'to' parameter can be obtained by starting the @userinfobot or @get_id_bot in Telegram.
+
+<br />
 
 # Credits 🙏
 
