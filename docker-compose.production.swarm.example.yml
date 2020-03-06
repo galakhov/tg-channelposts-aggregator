@@ -9,10 +9,17 @@ services:
       - protocol: tcp
         published: 80
         target: 3000
-      - '443:443/tcp'
+      - protocol: tcp
+        published: 443
+        target: 3000
     networks:
-      - microservices
-      - traefik_proxy
+      traefik_proxy:
+        aliases:
+          - traefik_proxy-net
+      microservices:
+        aliases:
+          - microservices-net
+
     environment:
       - FRONTEND_HOST
       - SERVER_IP
@@ -21,7 +28,7 @@ services:
       labels:
         # network
         - 'traefik.enable=true'
-        - 'traefik.docker.network=microservices'
+        - 'traefik.docker.network=traefik_proxy'
 
         # services
         - 'traefik.http.services.frontend.loadbalancer.server.port=443'
@@ -32,7 +39,7 @@ services:
         - 'traefik.http.routers.frontend-http.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/api/v1/posts`))'
         # - 'traefik.http.middlewares.frontend-strip-prefix.stripPrefix.prefixes=/authorize'
         # - 'traefik.http.routers.frontend-http.middlewares=frontend-strip-prefix@docker'
-        - 'traefik.http.routers.frontend-http.service=frontend@docker'
+        - 'traefik.http.routers.frontend-http.service=frontend'
         - 'traefik.http.routers.frontend-http.middlewares=frontend_https_mdlwr@docker'
 
         # middlewares
@@ -41,8 +48,9 @@ services:
         - 'traefik.http.middlewares.frontend_https_mdlwr.redirectscheme.port=443'
 
         # routers https
-        - 'traefik.http.routers.frontend-https.tls=true'
         - 'traefik.http.routers.frontend-https.entrypoints=web-secure'
+        - 'traefik.http.routers.frontend-https.tls=true'
+        - 'traefik.http.routers.frontend-https.tls.certresolver=default'
         - 'traefik.http.routers.frontend-https.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/api/v1/posts`))'
 
         # TODO: assign the service named 'frontend-service' in swarm
@@ -64,8 +72,9 @@ services:
         target: 8080
       - '9000:9000/tcp' # see ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
     networks:
-      - microservices
-      - traefik_proxy
+      microservices:
+        aliases:
+          - microservices-net
     environment:
       - FRONTEND_HOST
       # required during the run of the backend service (backend container):
@@ -81,7 +90,7 @@ services:
         # routers
         - 'traefik.http.routers.backend-http.entrypoints=backend'
         - 'traefik.http.routers.backend-http.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/api/v1/posts`))'
-        - 'traefik.http.routers.backend-http.service=backend@docker'
+        - 'traefik.http.routers.backend-http.service=backend'
         # no need for TLS on the backend, as it's in internal network anyway
 
         # - 'traefik.http.routers.backend-https.tls=true'
