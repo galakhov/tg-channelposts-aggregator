@@ -10,9 +10,9 @@ COPY package*.json ./
 # RUN npm i --only=production && npm cache clean --force
 RUN npm i --only=production
 COPY . .
-ENV SERVER_IP=SERVER_IP_ARG
-CMD ["sh", "-c", "echo ${SERVER_IP}"]
-RUN node scripts/build.js --env.NODE_ENV=production --env.SERVER_IP=${SERVER_IP}
+# ENV REACT_APP_SERVER_IP=${SERVER_IP_ARG}
+# RUN export SERVER_IP=$SERVER_IP_ARG
+RUN REACT_APP_SERVER_IP=${SERVER_IP_ARG} node scripts/build.js --env.NODE_ENV=production
 # this is where the compiled version of the frontend lands
 RUN ls -al /frontend/build
 RUN unset SERVER_IP
