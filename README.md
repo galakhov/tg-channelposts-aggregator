@@ -23,12 +23,12 @@ See [server/README.md](server/README.md) & [client/README.md](client/README.md) 
 
 # The big picture of CI/CD
 
-<img src="./_manual/images/05-Deployment.jpg" alt="CI and the architecture" width="600">
+<img src="./_manual/images/05-Deployment.jpg" alt="CI and the architecture" width="700">
 <sub><strong>Figure 1. CI/CD step-by-step.</strong></sub>
 
 ## The Setup
 
-My set-up is a healthy combination of the containers arranged into a Docker Swarm Stack, the Docker Hub Registry's with [automated builds](https://docs.docker.com/docker-hub/builds/), [Traefik (v2)](https://docs.traefik.io) and the self-hosted lightweight container-native CI/CD platform called [Drone.io](https://drone.io) with couple of [plugins](http://plugins.drone.io).
+My set-up is a healthy combination of the containers arranged into a [Docker Swarm Stack](https://docs.docker.com/engine/swarm/), the Docker Hub Registry's with [automated builds](https://docs.docker.com/docker-hub/builds/), [Traefik (v2)](https://docs.traefik.io) and the self-hosted lightweight container-native CI/CD platform called [Drone.io](https://drone.io) with couple of [plugins](http://plugins.drone.io).
 
 The set-up is somewhat similar to the one presented in this [post](https://habr.com/ru/post/476368/), The post outlines a CI/CD pipeline entirely based on [GitHub Actions](https://github.com/features/actions) and on some bash scripts, executed via SSH on a VPS. Besides the redundant configuration of the Docker Hub's secrets and the recurring logins to Docker Hub, author [hard-codes](https://github.com/dementevda/actions_ci_example/blob/master/.github/workflows/pub_on_release.yaml) a deployment webhook in the `deploy` step of the pipeline, i.e. a _curl_ POST request to his own custom endpoint. His solution is a bit over-engineered, though, it allows to control things manually, and useful if you plan to stick to GitHub Actions.
 
@@ -67,15 +67,15 @@ docker service update {SERVICE-NAME}
 
 The **step 6** of the _Figure 1_ is all about Docker Hub Webhooks that are ["(...) POST requests sent to a URL you define in Docker Hub"](https://docs.docker.com/docker-hub/webhooks/) by default.
 
-To trigger the _deploy_ step in the Drone CI/CD platform after the containers were built, you need to set up the webhook in the Docker Hub in one of your repositories, preferably in the repository that's built last of all:
+To notify the Drone CI/CD (or any other platform) that the containers were built, you can set up the webhook in Docker Hub in one of your repositories, preferably in the repository that's built last of all:
 
 ```bash
 https://hub.docker.com/repository/docker/{organisation-name}/{repo-name}/webhooks
 ```
 
-The Webhook name is not important, but the Webhook URL is crucial and is explained in detail in the next section.
+The Webhook's name is not important, but the Webhook URL is crucial and is explained in detail in the next section.
 
-#### What Webhook URLs are valid to use with the Drone.io's API?
+#### Which Webhook URLs are valid to use with the Drone.io's API?
 
 To process an external call we use the built-in [Drone.io's REST API endpoint](https://docs.drone.io/api/overview/), which receives GET, POST, DELETE and other external requests.
 
@@ -85,9 +85,9 @@ Accessing the endpoint, you can, for instance, view the list of the recent deplo
 http://YOUR_IP_OR_DNS:PORT/api/repos/{github-owner}/{repo-name}/builds
 ```
 
-In my case I'm not doing any tests nor am I building & pushing any containers, as they were already built by Docker Hub. Though, I need to trigger the pipeline and start a new deployment process (Drone's _build_), which will then pull all the newly built containers from Docker Hub.
+I'm not doing any tests nor am I building & pushing any containers, as they were already built by Docker Hub. Though, in my case I need to trigger the pipeline and start a new deployment process (Drone's _build_), which will then pull all the newly built containers from Docker Hub and deploy them to Swarm.
 
-To trigger the `deploy` step in the [pipeline](./.drone.yml#L20), a new build needs to be [invoked](https://docs.drone.io/api/builds/build_create/) with the `custom` (or `promote`) [drone event type](https://docs.drone.io/pipeline/triggers/#by-event). Consequently, a new build with the corresponding listing of the pipeline commands is _limited_ to the execution of the `deploy` step, [as it's stated by the Drone developers](https://docs.drone.io/pipeline/triggers/#by-event). In fact, the execution is not _limited_ but just runs the pipeline, starting from [this step](./.drone.yml#L20) with the `custom` event and also executes all sebsequent steps. In this way Docker Hub triggers the deployment after the webhook was received to the Drone's API endpoint as the valid **POST** request that looks like this:
+To trigger the `deploy` step in the [pipeline](./.drone.yml#L20), a new build needs to be [invoked](https://docs.drone.io/api/builds/build_create/) with the `custom` (or `promote`) [drone event type](https://docs.drone.io/pipeline/triggers/#by-event). Consequently, a new build with the corresponding listing of the pipeline commands is _limited_ to the execution of the `deploy` step, [as it's stated by the Drone developers](https://docs.drone.io/pipeline/triggers/). In fact, the execution isn't _limited_ to just one step, but runs the pipeline, starting from [this step](./.drone.yml#L20) with the `custom` event, then executes all the sebsequent steps. In this way Docker Hub triggers the deployment after the webhook was received to the Drone's API endpoint as the valid **POST** request that looks like this:
 
 ```bash
 POST http://YOUR_IP_OR_DNS:PORT/api/repos/{github-owner}/{repo-name}/builds?branch={branch-in-the-repo-with-the-drone-yml-pipeline-file}
