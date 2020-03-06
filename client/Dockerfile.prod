@@ -1,3 +1,4 @@
+ARG SERVER_IP
 FROM mhart/alpine-node:10 as front
 ENV TZ="Europe/Amsterdam"
 # install missing alpine packages
