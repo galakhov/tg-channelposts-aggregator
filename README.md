@@ -106,7 +106,7 @@ You can omit the `branch` parameter and use the default GitHub's repo branch ins
 <br />
 <br />
 
-## Posts I was inspired by with the similar setups:
+## Posts with the similar setups I was inspired by:
 
 - [Setup Gitea and Drone on Docker 2020 Edition](https://blog.ruanbekker.com/blog/2020/02/04/setup-gitea-and-drone-on-docker-2020-edition/) / [Source code 1](https://gist.github.com/ruanbekker/27d2cb2e3f4194ee5cfe2bcdc9c4bf52) / [Source code 2](https://gist.github.com/ruanbekker/3847bbf1b961efc568b93ccbf5c6f9f6)
 - [Using Drone CI/CD to Build a Jekyll Site and Deploy to Docker Swarm](https://blog.ruanbekker.com/blog/2019/04/23/using-drone-ci-to-build-a-jekyll-site-and-deploy-to-docker-swarm/)
@@ -128,10 +128,10 @@ Sample of a [.drone.yml configuration](https://gist.github.com/anson-vandoren/03
 Docs of the Drone [plugin that executes commands on a remote server via SSH](http://plugins.drone.io/appleboy/drone-ssh/) / [Drone SSH on GitHub](https://github.com/appleboy/drone-ssh):
 
 - [How to set environment variables for a drone plugin](https://github.com/appleboy/drone-ssh/issues/130)
-- [Undocumented Drone SSH environment variables](https://github.com/appleboy/drone-ssh/blob/master/main.go)
+- [Undocumented Drone SSH environment variables](https://github.com/appleboy/drone-ssh/blob/master/main.go#L35)
 - [Drone SSH: usage example](https://git.b12f.io/hornet.garden/hornet.garden/src/commit/afe6557279ddc9b53c2be882797bae36ea185d08/.drone.yml?lang=lv-LV)
 
-[The Drone Telegram Plugin](http://plugins.drone.io/appleboy/drone-telegram/) to send notifications about the build status to a chat in Telegram:
+[The Drone Telegram Plugin](http://plugins.drone.io/appleboy/drone-telegram/) to send notifications of the build status to a chat in Telegram:
 
 - [Get the token by creating and starting your bot](https://angristan.xyz/2018/08/setup-telegram-bot-for-drone-ci-cd-builds/)
 - Chat ID for the 'to' parameter can be obtained by starting the @userinfobot or @get_id_bot in Telegram.

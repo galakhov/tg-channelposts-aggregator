@@ -252,3 +252,5 @@ networks:
 # docker network create --scope=swarm --driver=overlay --attachable traefik_proxy
 # docker network create --scope=swarm --driver=overlay --attachable drone_rpc
 # docker network create --scope=swarm --driver=overlay --attachable microservices
+# docker-compose -f drone-traefik.prod.yml -f microservices.prod.yml config > final-stack.yml
+# docker stack deploy -c final-stack.yml drone-ci-traefik

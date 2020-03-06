@@ -15,6 +15,7 @@ services:
       - traefik_proxy
     environment:
       - FRONTEND_HOST
+      - SERVER_IP
     # - 'ES_CONNECTION_URI'
     deploy:
       labels:
