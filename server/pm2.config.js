@@ -6,10 +6,10 @@ module.exports = {
       script: './server.js',
       exec_mode: 'cluster',
       env: {
+        // environment variables relevant for the backend service only
         BOT_TOKEN: process.env.BOT_TOKEN,
         DB_CONNECTION_STRING: process.env.DB_CONNECTION_STRING,
         NODE_ENV: process.env.NODE_ENV,
-        SERVER_IP: process.env.SERVER_IP,
         PORT: 8080
       },
       max_memory_restart: '256M',
