@@ -7,7 +7,10 @@ console.log('process.env.npm_config_host: ' + process.env.npm_config_host)
 
 export const API_HOST =
   process.env.NODE_ENV === 'production'
-    ? process.env.REACT_APP_SERVER_IP
-      ? `http://${process.env.REACT_APP_SERVER_IP}:${port}`
+    ? process.env.npm_config_host
+      ? `http://${process.env.npm_config_host}:${port}`
       : '.'
     : `http://localhost:${port}`
+
+// ? process.env.REACT_APP_SERVER_IP
+//  ? `http://${process.env.REACT_APP_SERVER_IP}:${port}`
