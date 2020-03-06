@@ -1,4 +1,4 @@
-ARG SERVER_IP
+ARG SERVER_IP_ARG
 FROM mhart/alpine-node:10 as front
 ENV TZ="Europe/Amsterdam"
 # install missing alpine packages
@@ -7,6 +7,7 @@ RUN npm i npm@6.9.0 -g
 RUN mkdir /frontend
 WORKDIR /frontend
 COPY package*.json ./
+ENV SERVER_IP=$SERVER_IP_ARG
 ENV NODE_ENV=production
 # RUN npm i --only=production && npm cache clean --force
 RUN npm i --only=production
