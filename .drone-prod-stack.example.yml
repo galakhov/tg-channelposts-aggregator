@@ -140,12 +140,11 @@ services:
       - '--configFile=/etc/traefik/config/traefik.toml' # read it from the mounted volume
       # - "--certificatesResolvers.my-resolver.acme.dnsChallenge=true"
     ports:
-      - '80:80/tcp'
-      - '443:443/tcp'
-      # - '8080:8080/tcp' # backend
       # - '8090:8090/tcp' # drone entry-point
-      - '9000:9000/tcp' # ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
-      - '9009:9009/tcp' # traefik dashboard
+      - protocol: tcp
+        published: 9010
+        target: 9009
+      # - '9010:9009/tcp' # traefik dashboard
     networks:
       traefik_proxy:
         aliases:

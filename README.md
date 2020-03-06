@@ -65,7 +65,7 @@ docker service update {SERVICE-NAME}
 
 #### Docker Hub's outgoing Webhooks can be received by Drone CI/CD
 
-The **step 6** of the _Figure 1_ is all about Docker Hub Webhooks that are ["(...) POST requests sent to a URL you define in Docker Hub"](https://docs.docker.com/docker-hub/webhooks/) by default. This way we can notify the Drone CI/CD (or any other platform) that the containers were built, you can set up the webhook in Docker Hub in one of your repositories, preferably in the repository that's built last of all:
+The **step 6** of the _Figure 1_ is all about Docker Hub Webhooks that are ["(...) POST requests sent to a URL you define in Docker Hub"](https://docs.docker.com/docker-hub/webhooks/) by default. This way one can notify the Drone CI/CD (or any other platform) that the containers were built, you can set up the webhook in Docker Hub in one of your repositories, preferably in the repository that's built last of all:
 
 ```bash
 https://hub.docker.com/repository/docker/{organisation-name}/{repo-name}/webhooks
@@ -75,7 +75,7 @@ The Webhook's name is not important, but the Webhook URL is crucial and is expla
 
 #### Which Docker Hub's Webhook URLs are valid to use with the Drone.io's API?
 
-To process an external call we use the built-in [Drone.io's REST API endpoint](https://docs.drone.io/api/overview/), which receives GET, POST, DELETE and other external requests.
+To process an external call I use the built-in [Drone.io's REST API endpoint](https://docs.drone.io/api/overview/), which receives GET, POST, DELETE and other external requests.
 
 Accessing the endpoint, you can, for instance, view the list of the recent deployments (the _deployments_ in the Drone CI/CD platform are called _builds_) in one of your repositories by sending the following **GET** request using _curl_ or just by opening this page in your browser:
 

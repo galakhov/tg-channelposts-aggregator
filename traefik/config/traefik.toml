@@ -41,8 +41,12 @@
     address = ":8080"
   [entryPoints.drone-server]
     address = ":8090"
-  [entryPoints.dashboard_entry]
+  [entryPoints.traefik]
     address = ":9009"
+    # https://docs.traefik.io/v2.1/operations/api/#insecure
+    # If the entryPoint named traefik is not configured, it will be automatically created on port 8080.
+  [entryPoints.dashboard_entry]
+    address = ":9010"
   [entryPoints.web-secure]
     address = ":443"
 
