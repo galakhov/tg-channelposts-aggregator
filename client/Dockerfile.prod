@@ -1,4 +1,3 @@
-ARG SERVER_IP_ARG
 FROM mhart/alpine-node:10 as front
 ENV TZ="Europe/Amsterdam"
 # install missing alpine packages
@@ -12,10 +11,13 @@ RUN npm i --only=production
 COPY . .
 # ENV REACT_APP_SERVER_IP=${SERVER_IP_ARG}
 # RUN export SERVER_IP=$SERVER_IP_ARG
-RUN REACT_APP_SERVER_IP=${SERVER_IP_ARG} node scripts/build.js --env.NODE_ENV=production
+# RUN REACT_APP_SERVER_IP=${SERVER_IP_ARG} node scripts/build.js --env.NODE_ENV=production
+ARG SERVER_IP_ARG
+ENV SERVER_IP ${SERVER_IP_ARG}
+RUN npm run build --host ${SERVER_IP}
 # this is where the compiled version of the frontend lands
 RUN ls -al /frontend/build
-RUN unset SERVER_IP
+# RUN unset SERVER_IP
 
 # Stage 2: the react app runs behind its own nginx instance.
 FROM nginx:1.17.7-alpine
