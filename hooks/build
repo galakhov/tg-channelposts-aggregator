@@ -1,0 +1,27 @@
+#!/bin/bash
+
+echo "------ HOOK START - BUILD -------"
+printenv
+
+# Caution: A hooks/build file overrides the basic docker build command used by the builder, so you must include a similar build command in the hook or the automated build fails.
+# https://docs.docker.com/docker-hub/builds/advanced/
+
+# ENV VARs are set by the cloud.docker.com build process, and are available during automated builds, automated tests, and while executing hooks like here.
+# DOCKER_TAG: the Docker repository tag being built.
+
+docker build -t $IMAGE_NAME -f $DOCKERFILE_PATH --build-arg SERVER_IP_ARG=$SERVER_IP_FROM_DOCKER_HUB .
+
+echo "------ HOOK END - BUILD -------"
+
+# See this post for explanation:
+# https://stackoverflow.com/questions/45277186/is-it-possible-to-add-environment-variables-in-automated-builds-in-docker-hub
+# Build hook examples' source code: https://github.com/binbashar/public-docker-images/tree/master/terraform-resources
+
+# Default environment variables used in Docker Hub:
+# SOURCE_BRANCH: the name of the branch or the tag that is currently being tested.
+# SOURCE_COMMIT: the SHA1 hash of the commit being tested.
+# COMMIT_MSG: the message from the commit being tested and built.
+# DOCKER_REPO: the name of the Docker repository being built.
+# DOCKERFILE_PATH: the dockerfile currently being built.
+# DOCKER_TAG: the Docker repository tag being built.
+# IMAGE_NAME: the name and tag of the Docker repository being built. (This variable is a combination of DOCKER_REPO:DOCKER_TAG.)
