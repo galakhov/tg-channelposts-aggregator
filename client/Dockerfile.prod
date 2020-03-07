@@ -11,7 +11,7 @@ RUN npm i --only=production
 COPY . .
 ARG SERVER_IP_ARG
 ENV SERVER_IP $SERVER_IP_ARG
-RUN REACT_APP_HOST_IP=${SERVER_IP} node scripts/build.js --env.NODE_ENV=production --env.REACT_APP_HOST=${SERVER_IP}
+RUN REACT_APP_HOST_IP=${SERVER_IP} node scripts/build.js --env.NODE_ENV=production
 # RUN npm run build --host $SERVER_IP_ARG
 RUN echo $SERVER_IP_ARG > /frontend/build/server_ip
 # this is where the compiled version of the frontend lands
@@ -30,6 +30,8 @@ COPY --from=front /frontend/build /usr/share/nginx/html
 CMD ["nginx", "-g", "daemon off;"]
 RUN ls -al /etc/nginx/conf.d/
 RUN ls -al /usr/share/nginx/html
+RUN cat /usr/share/nginx/html/server_ip
+RUN rm /usr/share/nginx/html/server_ip
 
 RUN echo "\e[104mAfter running the docker container the frontend will start at localhost:80\e[0m\n\n"
 
