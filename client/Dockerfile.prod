@@ -9,11 +9,14 @@ COPY package*.json ./
 # RUN npm i --only=production && npm cache clean --force
 RUN npm i --only=production
 COPY . .
-# RUN REACT_APP_SERVER_IP=${SERVER_IP_ARG} node scripts/build.js --env.NODE_ENV=production
-RUN echo $SERVER_IP_ARG
-RUN npm run build --host $SERVER_IP_ARG
+ARG SERVER_IP_ARG
+ENV SERVER_IP $SERVER_IP_ARG
+RUN echo $SERVER_IP > server_ip
+RUN REACT_APP_HOST_IP=${SERVER_IP} node scripts/build.js --env.NODE_ENV=production --env.REACT_APP_HOST=${SERVER_IP}
+# RUN npm run build --host $SERVER_IP_ARG
 # this is where the compiled version of the frontend lands
 RUN ls -al /frontend/build
+RUN cat /frontend/build/server_ip
 # RUN unset SERVER_IP
 
 # Stage 2: the react app runs behind its own nginx instance.
