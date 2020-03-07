@@ -8,10 +8,10 @@ services:
       # published=<PUBLISHED-PORT>,target=<CONTAINER-PORT>
       - protocol: tcp
         published: 80
-        target: 3000
+        target: 3333
       - protocol: tcp
         published: 443
-        target: 3000
+        target: 3333
     networks:
       traefik_proxy:
         aliases:
@@ -28,7 +28,7 @@ services:
         - 'traefik.docker.network=traefik_proxy'
 
         # services
-        - 'traefik.http.services.frontend.loadbalancer.server.port=3000'
+        - 'traefik.http.services.frontend.loadbalancer.server.port=3333'
         - 'traefik.http.services.frontend.loadbalancer.server.scheme=http'
 
         # routers
