@@ -30,6 +30,8 @@ services:
         # services
         - 'traefik.http.services.frontend.loadbalancer.server.port=3333'
         - 'traefik.http.services.frontend.loadbalancer.server.scheme=http'
+        - 'traefik.http.services.frontend.loadbalancer.passhostheader=true'
+        - 'traefik.http.services.frontend.loadbalancer.sticky=true'
 
         # routers
         - 'traefik.http.routers.frontend-http.entrypoints=web'

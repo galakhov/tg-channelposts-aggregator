@@ -135,7 +135,7 @@ services:
   # global routing server & dashboard configuration / reverse proxy
   # https://github.com/cbirkenbeul/docker-homelab/tree/master/traefik
   traefik-svc:
-    image: traefik:v2.1.4
+    image: traefik:v2.1.6
     command:
       - '--configFile=/etc/traefik/config/traefik.toml' # read it from the mounted volume
       # - "--certificatesResolvers.my-resolver.acme.dnsChallenge=true"

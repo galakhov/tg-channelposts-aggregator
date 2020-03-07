@@ -17,8 +17,10 @@
     directory = "/etc/traefik/config/dynamic"
     filename = "traefik.dynamic.toml"
     watch = true
+    # https://github.com/containous/traefik/issues/4875
     # https://github.com/containous/traefik/issues/4924
     # https://github.com/containous/traefik/issues/5618
+    # https://github.com/containous/traefik/issues/5544
   [providers.docker]
     exposedByDefault = true
     swarmMode = true
@@ -40,12 +42,14 @@
 [entryPoints]
   [entryPoints.web]
     address = ":80"
+    [entryPoints.web.redirect]
+      entryPoint = "web-secure"
   [entryPoints.backend]
     address = ":8080"
   [entryPoints.drone-server]
     address = ":8090"
-  [entryPoints.drone-agent]
-    address = ":3002"
+  # [entryPoints.drone-agent]
+  #   address = ":3002"
   [entryPoints.traefik]
     address = ":9009"
     # https://docs.traefik.io/v2.1/operations/api/#insecure
