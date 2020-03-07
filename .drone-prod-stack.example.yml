@@ -231,6 +231,7 @@ services:
       - /etc/localtime:/etc/localtime
       - /var/swarm/traefik/acme:/etc/traefik/acme
       - /var/swarm/traefik/config:/etc/traefik/config
+      - /var/swarm/traefik/config/dynamic:/etc/traefik/config/dynamic
       - /var/swarm/traefik/certs:/etc/traefik/certs
       - /var/swarm/traefik/logs:/logs
       # - /var/swarm/traefik/access.log:/traefik.access.log

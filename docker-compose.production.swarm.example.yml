@@ -28,12 +28,12 @@ services:
         - 'traefik.docker.network=traefik_proxy'
 
         # services
-        - 'traefik.http.services.frontend.loadbalancer.server.port=443'
-        - 'traefik.http.services.frontend.loadbalancer.server.scheme=https'
+        - 'traefik.http.services.frontend.loadbalancer.server.port=3000'
+        - 'traefik.http.services.frontend.loadbalancer.server.scheme=http'
 
         # routers
         - 'traefik.http.routers.frontend-http.entrypoints=web'
-        - 'traefik.http.routers.frontend-http.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/api/v1/posts`))'
+        - 'traefik.http.routers.frontend-http.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/`))'
         # - 'traefik.http.middlewares.frontend-strip-prefix.stripPrefix.prefixes=/authorize'
         # - 'traefik.http.routers.frontend-http.middlewares=frontend-strip-prefix@docker'
         - 'traefik.http.routers.frontend-http.service=frontend'
@@ -48,7 +48,7 @@ services:
         - 'traefik.http.routers.frontend-https.entrypoints=web-secure'
         - 'traefik.http.routers.frontend-https.tls=true'
         - 'traefik.http.routers.frontend-https.tls.certresolver=default'
-        - 'traefik.http.routers.frontend-https.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/api/v1/posts`))'
+        - 'traefik.http.routers.frontend-https.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/`))'
 
         # TODO: assign the service named 'frontend-service' in swarm
         # https://docs.traefik.io/routing/providers/docker/#service-definition

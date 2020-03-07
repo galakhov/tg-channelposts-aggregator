@@ -13,8 +13,14 @@
   # https://docs.traefik.io/user-guides/grpc/#with-https
 
 [providers]
+  [providers.file]
+    directory = "/etc/traefik/config/dynamic"
+    filename = "traefik.dynamic.toml"
+    watch = true
+    # https://github.com/containous/traefik/issues/4924
+    # https://github.com/containous/traefik/issues/5618
   [providers.docker]
-    exposedByDefault = false
+    exposedByDefault = true
     swarmMode = true
     useBindPortIP = true
     # endpoint = "tcp://127.0.0.1:2377"
@@ -24,9 +30,6 @@
     # watch for new (or no longer available) containers
     endpoint = "unix:///var/run/docker.sock"
     # docker swarm mode (1.12+): https://docs.traefik.io/routing/providers/docker/
-    [providers.file]
-      filename = "/etc/traefik/config/traefik.dynamic.toml"
-      watch = true
 
 [api]
   dashboard = true
