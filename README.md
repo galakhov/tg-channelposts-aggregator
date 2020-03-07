@@ -58,9 +58,9 @@ _Automated builds_ allow you to go even more deeper. For instance, if you need t
 docker build -t $IMAGE_NAME -f $DOCKERFILE_PATH --build-arg CUSTOM_ENV_VAR=$ENV_VAR_FROM_DOCKER_HUB .
 ```
 
-If you **save** the `ENV_VAR_FROM_DOCKER_HUB` environment variable in the Automated Build's settings (_Build configurations_), you will then be able to access it as an argument later as explaned below:
+If you **save** the `ENV_VAR_FROM_DOCKER_HUB` environment variable in the Automated Build's settings (_Build configurations_ in Figure 2), you will then be able to access it as an argument later as explaned below:
 
-<img src="./_manual/images/06-Automated-Build-ENV-vars.jpg" alt="ENV vars in an Automated Build on Docker Hub" width="700">
+<img src="./_manual/images/06-Automated-Build-ENV-vars.jpg" alt="ENV vars in an Automated Build on Docker Hub" width="1024">
 <sub><strong>Figure 3. Set up of environment variables in Automated Build's settings.</strong></sub>
 
 <br />
@@ -74,7 +74,7 @@ FROM mhart/alpine-node:10 as machine-1
 ARG CUSTOM_ENV_VAR
 ENV CUSTOM_ENV $CUSTOM_ENV_VAR
 RUN PASS_THIS_ENV_VAR_TO_SCRIPT=${CUSTOM_ENV} node scripts/script.js
-# you can read the env variable in scripts/script.js using: process.env.PASS_THIS_ENV_VAR_TO_SCRIPT
+# you can get the env variable passed to scripts/script.js using: process.env.PASS_THIS_ENV_VAR_TO_SCRIPT
 # see: ./client/src/utils/constants/index.js
 RUN echo $CUSTOM_ENV_VAR > /files/in/the/path/file_with_a_custom_var
 # (...)
@@ -83,13 +83,22 @@ COPY --from=machine-1 /files/in/the/path /copied/here/in/another/path
 RUN cat /copied/here/in/another/path/file_with_a_custom_var
 ```
 
-Of course you can set up multiple environment variables([like in this example](https://github.com/rossf7/label-schema-automated-build/blob/master/hooks/build)) using the `--build-arg` flag:
+By the way, you need to [prepend](https://create-react-app.dev/docs/adding-custom-environment-variables) the `REACT_APP_` prefix to your environment variables if you are trying to compile a react application during the build phase and want to pass any ENV vars into it:
+
+```bash
+# (...) so the line with an environment variable becomes:
+RUN REACT_APP_ENV_VAR=${CUSTOM_ENV} node scripts/build.js --env.NODE_ENV=production
+# (...)
+# you can then read the env variable in any script using: process.env.REACT_APP_ENV_VAR
+```
+
+Of course you can set up **multiple** environment variables ([like in this example](https://github.com/rossf7/label-schema-automated-build/blob/master/hooks/build)) using the `--build-arg` flag:
 
 ```bash
 docker build --build-arg <varname1>=<value1> --build-arg <varname2>=<value2> -t $IMAGE_NAME  -f $DOCKERFILE_PATH .
 ```
 
-In case you wonder what these `$IMAGE_NAME` and `$DOCKERFILE_PATH` are? Those are the default utility environment variables and ["are available during automated builds"](https://docs.docker.com/docker-hub/builds/advanced/#environment-variables-for-building-and-testing). The flags `-t` and `-f` with these variables should be left as they are in order to rerun (_override_) the `docker build` command with the same build configuration, as it was shown previously in the Figure 3.
+In case you wonder what these `$IMAGE_NAME` and `$DOCKERFILE_PATH` are? Those are the default utility environment variables and ["are available during automated builds"](https://docs.docker.com/docker-hub/builds/advanced/#environment-variables-for-building-and-testing). The flags `-t` and `-f` with these variables should be left as they are in order to correctly rerun (i.e., _override_) the `docker build` command with the same build configuration, as it was shown previously in Figures 2 and 3.
 
 > Caution: A hooks/build file overrides the basic docker build command used by the builder, so you must include a similar build command in the hook or the automated build fails.
 > Source: [Override the “build” phase to set variables](https://docs.docker.com/docker-hub/builds/advanced/#build-hook-examples).
@@ -101,13 +110,17 @@ All this is required due to the reason that:
 > Create a file called /hooks/build **relative** to your Dockerfile. This overrides the Docker build process so your script needs to build and tag the image.
 > Source: [Docker don’t allow dynamic code to run in the Dockerfile](https://medium.com/microscaling-systems/labelling-automated-builds-on-docker-hub-f3d073fb8e1#4b65)
 
-Read [this post](https://stackoverflow.com/questions/45277186/is-it-possible-to-add-environment-variables-in-automated-builds-in-docker-hub) for another short explanation and a good example. The [complete code](./client/hooks/build) of my example of a build hook script is [here](./client/hooks/build).
+Read [this post](https://stackoverflow.com/questions/45277186/is-it-possible-to-add-environment-variables-in-automated-builds-in-docker-hub) for another short explanation and a good example.
+
+The [complete code](./client/hooks/build) of my example of a build hook script is [here](./client/hooks/build).
 
 ### The deployment step with Drone CI/CD
 
 <img src="./_manual/images/05-Deployment.jpg" alt="CI and the architecture" width="700">
 <sub><strong>Figure 1. CI/CD step-by-step.</strong></sub>
 
+<br />
+<br />
 As for the (re-)deployment (**step 8** in _Figure 1_), the [Drone CI/CD tool](https://docs.drone.io) is responsible for it as well as for the notification about the build's status (**step 9** in _Figure 1_) at least in the pipeline of this repo. The new Docker containers are pulled (**step 7** in _Figure 1_) and the Docker Swarm Stack is updated after the [execution of one single command](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) in the end via the [Drone SSH plugin](http://plugins.drone.io/appleboy/drone-ssh/) on a VPS:
 
 ```bash

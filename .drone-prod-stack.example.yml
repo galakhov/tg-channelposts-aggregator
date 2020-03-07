@@ -247,7 +247,7 @@ networks:
     attachable: true
   microservices:
     driver: overlay
-    external: false
+    external: true
     attachable: true
 # docker network create --scope=swarm --driver=overlay --attachable traefik_proxy
 # docker network create --scope=swarm --driver=overlay --attachable drone_rpc

@@ -28,10 +28,8 @@ COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=front /frontend/build /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
-RUN ls -al /etc/nginx/conf.d/
-RUN ls -al /usr/share/nginx/html
-RUN cat /usr/share/nginx/html/server_ip
-RUN rm /usr/share/nginx/html/server_ip
+RUN ls -al /etc/nginx/conf.d/ && ls -al /usr/share/nginx/html
+RUN cat /usr/share/nginx/html/server_ip && rm /usr/share/nginx/html/server_ip
 
 RUN echo "\e[104mAfter running the docker container the frontend will start at localhost:80\e[0m\n\n"
 

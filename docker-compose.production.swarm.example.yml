@@ -16,9 +16,6 @@ services:
       traefik_proxy:
         aliases:
           - traefik_proxy-net
-      microservices:
-        aliases:
-          - microservices-net
 
     environment:
       - FRONTEND_HOST
@@ -72,9 +69,9 @@ services:
         target: 8080
       - '9000:9000/tcp' # see ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
     networks:
-      microservices:
+      traefik_proxy:
         aliases:
-          - microservices-net
+          - traefik_proxy-net
     environment:
       - FRONTEND_HOST
       # required during the run of the backend service (backend container):
@@ -85,7 +82,7 @@ services:
       labels:
         # network
         - 'traefik.enable=true'
-        - 'traefik.docker.network=microservices'
+        - 'traefik.docker.network=traefik_proxy'
 
         # routers
         - 'traefik.http.routers.backend-http.entrypoints=backend'

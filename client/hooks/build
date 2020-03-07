@@ -13,7 +13,7 @@ docker build -t $IMAGE_NAME -f $DOCKERFILE_PATH --build-arg SERVER_IP_ARG=$SERVE
 
 echo "------ BUILD HOOK WAS STOPPED -------"
 
-# See this post for explanation:
+# See this post for the detailed explanation:
 # https://stackoverflow.com/questions/45277186/is-it-possible-to-add-environment-variables-in-automated-builds-in-docker-hub
 # Build hook examples' source code: https://github.com/binbashar/public-docker-images/tree/master/terraform-resources
 

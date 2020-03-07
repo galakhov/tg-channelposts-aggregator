@@ -96,7 +96,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "build": "node scripts/build.js --env.NODE_ENV=production --env.REACT_APP_HOST=$npm_config_host",
+    "build": "node scripts/build.js --env.NODE_ENV=production",
     "test": "node scripts/test.js --env=jsdom"
   },
   "eslintConfig": {
