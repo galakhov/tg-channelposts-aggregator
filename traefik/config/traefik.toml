@@ -22,7 +22,7 @@
     # https://github.com/containous/traefik/issues/5618
     # https://github.com/containous/traefik/issues/5544
   [providers.docker]
-    exposedByDefault = true
+    exposedByDefault = false
     swarmMode = true
     useBindPortIP = true
     # endpoint = "tcp://127.0.0.1:2377"
@@ -42,8 +42,8 @@
 [entryPoints]
   [entryPoints.web]
     address = ":80"
-    [entryPoints.web.redirect]
-      entryPoint = "web-secure"
+    # [entryPoints.web.proxyProtocol]
+      # insecure = true
   [entryPoints.backend]
     address = ":8080"
   [entryPoints.drone-server]
@@ -58,6 +58,8 @@
     address = ":9010"
   [entryPoints.web-secure]
     address = ":443"
+  [entryPoints.backend-secure]
+    address = ":8443"
 
 [certificatesResolvers]
   [certificatesResolvers.my-resolver.acme]

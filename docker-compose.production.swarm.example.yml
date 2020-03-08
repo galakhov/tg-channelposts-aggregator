@@ -4,19 +4,15 @@ services:
   frontend:
     image: fuzzysouls/tg-aggregator-frontend:latest
     ports:
-      # - 80:3000 # old syntax
+      # - 3333:3333 # old syntax of the published service port
       # published=<PUBLISHED-PORT>,target=<CONTAINER-PORT>
       - protocol: tcp
-        published: 80
-        target: 3333
-      - protocol: tcp
-        published: 443
+        published: 3333
         target: 3333
     networks:
       traefik_proxy:
         aliases:
           - traefik_proxy-net
-
     environment:
       - FRONTEND_HOST
       - SERVER_IP
@@ -27,40 +23,40 @@ services:
         - 'traefik.enable=true'
         - 'traefik.docker.network=traefik_proxy'
 
-        # services
+        # configuration of the port and connection to the internal docker service
         - 'traefik.http.services.frontend.loadbalancer.server.port=3333'
         - 'traefik.http.services.frontend.loadbalancer.server.scheme=http'
         - 'traefik.http.services.frontend.loadbalancer.passhostheader=true'
         - 'traefik.http.services.frontend.loadbalancer.sticky=true'
 
-        # routers
-        - 'traefik.http.routers.frontend-http.entrypoints=web'
-        - 'traefik.http.routers.frontend-http.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/`))'
-        # - 'traefik.http.middlewares.frontend-strip-prefix.stripPrefix.prefixes=/authorize'
-        # - 'traefik.http.routers.frontend-http.middlewares=frontend-strip-prefix@docker'
-        - 'traefik.http.routers.frontend-http.service=frontend'
-        - 'traefik.http.routers.frontend-http.middlewares=frontend_https_mdlwr@docker'
-
-        # middlewares
-        - 'traefik.http.middlewares.frontend_https_mdlwr.redirectscheme.scheme=https'
-        - 'traefik.http.middlewares.frontend_https_mdlwr.redirectscheme.permanent=true'
-        - 'traefik.http.middlewares.frontend_https_mdlwr.redirectscheme.port=443'
-
         # routers https
         - 'traefik.http.routers.frontend-https.entrypoints=web-secure'
         - 'traefik.http.routers.frontend-https.tls=true'
-        - 'traefik.http.routers.frontend-https.tls.certresolver=default'
-        - 'traefik.http.routers.frontend-https.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/`))'
+        # - 'traefik.http.routers.frontend-https.tls.certresolver=default'
+        - 'traefik.http.routers.frontend-https.rule=Host(`${FRONTEND_HOST}`)'
+
+        # routers
+        # - 'traefik.http.routers.frontend-http.entrypoints=web'
+        # - 'traefik.http.routers.frontend-http.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/`))'
+        # - 'traefik.http.middlewares.frontend-strip-prefix.stripPrefix.prefixes=/'
+        # - 'traefik.http.routers.frontend-http.middlewares=frontend-strip-prefix@docker'
+        # - 'traefik.http.routers.frontend-http.service=frontend'
+        # - 'traefik.http.routers.frontend-http.middlewares=frontend_https_mdlwr@docker'
+
+        # middlewares
+        - 'traefik.http.middlewares.frontend_https_mdlwr.redirectscheme.scheme=https'
+        # - 'traefik.http.middlewares.frontend_https_mdlwr.redirectscheme.permanent=true'
+        - 'traefik.http.middlewares.frontend_https_mdlwr.redirectscheme.port=443'
 
         # TODO: assign the service named 'frontend-service' in swarm
         # https://docs.traefik.io/routing/providers/docker/#service-definition
         # - 'traefik.port=3000'
-      replicas: 2
+      replicas: 1
       restart_policy:
         condition: on-failure
-      placement:
-        constraints:
-          - node.role == worker
+      # placement:
+      #   constraints:
+      #     - node.role == worker
 
   # dynamic configuration: https://docs.traefik.io/reference/dynamic-configuration/docker/
   backend:
@@ -90,24 +86,34 @@ services:
         - 'traefik.http.routers.backend-http.entrypoints=backend'
         - 'traefik.http.routers.backend-http.rule=(Host(`${FRONTEND_HOST}`) && PathPrefix(`/api/v1/posts`))'
         - 'traefik.http.routers.backend-http.service=backend'
+        - 'traefik.http.routers.backend-http.middlewares=backend_https_mdlwr@docker'
+
+        # middlewares
+        - 'traefik.http.middlewares.backend_https_mdlwr.redirectscheme.scheme=https'
+        - 'traefik.http.middlewares.backend_https_mdlwr.redirectscheme.permanent=true'
+        - 'traefik.http.middlewares.backend_https_mdlwr.redirectscheme.port=8443'
+
+        # routers https
+        - 'traefik.http.routers.backend-https.entrypoints=backend-secure'
+        - 'traefik.http.routers.backend-https.rule=( Host(`${FRONTEND_HOST}`) && PathPrefix(`/api/v1/posts`) )'
+        - 'traefik.http.routers.backend-https.tls=true'
+
         # no need for TLS on the backend, as it's in internal network anyway
-
-        # - 'traefik.http.routers.backend-https.tls=true'
-        # - "traefik.http.routers.backend-https.entrypoints=back-secure"
-        # - 'traefik.http.routers.backend-https.tls.certresolver=godaddy-resolver'
-
-        # https://docs.traefik.io/migration/v1-to-v2/#http-to-https-redirection-is-now-configured-on-routers
-        # https://community.containo.us/t/middleware-redirectscheme-seemingly-ignored/3805/2
-        # https://community.containo.us/t/does-insecureskipverify-work-differently-in-traefik-2-x/3677
 
         # prefix api/v1/posts:
         # https://docs.traefik.io/migration/v1-to-v2/#strip-and-rewrite-path-prefixes
 
-        # services
+        # docker service's configuration (connection happens over the internal overlay network)
         - 'traefik.http.services.backend.loadbalancer.server.port=8080'
         - 'traefik.http.services.backend.loadbalancer.server.scheme=http'
-        # TODO: use the the service name (e.g. 'backend-service') assigned in swarm
+        - 'traefik.http.services.backend.loadbalancer.passhostheader=true'
+        - 'traefik.http.services.backend.loadbalancer.sticky=true'
         # https://docs.traefik.io/routing/providers/docker/#service-definition
+        # https://docs.traefik.io/migration/v1-to-v2/#http-to-https-redirection-is-now-configured-on-routers
+        # https://community.containo.us/t/middleware-redirectscheme-seemingly-ignored/3805/2
+        # https://community.containo.us/t/does-insecureskipverify-work-differently-in-traefik-2-x/3677
+        # prefix api/v1/posts:
+        # https://docs.traefik.io/migration/v1-to-v2/#strip-and-rewrite-path-prefixes
       mode: replicated
       replicas: 1
       restart_policy:

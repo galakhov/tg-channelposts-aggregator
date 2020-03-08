@@ -22,44 +22,46 @@ services:
     env_file:
       - /var/swarm/drone/server/config/.env.drone.server
     environment:
-      - DRONE_SERVER_HOST
-      # - DRONE_SERVER_PORT
-      - DRONE_SERVER_PROXY_HOST
-      - DRONE_SERVER_PROXY_PROTO
+      - DRONE_SERVER_HOST_TRAEFIK
+      - DRONE_SERVER_PORT_TRAEFIK
     networks:
       drone_rpc:
         aliases:
           - drone-net
     deploy:
       labels:
-      # network
-      ## - 'traefik.enable=true'
-      ## - 'traefik.docker.network=drone_rpc'
+        # network
+        - 'traefik.enable=true'
+        - 'traefik.docker.network=drone_rpc'
 
-      # routers http
-      ## - 'traefik.http.routers.drone_http.entrypoints=drone_server_entry'
-      ## - 'traefik.http.routers.drone_http.rule=(Host(`${DRONE_SERVER_HOST}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`)))'
-      ## - 'traefik.http.middlewares.drone-strip-prefix.stripPrefix.prefixes=/authorize'
-      ## - 'traefik.http.routers.drone_http.middlewares=drone-strip-prefix@docker'
-      ## - 'traefik.http.routers.drone_http.service=drone-server@docker'
-      ## - 'traefik.http.routers.drone_http.middlewares=drone_https_mdlwr@docker'
-      # - 'traefik.http.routers.drone_http.middlewares=https_redirect'
-      # routers https
-      ## - 'traefik.http.routers.drone_https.entrypoints=drone_server_entry'
-      ## - 'traefik.http.routers.drone_https.rule=(Host(`${DRONE_SERVER_HOST}:${DRONE_SERVER_PORT}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`)))'
-      ## - 'traefik.http.routers.drone_https.tls=true'
-      ## - 'traefik.http.routers.drone_https.tls.certresolver=default'
-      # - 'traefik.http.routers.drone_https.tls.certresolver=my-resolver'
-      # middlewares
-      ## - 'traefik.http.middlewares.drone_https_mdlwr.redirectscheme.scheme=https'
-      # - 'traefik.http.middlewares.https_redirect.redirectscheme.scheme=https'
-      # - 'traefik.http.middlewares.https_redirect.redirectscheme.permanent=true'
-      # services
-      ## - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT}'
+        # routers http
+        - 'traefik.http.routers.drone-http.rule=(Host(`${DRONE_SERVER_HOST_TRAEFIK}`) && (PathPrefix(`/authorize`) || PathPrefix(`/login`) || PathPrefix(`/rpc`)))'
+        - 'traefik.http.routers.drone-http.entrypoints=drone-server'
+        - 'traefik.http.routers.drone-http.service=drone-server@docker'
+        # - 'traefik.http.middlewares.drone-strip-prefix.stripPrefix.prefixes=/rpc'
+        # - 'traefik.http.routers.drone-http.middlewares=drone-strip-prefix@docker'
+        # - 'traefik.http.routers.drone-http.middlewares=drone_https_mdlwr@docker'
+        # - 'traefik.http.routers.drone-http.middlewares=https_redirect'
+
+        # routers https
+        # - 'traefik.http.routers.drone-https.entrypoints=drone_server_entry'
+        # - 'traefik.http.routers.drone-https.rule=Host(`${DRONE_SERVER_HOST_TRAEFIK}`)'
+        # - 'traefik.http.routers.drone-https.tls=true'
+        # - 'traefik.http.routers.drone-https.tls.certresolver=default'
+        # - 'traefik.http.routers.drone-https.tls.certresolver=mycert'
+
+        # middlewares
+        ## - 'traefik.http.middlewares.drone-https_mdlwr.redirectscheme.scheme=https'
+        # - 'traefik.http.middlewares.https_redirect.redirectscheme.scheme=https'
+        # - 'traefik.http.middlewares.https_redirect.redirectscheme.permanent=true'
+
+        # services
+        - 'traefik.http.services.drone-server.loadbalancer.server.port=${DRONE_SERVER_PORT_TRAEFIK}'
+        - 'traefik.http.services.drone-server.loadbalancer.server.scheme=http'
 
       # placement:
-      # constraints:
-      #   - node.role != manager
+      constraints:
+        - node.role != manager
       mode: replicated
       # Switching to dnsrr, to use an external load balancer without the routing mesh:
       # https://docs.docker.com/engine/swarm/ingress/#without-the-routing-mesh
@@ -98,8 +100,8 @@ services:
     env_file:
       - /var/swarm/drone/agent/config/.env.drone.agent
     environment:
-      - DRONE_UI_HOST
-      - DRONE_UI_PORT
+      - DRONE_AGENT_HOST
+      - DRONE_AGENT_PORT_TRAEFIK
     networks:
       drone_rpc:
         aliases:
@@ -139,12 +141,22 @@ services:
     command:
       - '--configFile=/etc/traefik/config/traefik.toml' # read it from the mounted volume
       # - "--certificatesResolvers.my-resolver.acme.dnsChallenge=true"
+    environment:
+      - TRAEFIK_HOST
+      - TRAEFIK_DASHBOARD_PORT
+    env_file:
+      - /var/swarm/traefik/.env.provider
     ports:
-      # - '8090:8090/tcp' # drone entry-point
+      # web endpoint, see: ./traefik/config/traefik.toml
+      - '80:80/tcp'
+      # web-secure endpoint
+      - '443:443/tcp'
+      # backend-secure endpoint
+      - '8443:8443/tcp'
       - protocol: tcp
         published: 9010
         target: 9009
-      # - '9010:9009/tcp' # traefik dashboard
+      # - old syntax: '9010:9009/tcp' # traefik dashboard
     networks:
       traefik_proxy:
         aliases:
@@ -157,11 +169,6 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
-    environment:
-      - TRAEFIK_HOST
-      - TRAEFIK_DASHBOARD_PORT
-    env_file:
-      - /var/swarm/traefik/.env.provider
     deploy:
       restart_policy:
         condition: on-failure
@@ -220,10 +227,9 @@ services:
         # You can then access the dashboard at http://traefik.example.com:9009 or at http://<Traefik IP>:9009/dashboard/
         # or just do: curl -s 127.0.0.1:9009/api/rawdata | jq .
     depends_on:
-      # - backend
-      # - frontend
+      - backend
+      - frontend
       - drone-server
-      # - drone-agent
       # - search
       # - db
     volumes:
