@@ -3,12 +3,12 @@
 const port = process.env.REACT_APP_HOST_PORT || 8080
 
 console.log(
-  'Passed ENV variable: REACT_APP_HOST_IP: ' + process.env.REACT_APP_HOST_IP
+  'Passed ENV variable: REACT_APP_HOST: ' + process.env.REACT_APP_HOST
 )
 
 export const API_HOST =
   process.env.NODE_ENV === 'production'
-    ? process.env.REACT_APP_HOST_IP
-      ? `http://${process.env.REACT_APP_HOST_IP}:${port}`
+    ? process.env.REACT_APP_HOST
+      ? `https://${process.env.REACT_APP_HOST}:${port}`
       : '.'
     : `http://localhost:${port}`
