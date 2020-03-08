@@ -9,7 +9,7 @@ printenv
 # ENV VARs are set by the cloud.docker.com build process, and are available during automated builds, automated tests, and while executing hooks like here.
 # DOCKER_TAG: the Docker repository tag being built.
 
-docker build -t $IMAGE_NAME -f $DOCKERFILE_PATH --build-arg SERVER_IP_ARG=$SERVER_IP_FROM_DOCKER_HUB .
+docker build -t $IMAGE_NAME -f $DOCKERFILE_PATH --build-arg SERVER_IP_ARG=$SERVER_IP_FROM_DOCKER_HUB --build-arg SERVER_PORT_ARG=$SERVER_PORT_FROM_DOCKER_HUB .
 
 echo "------ BUILD HOOK WAS STOPPED -------"
 
