@@ -13,9 +13,10 @@
 - @multifeed_edge_bot to aggregate and [redirect](https://github.com/galakhov/tg-channelposts-aggregator/tree/master/server) messages from a set of channels
 - [ElasticSearch](https://www.elastic.co)
 - [monstache](https://rwynn.github.io/monstache-site/)
-- Docker Hub Registry
-- Drone.io: CI/CD Tool
-- Telegram
+- [Docker Hub Registry](https://hub.docker.com)
+- [Traefik](https://docs.traefik.io/)
+- [Self-hosted Drone.io: CI/CD Tool](https://drone.io)
+- [Telegram](https://core.telegram.org/bots/api)
 
 # Installation
 
