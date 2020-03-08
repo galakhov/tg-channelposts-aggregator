@@ -256,8 +256,10 @@ networks:
     driver: overlay
     external: true
     attachable: true
+# Shell commands:
 # docker network create --scope=swarm --driver=overlay --attachable traefik_proxy
 # docker network create --scope=swarm --driver=overlay --attachable drone_rpc
 # docker network create --scope=swarm --driver=overlay --attachable microservices
 # docker-compose -f drone-traefik.prod.yml -f microservices.prod.yml config > final-stack.yml
 # docker stack deploy -c final-stack.yml drone-ci-traefik
+# Consider this set-up script: https://github.com/Starttoaster/docker-traefik

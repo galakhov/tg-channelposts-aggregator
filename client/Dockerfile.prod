@@ -20,7 +20,8 @@ RUN ls -al /frontend/build
 # RUN unset SERVER_HOST
 
 # Stage 2: the react app runs behind its own nginx instance.
-FROM nginx:1.17.7-alpine
+FROM nginx:1.17.9-alpine
+# port of the frontend service in docker swarm
 EXPOSE 3333
 # Remove default nginx website
 RUN rm -rf /usr/share/nginx/html/*
@@ -32,7 +33,7 @@ CMD ["nginx", "-g", "daemon off;"]
 RUN ls -al /etc/nginx/conf.d/ && ls -al /usr/share/nginx/html
 RUN cat /usr/share/nginx/html/server_host && rm /usr/share/nginx/html/server_host
 
-RUN echo "\e[104mAfter running the docker container the frontend will start at localhost:80\e[0m\n\n"
+RUN echo "\e[104mAfter running the docker container the frontend will start at https://yourdomain.tld\e[0m\n\n"
 
 # https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#memory
 # docker build -t production_frontend -f ./Dockerfile.prod . --no-cache

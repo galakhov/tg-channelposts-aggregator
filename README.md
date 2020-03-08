@@ -84,7 +84,7 @@ COPY --from=machine-1 /files/in/the/path /copied/here/in/another/path
 RUN cat /copied/here/in/another/path/file_with_a_custom_var
 ```
 
-By the way, you need to [prepend](https://create-react-app.dev/docs/adding-custom-environment-variables) the `REACT_APP_` prefix to your environment variables if you are trying to compile a react application during the build phase and want to pass any ENV vars into it:
+By the way, you need to [prepend](https://create-react-app.dev/docs/adding-custom-environment-variables) the `REACT_APP_` prefix to your environment variables if you are trying to compile a react application (developed based on the create-react-app) during the build phase and do want to pass any ENV vars into it:
 
 ```bash
 # (...) so the line with an environment variable becomes:
@@ -122,6 +122,7 @@ The [complete code](./client/hooks/build) of my example of a build hook script i
 
 <br />
 <br />
+
 As for the (re-)deployment (**step 8** in _Figure 1_), the [Drone CI/CD tool](https://docs.drone.io) is responsible for it as well as for the notification about the build's status (**step 9** in _Figure 1_) at least in the pipeline of this repo. The new Docker containers are pulled (**step 7** in _Figure 1_) and the Docker Swarm Stack is updated after the [execution of one single command](https://github.com/galakhov/tg-channelposts-aggregator/blob/dockerized/.drone.yml#L66) in the end via the [Drone SSH plugin](http://plugins.drone.io/appleboy/drone-ssh/) on a VPS:
 
 ```bash

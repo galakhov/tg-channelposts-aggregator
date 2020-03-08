@@ -1,9 +1,8 @@
-# configuration example: https://docs.traefik.io/v2.0/reference/static-configuration/file/
 [global]
   sendAnonymousUsage = false
 
 [log]
-  level = "DEBUG" # ERROR|INFO
+  level = "ERROR" # DEBUG|INFO
   filePath = "/logs/traefik.log" # see 'traefik: volumes:' section in the compose file
   format = "json"
   # https://docs.traefik.io/observability/access-logs/
@@ -17,10 +16,6 @@
     directory = "/etc/traefik/config/dynamic"
     filename = "traefik.dynamic.toml"
     watch = true
-    # https://github.com/containous/traefik/issues/4875
-    # https://github.com/containous/traefik/issues/4924
-    # https://github.com/containous/traefik/issues/5618
-    # https://github.com/containous/traefik/issues/5544
   [providers.docker]
     exposedByDefault = false
     swarmMode = true
@@ -88,3 +83,10 @@
 
 # https://docs.traefik.io/https/acme/
 # https://docs.traefik.io/migration/v1-to-v2/
+
+# A configuration example: https://docs.traefik.io/v2.0/reference/static-configuration/file/
+# Other examples of the solid trafik's configurations:
+# https://github.com/containous/traefik/issues/4875
+# https://github.com/containous/traefik/issues/4924
+# https://github.com/containous/traefik/issues/5618
+# https://github.com/containous/traefik/issues/5544

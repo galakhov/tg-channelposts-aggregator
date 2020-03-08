@@ -19,7 +19,7 @@ RUN ls -al
 EXPOSE 8080
 
 CMD ["pm2-runtime", "start", "pm2.config.js", "start", "server.js", "--web", "9000"]
-RUN echo "\e[104mAfter running the docker container the backend will start at: http://yourdomain:8080\e[0m\n\n"
+RUN echo "\e[104mAfter running the docker container the backend will start at: https://yourdomain:8080\e[0m\n\n"
 
 # docker build -t production_backend -f ./Dockerfile.prod .
 # docker run -p 8080:8080 -d --name tg-backend -m "300M" --memory-swap "1G" production_backend
