@@ -77,7 +77,7 @@ npm start tg-aggregator -l ./logs/pm2/logs.log
 pm2 monit # to start the console-based monitoring (see below)
 ```
 
-In production, for instance in the Travis CI UI, you can set the environment variables [in the repository settings section](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings). If you prefer GitLab CI, you can also [define a set of your own custom environment variables in their UI](https://docs.gitlab.com/ce/ci/variables/README.html#creating-a-custom-environment-variable). Other modern CI tools such as [Jenkins](https://jenkins.io/doc/book/using/using-credentials/#configuring-credentials) or the lightweight [Drone](https://drone.io) do as well allow you to configure [secrets keys](https://docs.drone.io/configure/secrets/repository/) (i.e. environment constants) for a repository or for a whole organization.
+In production, for instance in the Travis CI UI, you can set the environment variables [in the repository settings section](https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings). If you prefer GitLab CI, you can also [define a set of your own custom environment variables in their UI](https://docs.gitlab.com/ce/ci/variables/README.html#creating-a-custom-environment-variable). [Other modern CI tools](https://free-for.dev/#/?id=ci-and-cd) such as [Jenkins](https://jenkins.io/doc/book/using/using-credentials/#configuring-credentials) or the lightweight [Drone CI/CD](https://drone.io) do as well allow you to configure [secret keys](https://docs.drone.io/configure/secrets/repository/) (i.e. environment constants) for a repository or for a whole organization.
 
 # Monitoring & Debugging 🐞
 
