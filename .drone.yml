@@ -15,9 +15,9 @@ name: Re-deploy Swarm Stack
 # https://developer.github.com/v3/repos/deployments/
 
 steps:
-  # ssh into the machine and deploy the docker image (pseudo code).
-  # http://plugins.drone.io/appleboy/drone-ssh/
+  # ssh into the machine and deploy the pulled docker containers.
   - name: deploy
+    # http://plugins.drone.io/appleboy/drone-ssh/
     image: appleboy/drone-ssh
     when:
       event:
@@ -34,6 +34,7 @@ steps:
       #   - production
       # https://docs.drone.io/pipeline/docker/syntax/conditions/#by-status
       # https://docs.drone.io/promote/
+    # global environment variables accessible in the scope of the current step:
     environment:
       FILE_PATH:
         from_secret: file_path
@@ -42,6 +43,7 @@ steps:
       STACK_NAME:
         from_secret: stack_name
     # https://github.com/appleboy/drone-ssh/issues/130
+    # internal plugin-related environment variables:
     settings:
       host:
         from_secret: ssh_host
@@ -60,13 +62,14 @@ steps:
         - echo $FILE_PATH/$FILE_NAME
         - echo "The name of the stack file:"
         - echo $STACK_NAME
-        # - docker stop myprogram
+        # - docker stop my-service
         # - docker pull company/project:${DRONE_COMMIT}
-        # - docker run -d company/project:${DRONE_COMMIT} myprogram
+        # - docker run -d company/project:${DRONE_COMMIT} my-service
+        # - docker stack rm $STACK_NAME # if you need to shut down the stack first
         - docker stack deploy -c $FILE_PATH/$FILE_NAME $STACK_NAME
   # https://discourse.drone.io/t/triggering-promotion-event/6634/7
 
-  # Notify Telegram about the deployment status (about the github commit)
+  # Notify the pre-configured Telegram BOT about the deployment status and github commit
   - name: telgram_notify
     image: appleboy/drone-telegram
     when:
@@ -74,7 +77,7 @@ steps:
         - success
         - failure
     settings:
-      # The secrets below can be entered from the Drone UI for this repo
+      # The secrets below can be entered in the Drone UI > repo > settings
       token:
         from_secret: telegram_token
       to:

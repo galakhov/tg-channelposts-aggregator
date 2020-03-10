@@ -23,7 +23,8 @@ services:
         - 'traefik.enable=true'
         - 'traefik.docker.network=traefik_proxy'
 
-        # configuration of the port and connection to the internal docker service
+        # configuration of the port and protocol of the internal docker service
+        # that traefik needs to look for to load balance and make it accessible
         - 'traefik.http.services.frontend.loadbalancer.server.port=3333'
         - 'traefik.http.services.frontend.loadbalancer.server.scheme=http'
         - 'traefik.http.services.frontend.loadbalancer.passhostheader=true'

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "------ BUILD HOOK WAS TRIGGERED -------"
+echo "------ FRONTEND: BUILD HOOK WAS TRIGGERED -------"
 printenv
 
 # Caution: A hooks/build file overrides the basic docker build command used by the builder, so you must include a similar build command in the hook or the automated build fails.
@@ -11,7 +11,7 @@ printenv
 
 docker build -t $IMAGE_NAME -f $DOCKERFILE_PATH --build-arg SERVER_HOST_ARG=$SERVER_HOST_FROM_DOCKER_HUB --build-arg SERVER_PORT_ARG=$SERVER_PORT_FROM_DOCKER_HUB .
 
-echo "------ BUILD HOOK WAS STOPPED -------"
+echo "------ FRONTEND: BUILD HOOK WAS STOPPED -------"
 
 # See this post for the detailed explanation:
 # https://stackoverflow.com/questions/45277186/is-it-possible-to-add-environment-variables-in-automated-builds-in-docker-hub
