@@ -1,0 +1,140 @@
+version: '3.7'
+
+# traefik:
+# ports:
+#   - "80:80"
+#   - "443:443"
+#   - "9200:9200"
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+    hostname: '{{.Node.Hostname}}-elasticsearch'
+    ports:
+      - target: 9200
+        published: 9200
+        protocol: tcp
+        mode: host
+      - target: 9300
+        published: 9300
+        protocol: tcp
+        mode: host
+    environment:
+      - 'cluster.name=es-cluster'
+      - 'discovery.zen.ping.unicast.hosts=elasticsearch'
+      - 'discovery.seed_hosts=elasticsearch'
+      - 'discovery.zen.minimum_master_nodes=1'
+      - 'http.host=0.0.0.0'
+      - 'transport.host=0.0.0.0'
+      - 'xpack.security.enabled=false'
+      - 'xpack.monitoring.enabled=false'
+      # - 'xpack.license.self_generated.type=trial'
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - 'ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}'
+      - 'node.master=true'
+      - 'node.data=true'
+      - 'node.ingest=true'
+      - 'node.name=es-node.{{.Task.Slot}}.{{.Node.Hostname}}'
+      - 'bootstrap.memory_lock=true'
+      - 'LOGSPOUT=ignore'
+      # - 'NODE_NAME: example'
+      # - 'HTTP_SSl: false'
+      # https://github.com/khezen/docker-elasticsearch#environment-variables
+      # https://github.com/khezen/docker-elasticsearch/blob/master/Dockerfile
+    labels:
+      - 'traefik.enable=false'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      endpoint_mode: dnsrr
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      # placement:
+      #     constraints:
+      #     - node.role == manager
+      resources:
+        limits:
+          cpus: '0.80'
+          memory: 768M
+        reservations:
+          cpus: '0.50'
+          memory: 512M
+    volumes:
+      - /var/swarm/es_data:/usr/share/elasticsearch/data
+    networks:
+      - elk-net
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.6.1
+    hostname: '{{.Node.Hostname}}-logstash'
+    ports:
+      - target: 12201
+        published: 12201
+        protocol: udp
+        mode: host
+    environment:
+      - XPACK_MONITORING_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - XPACK_MONITORING_ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
+      - XPACK_MONITORING_ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
+    labels:
+      - 'traefik.enable=false'
+    deploy:
+      labels:
+        - 'traefik.enable=false'
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      # placement:
+      #     constraints:
+      #     - node.role == manager
+    networks:
+      - elk-net
+    configs:
+      - source: ls_config
+        target: /usr/share/logstash/pipeline/logstash.conf
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.6.1
+    hostname: '{{.Node.Hostname}}-kibana'
+    ports:
+      - target: 5601
+        published: 80
+        protocol: tcp
+        mode: host
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=${ELASTICSEARCH_USERNAME}
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - SERVER_NAME="{{.Node.Hostname}}-kibana"
+    deploy:
+      labels:
+        - 'traefik.enable=false'
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      # placement:
+      #     constraints:
+      #     - node.role == manager
+    networks:
+      - elk-net
+    volumes:
+      - /var/swarm/kibana_data:/usr/share/kibana/data
+
+configs:
+  ls_config:
+    file: $PWD/logstash/config/pipeline/logstash.conf
+
+networks:
+  elk-net:
+    external: true
+# export ELASTIC_VERSION=7.6.1
+# export ELASTICSEARCH_USERNAME=elastic
+# export ELASTICSEARCH_PASSWORD=changeme
+# export ELASTICSEARCH_HOST=node1
+
+# docker network create --driver overlay --attachable elastic
+# docker stack deploy --compose-file docker-compose.yml elastic
