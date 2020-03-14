@@ -85,12 +85,14 @@ steps:
       format: markdown
       message: >
         {{#success build.status}}
-        ✅ Build #{{build.number}} of `{{repo.name}}` succeeded.
-        📝 Commit by {{commit.author}} on `{{commit.branch}}`:
+        ✅ Build #{{build.number}} of `{{repo.name}}` on `{{build.event}}` succeeded.<br />
+        Git tag: `{{build.tag}}`<br />
+        📝 Commit by {{commit.author}} on `{{commit.branch}}`:<br />
         ```
         {{commit.message}}
-        ```
-        🌐 {{ build.link }}
+        ```<br />
+        🌐 Commit link: {{ commit.link }}<br />
+        🌐 Build link: {{ build.link }}
         {{else}}
         ❌ Build #{{build.number}} of `{{repo.name}}` failed.
         📝 Commit by {{commit.author}} on `{{commit.branch}}`:
