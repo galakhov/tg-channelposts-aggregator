@@ -85,24 +85,22 @@ steps:
       format: html
       message: >
         {{#success build.status}}
-        Build finished for <b>{{tpl.app}}</b> — <b>{{tpl.env}}</b>.
+        ✅ Build #{{build.number}} of <i>{{repo.name}}</i> triggered on <i>{{build.event}}</i> event succeeded.
 
-        ✅ Build #{{build.number}} of <i>{{repo.name}}</i> on <i>{{build.event}}</i> succeeded.
-
-        Repository: <i>{{repo.namespace}}</i>
+        Build tag: <i>{{build.tag}}</i>
 
         Commit Ref: <i>{{commit.ref}}</i>
 
-        Event path on GitHub: <pre>{{github.event.path}}</pre>
+        GitHub Workspace: <i>{{github.workspace}}</i>
+
+        ENV file: <pre>{{env-file}}</pre>
 
         📝 Commit by <i>{{commit.author}}</i> on branch <i>{{commit.branch}}</i>:
-
         <pre>{{commit.message}}</pre>
 
         🌐 <a href="{{ commit.link }}">Commit link</a>.
 
-        🌐 <a href="{{ build.link }}">Build link</a>.
-
+        🌐 Build link: {{ build.link }}.
         {{else}}
         ❌ Build #{{build.number}} of <i>{{repo.name}}</i> failed.
 
@@ -112,7 +110,7 @@ steps:
 
         🌐 <a href="{{ commit.link }}">Commit link</a>.
 
-        🌐 <a href="{{ build.link }}">Build link</a>.
+        🌐 Build link: {{ build.link }}.
         {{/success}}
       # https://core.telegram.org/bots/api#markdownv2-style
 
