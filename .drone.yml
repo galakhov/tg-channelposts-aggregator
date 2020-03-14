@@ -82,24 +82,25 @@ steps:
         from_secret: telegram_token
       to:
         from_secret: telegram_chat_id
-      format: markdown
+      format: html
       message: >
+        Build finished for {{tpl.app}} — {{tpl.env}}.<br /><br />
         {{#success build.status}}
-        ✅ Build #{{build.number}} of `{{repo.name}}` on `{{build.event}}` succeeded.<br />
-        Git tag: `{{build.tag}}`<br />
-        📝 Commit by {{commit.author}} on `{{commit.branch}}`:<br />
-        ```
-        {{commit.message}}
-        ```<br />
-        🌐 Commit link: {{ commit.link }}<br />
-        🌐 Build link: {{ build.link }}
+        ✅ Build #{{build.number}} of `{{repo.name}}` on `{{build.event}}` succeeded.<br /><br />
+        Repository: {{repo.namespace}}<br />
+        Commit Ref: {{commit.ref}}<br />
+        Event path on GitHub: {{github.event.path}}<br /><br />
+        📝 Commit by {{commit.author}} on branch <i>{{commit.branch}}</i>:<br />
+        <pre>{{commit.message}}</pre>
+        <br />
+        🌐 <a href='{{ commit.link }}'>Commit link</a>.<br />
+        🌐 <a href='{{ build.link }}'>Build link</a>.<br />
         {{else}}
-        ❌ Build #{{build.number}} of `{{repo.name}}` failed.
-        📝 Commit by {{commit.author}} on `{{commit.branch}}`:
-        ```
-        {{commit.message}}
-        ```
-        🌐 {{ build.link }}
+        ❌ Build #{{build.number}} of `{{repo.name}}` failed.<br />
+        📝 Commit by {{commit.author}} on branch <i>{{commit.branch}}</i>:<br />
+        <pre>{{commit.message}}</pre>
+        🌐 <a href='{{ commit.link }}'>Commit link</a>.<br />
+        🌐 <a href='{{ build.link }}'>Build link</a>.<br />
         {{/success}}
 
 # https://docs.drone.io/pipeline/triggers/#by-event
