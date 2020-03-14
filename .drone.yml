@@ -84,8 +84,8 @@ steps:
         from_secret: telegram_chat_id
       format: html
       message: >
-        Build finished for {{tpl.app}} — {{tpl.env}}.<br /><br />
         {{#success build.status}}
+        Build finished for {{tpl.app}} — {{tpl.env}}.<br /><br />
         ✅ Build #{{build.number}} of `{{repo.name}}` on `{{build.event}}` succeeded.<br /><br />
         Repository: {{repo.namespace}}<br />
         Commit Ref: {{commit.ref}}<br />
