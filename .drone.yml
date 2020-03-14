@@ -85,23 +85,36 @@ steps:
       format: html
       message: >
         {{#success build.status}}
-        Build finished for {{tpl.app}} — {{tpl.env}}.<br /><br />
-        ✅ Build #{{build.number}} of `{{repo.name}}` on `{{build.event}}` succeeded.<br /><br />
-        Repository: {{repo.namespace}}<br />
-        Commit Ref: {{commit.ref}}<br />
-        Event path on GitHub: {{github.event.path}}<br /><br />
-        📝 Commit by {{commit.author}} on branch <i>{{commit.branch}}</i>:<br />
+        Build finished for <b>{{tpl.app}}</b> — <b>{{tpl.env}}</b>.
+
+        ✅ Build #{{build.number}} of <i>{{repo.name}}</i> on <i>{{build.event}}</i> succeeded.
+
+        Repository: <i>{{repo.namespace}}</i>
+
+        Commit Ref: <i>{{commit.ref}}</i>
+
+        Event path on GitHub: <pre>{{github.event.path}}</pre>
+
+        📝 Commit by <i>{{commit.author}}</i> on branch <i>{{commit.branch}}</i>:
+
         <pre>{{commit.message}}</pre>
-        <br />
-        🌐 <a href='{{ commit.link }}'>Commit link</a>.<br />
-        🌐 <a href='{{ build.link }}'>Build link</a>.<br />
+
+        🌐 <a href="{{ commit.link }}">Commit link</a>.
+
+        🌐 <a href="{{ build.link }}">Build link</a>.
+
         {{else}}
-        ❌ Build #{{build.number}} of `{{repo.name}}` failed.<br />
-        📝 Commit by {{commit.author}} on branch <i>{{commit.branch}}</i>:<br />
+        ❌ Build #{{build.number}} of <i>{{repo.name}}</i> failed.
+
+        📝 Commit by <i>{{commit.author}}</i> on branch <i>{{commit.branch}}</i>:
+
         <pre>{{commit.message}}</pre>
-        🌐 <a href='{{ commit.link }}'>Commit link</a>.<br />
-        🌐 <a href='{{ build.link }}'>Build link</a>.<br />
+
+        🌐 <a href="{{ commit.link }}">Commit link</a>.
+
+        🌐 <a href="{{ build.link }}">Build link</a>.
         {{/success}}
+      # https://core.telegram.org/bots/api#markdownv2-style
 
 # https://docs.drone.io/pipeline/triggers/#by-event
 trigger:
