@@ -131,6 +131,7 @@ configs:
 networks:
   elk-net:
     external: true
+# https://github.com/shazChaudhry/docker-elastic#deploy-elastic-stack
 # export ELASTIC_VERSION=7.6.1
 # export ELASTICSEARCH_USERNAME=elastic
 # export ELASTICSEARCH_PASSWORD=changeme
