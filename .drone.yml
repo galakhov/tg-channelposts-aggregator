@@ -42,7 +42,7 @@ steps:
         from_secret: file_name
       STACK_NAME:
         from_secret: stack_name
-      BUILD_TAG: ${build_tag}
+      build_tag: build_tag
     # https://github.com/appleboy/drone-ssh/issues/130
     # internal plugin-related environment variables:
     settings:
@@ -56,14 +56,17 @@ steps:
       #   from_secret: ssh_key
       # passphrase: 1234
       port: 22
-      envs: [FILE_PATH, FILE_NAME, STACK_NAME]
+      envs: [FILE_PATH, FILE_NAME, STACK_NAME, build_tag]
       script:
         - echo "The deployment has been started."
         - echo "Docker Compose file path is:"
         - echo $FILE_PATH/$FILE_NAME
         - echo "The name of the stack file:"
         - echo $STACK_NAME
-        - echo $BUILD_TAG
+        - echo "Build tag:"
+        - echo $build_tag
+        - echo "Build tag as a parameter expression:"
+        - echo ${build_tag}
         - echo $DRONE_COMMIT
         # - docker stop my-service
         # - docker pull company/project:${DRONE_COMMIT}
@@ -91,12 +94,13 @@ steps:
         {{#success build.status}}
         ✅ Build #{{build.number}} of <i>{{repo.name}}</i> triggered on <i>{{build.event}}</i> event succeeded.
 
-        Build tag: <i>{{$BUILD_TAG}}</i>
+        Build tag: <i>{{${BUILD_TAG}}}</i>
 
-        Commit Ref: <i>{{commit.ref}} / {{$DRONE_COMMIT}}</i>
+        Commit Ref: <i>{{commit.ref}} / {{${DRONE_COMMIT}}}</i>
 
         📝 Commit by <i>{{commit.author}}</i> on branch <i>{{commit.branch}}</i>:
         <pre>{{commit.message}}</pre>
+
 
         🌐 <a href="{{ commit.link }}">Commit link</a>.
 
