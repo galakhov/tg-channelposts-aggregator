@@ -67,11 +67,18 @@ steps:
         - echo $STACK_NAME
         - echo "Build tag as a parameter expression:"
         - echo ${build_tag}
+        - docker stack services $STACK_NAME
         # - docker stop my-service
         # - docker pull company/project:${DRONE_COMMIT}
         # - docker run -d company/project:${DRONE_COMMIT} my-service
         # - docker stack rm $STACK_NAME # if you need to shut down the stack first
         - docker image prune -f
+        # either only update one service using this command:
+        # - docker service update --force $STACK_NAME_${build_tag}
+        # then check its status:
+        - docker service ps $STACK_NAME_${build_tag}
+        # https://docs.docker.com/engine/reference/commandline/service_update/
+        # or update the whole stack:
         - docker stack deploy -c $FILE_PATH/$FILE_NAME $STACK_NAME
   # https://discourse.drone.io/t/triggering-promotion-event/6634/7
 
