@@ -5,7 +5,9 @@ mongoose.Promise = global.Promise
 
 let db_uri
 if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
-  db_uri = 'mongodb://localhost/TelegramChannelDB'
+  db_uri =
+    `${process.env.DB_CONNECTION_STRING}` ||
+    'mongodb://localhost/TelegramChannelDB'
 } else {
   // const MongoClient = require('mongodb').MongoClient
   // db_uri = `${process.env.DB_HOST_PREFIX}${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}/${process.env.DB_NAME}${process.env.DB_HOST_OPTS}`

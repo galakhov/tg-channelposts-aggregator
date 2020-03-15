@@ -33,12 +33,13 @@ NODE_ENV=development
 NODE_PATH=
 PUBLIC_URL=
 
-DB_HOST_PREFIX="mongodb+srv://"
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=pass
-DB_NAME=db_name
-DB_PORT="27017"
+# DB_HOST_PREFIX="mongodb+srv://"
+# DB_HOST=localhost
+# DB_USER=root
+# DB_PASSWORD=pass
+# DB_NAME=db_name
+# DB_PORT="27017"
+DB_CONNECTION_STRING=mongodb+srv://...
 # see ./data/mongoose.connector.js for the complete db_uri
 
 HOST=

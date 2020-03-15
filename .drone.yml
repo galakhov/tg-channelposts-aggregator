@@ -7,6 +7,8 @@ name: Re-deploy Swarm Stack
 # http://IP_OR_DNS:PORT/api/repos/<github-user>/<github-repo-name>/builds?branch=<branch-name>&access_token=<32-characters-long-hash>&your_custom_key=value
 # The personal bearer auth token can be found in your Drone account: http://IP_OR_DNS:PORT/account
 # There are more pipeline parameters, including own custom parameters (&your_custom_key=value), and other details on this page: https://docs.drone.io/api/builds/build_create/
+# E.g. 'build_tag' is a custom parameter being passed along with the Docker Hub's Webhook in this URL: http://IP:PORT/api/repos/<github-user>/<github-repo-name>/builds?access_token=<32-characters-long-hash>&build_tag=frontend-docker-build
+# This parameter will be available in every pipeline step as an environment variable (see below).
 # Finally, set up that url in the docker hub webhook's tab in the repository that's being built last of all: https://hub.docker.com/repository/docker/<organization/repo-name>/webhooks
 
 # Deployments can also be triggered using GitHub's actions and/or plugins:
@@ -15,9 +17,12 @@ name: Re-deploy Swarm Stack
 # https://developer.github.com/v3/repos/deployments/
 
 steps:
+  # global environment variables could (also) be defined here:
+  # global-variables:
+  # https://laszlo.cloud/drone-environment-variables-three-tips#reusing-common-variable-groups-with-yaml-anchors
   # - name: build
   # to build and publish docker images use: http://plugins.drone.io/banzaicloud/drone-kaniko/
-  # ssh into the machine and deploy the pulled docker containers.
+  # the next step is: ssh into the machine and deploy the pulled docker containers.
   - name: deploy
     # http://plugins.drone.io/appleboy/drone-ssh/
     image: appleboy/drone-ssh
@@ -37,7 +42,7 @@ steps:
       #   - production
       # https://docs.drone.io/pipeline/docker/syntax/conditions/#by-status
       # https://docs.drone.io/promote/
-    # global environment variables accessible in the scope of the current step:
+    # environment variables that are accessible in the scope of the current step:
     environment:
       FILE_PATH:
         from_secret: file_path
@@ -45,11 +50,8 @@ steps:
         from_secret: file_name
       STACK_NAME:
         from_secret: stack_name
-      # 'build_tag' is a custom parameter passed over with the Docker Hub's Webhook: http://IP:PORT/api/repos/<github-user>/<github-repo-name>/builds?access_token=<32-characters-long-hash>&build_tag=frontend-docker-build
       # This parameter is available in a pipeline step as an environment variable:
       build_tag: build_tag
-    # https://github.com/appleboy/drone-ssh/issues/130
-    # internal plugin-related environment variables:
     settings:
       host:
         from_secret: ssh_host
@@ -57,6 +59,8 @@ steps:
         from_secret: ssh_username
       password:
         from_secret: ssh_password
+      # https://github.com/appleboy/drone-ssh/issues/130
+      # internal plugin-related environment variables:
       # key:
       #   from_secret: ssh_key
       # passphrase: 1234
@@ -72,18 +76,19 @@ steps:
         - echo ${build_tag}
         - export SERVICE=$${STACK_NAME}_${build_tag}
         # - docker stack services $STACK_NAME
-        # - docker stop $STACK_NAME_$build_tag
-        # - docker stack rm $STACK_NAME # if you need to shut down the stack first
+        # - docker stop $SERVICE
+        # - docker stack rm $STACK_NAME # if you need to shut down & remove the stack first
         # - docker pull company/project:${DRONE_COMMIT}
-        - docker image prune -f
         # either only update one service using this command:
         # - docker service update --force $STACK_NAME_$build_tag
         # then check its status:
         - docker service ps $SERVICE
-        # https://docs.docker.com/engine/reference/commandline/service_update/
-        # escaping environment variabeles: https://laszlo.cloud/drone-environment-variables-three-tips
+          # https://docs.docker.com/engine/reference/commandline/service_update/
+          # escaping environment variables: https://laszlo.cloud/drone-environment-variables-three-tips
         # or update the whole stack:
         - docker stack deploy -c $FILE_PATH/$FILE_NAME $STACK_NAME
+        # clean the unused docker images:
+        - docker image prune -f
   # https://discourse.drone.io/t/triggering-promotion-event/6634/7
 
   # Notify the pre-configured Telegram BOT about the deployment status and github commit
@@ -145,8 +150,8 @@ steps:
 # https://docs.drone.io/pipeline/triggers/#by-event
 trigger:
   event:
-    exclude: [push, tag]
-    # [ pull_request, promote, rollback, custom ]
+    exclude: [push]
+    # [ tag, pull_request, promote, rollback, custom ]
 # ---
 #   kind: secret
 #   name: foo

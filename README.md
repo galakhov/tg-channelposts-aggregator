@@ -10,7 +10,7 @@
 - [cheerio](https://www.npmjs.com/package/cheerio)
 - [sync-request](https://www.npmjs.com/package/sync-request) but consider [then-request](https://github.com/then/then-request)
 - [normalize-url](https://www.npmjs.com/package/normalize-url)
-- @multifeed_edge_bot to aggregate and [redirect](https://github.com/galakhov/tg-channelposts-aggregator/tree/master/server) messages from a set of channels
+- @multifeed_edge_bot to aggregate and [redirect](https://telegra.ph/Add-new-redirection-on-multifeed-edge-bot-07-06) messages from a set of channels
 - [ElasticSearch](https://www.elastic.co)
 - [monstache](https://rwynn.github.io/monstache-site/)
 - [Docker Hub Registry](https://hub.docker.com)

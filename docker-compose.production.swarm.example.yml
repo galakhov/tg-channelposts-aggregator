@@ -31,8 +31,8 @@ services:
         - 'traefik.http.services.frontend.loadbalancer.sticky=true'
 
         # routers https
-        - 'traefik.http.routers.frontend-https.entrypoints=web-secure'
         - 'traefik.http.routers.frontend-https.tls=true'
+        - 'traefik.http.routers.frontend-https.entrypoints=web-secure'
         # - 'traefik.http.routers.frontend-https.tls.certresolver=default'
         - 'traefik.http.routers.frontend-https.rule=Host(`${FRONTEND_HOST}`)'
 
@@ -66,7 +66,7 @@ services:
       - protocol: tcp
         published: 8080
         target: 8080
-      - '9000:9000/tcp' # see ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
+      # - '9000:9000/tcp' # see ./server/Dockerfile.prod: pm2-runtime start server.js --web 9000
     networks:
       traefik_proxy:
         aliases:

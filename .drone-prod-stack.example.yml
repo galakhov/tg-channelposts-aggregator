@@ -60,8 +60,8 @@ services:
         - 'traefik.http.services.drone-server.loadbalancer.server.scheme=http'
 
       # placement:
-      constraints:
-        - node.role != manager
+      #   constraints:
+      #     - node.role != manager
       mode: replicated
       # Switching to dnsrr, to use an external load balancer without the routing mesh:
       # https://docs.docker.com/engine/swarm/ingress/#without-the-routing-mesh
@@ -85,7 +85,7 @@ services:
       - protocol: tcp
         published: 3002
         target: 3000
-    command: agent
+    # command: agent
     logging:
       driver: json-file
       options:
@@ -107,14 +107,17 @@ services:
         aliases:
           - drone-net
     deploy:
-      # labels:
-      #   - 'traefik.enable=true'
-      #   - 'traefik.docker.network=drone_rpc'
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.docker.network=drone_rpc'
 
-      #   # routers http
-      #   - 'traefik.http.routers.drone_ci.entrypoints=drone_entry'
-      #   - 'traefik.http.routers.drone_ci.rule=Host(`${DRONE_UI_HOST}`)'
-      #   - 'traefik.http.services.drone-agent.loadbalancer.server.port=${DRONE_UI_PORT}'
+        # routers http
+        - 'traefik.http.routers.drone_ci.entrypoints=drone-agent'
+        - 'traefik.http.routers.drone_ci.rule=Host(`${DRONE_AGENT_HOST}`)'
+
+        # service
+        - 'traefik.http.services.drone-agent.loadbalancer.server.port=${DRONE_AGENT_PORT_TRAEFIK}'
+        - 'traefik.http.services.drone-agent.loadbalancer.server.scheme=http'
       placement:
         # constraints:
         #   - node.role != manager
@@ -136,14 +139,14 @@ services:
 
   # global routing server & dashboard configuration / reverse proxy
   # https://github.com/cbirkenbeul/docker-homelab/tree/master/traefik
-  traefik-svc:
+  traefik:
     image: traefik:v2.1.6
     command:
       - '--configFile=/etc/traefik/config/traefik.toml' # read it from the mounted volume
       # - "--certificatesResolvers.my-resolver.acme.dnsChallenge=true"
     environment:
       - TRAEFIK_HOST
-      - TRAEFIK_DASHBOARD_PORT
+      - TRAEFIK_DASHBOARD_SERVICE_PORT
     env_file:
       - /var/swarm/traefik/.env.provider
     ports:
@@ -190,9 +193,12 @@ services:
         - 'traefik.docker.network=traefik_proxy'
 
         # routers http
-        - 'traefik.http.routers.api.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`)))' # change to your domain
-        - 'traefik.http.routers.api.entryPoints=dashboard_entry'
+        - 'traefik.http.routers.api.rule=(Host(`${TRAEFIK_HOST}`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`)))'
+        - 'traefik.http.routers.api.entryPoints=dashboard_entry,traefik'
         - 'traefik.http.routers.api.service=api@internal'
+        - 'traefik.http.routers.api.tls=true'
+        - 'traefik.http.routers.api.middlewares=auth-mdlwr,gzip'
+
         ## - 'traefik.http.routers.api.middlewares=api_tls_mdlwr@docker'
         # - 'traefik.http.routers.api.middlewares=https_redirect'
         # http://www.htaccesstools.com/htpasswd-generator/
@@ -209,15 +215,19 @@ services:
         # - 'traefik.http.routers.api.tls.domains[0].sans=*.company.org'
 
         # services
-        - 'traefik.http.services.traefik-svc.loadbalancer.server.port=`${TRAEFIK_DASHBOARD_PORT}`'
+        - 'traefik.http.services.traefik.loadbalancer.server.port=${TRAEFIK_DASHBOARD_SERVICE_PORT}'
+        - 'traefik.http.services.traefik.loadbalancer.server.scheme=http'
         # - 'traefik.http.services.traefik-svc.loadbalancer.server.scheme=https'
         # - 'traefik.port=`$TRAEFIK_DASHBOARD_PORT`'
+
         # middlewares
         ## - 'traefik.http.middlewares.api_tls_mdlwr.redirectscheme.scheme=https'
-        # auth
-        ## - 'traefik.http.routers.api.middlewares=myauth'
-        ## - 'traefik.http.middlewares.myauth.basicauth.users=admin:${TRAEFIK_ADMIN_PASSWORD}'
-        # - 'traefik.http.middlewares.auth.basicauth.users=<user>/<pass>'
+        ## - 'traefik.http.middlewares.api_tls_mdlwr.redirectscheme.permanent=true'
+        ##### - 'traefik.http.middlewares.api_tls_mdlwr.redirectscheme.port=${TRAEFIK_DASHBOARD_PORT}'
+        # GZip compression for traffic
+        - 'traefik.http.middlewares.gzip.compress=true'
+        - 'traefik.http.middlewares.auth-mdlwr.basicauth.users=${TRAEFIK_AUTH_DATA}'
+
         # https://blog.creekorful.com/how-to-expose-traefik-2-dashboard-securely-docker-swarm/
         # configuration example: https://docs.traefik.io/migration/v1-to-v2/
         # https://docs.traefik.io/operations/dashboard/#secure-mode
@@ -254,7 +264,7 @@ networks:
     attachable: true
   microservices:
     driver: overlay
-    external: true
+    external: false
     attachable: true
 # Shell commands:
 # docker network create --scope=swarm --driver=overlay --attachable traefik_proxy
