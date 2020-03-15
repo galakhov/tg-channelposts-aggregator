@@ -24,6 +24,7 @@ steps:
     when:
       event:
         - custom
+        # other events:
         # - promote
         # - cron
         # - push
@@ -77,7 +78,7 @@ steps:
         # either only update one service using this command:
         # - docker service update --force $STACK_NAME_$build_tag
         # then check its status:
-        - docker service ps $STACK_NAME_$build_tag
+        - docker service ps $${STACK_NAME}_$${build_tag}
         # https://docs.docker.com/engine/reference/commandline/service_update/
         # or update the whole stack:
         - docker stack deploy -c $FILE_PATH/$FILE_NAME $STACK_NAME
