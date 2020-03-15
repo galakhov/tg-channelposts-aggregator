@@ -4,9 +4,9 @@ name: Re-deploy Swarm Stack
 
 # After you push the changes to the GitHub repository, the preconfigured automated build process is started in the Docker Hub. When the container are successfully built from the chosen Dockerfiles, the pipeline can then proceed with the next deployment step. In that step the new versions of the containers are being pulled from the Docker Registry and re-deployed in the swarm stack.
 # Any pipeline step can be triggered on the so-called 'custom' event coming from the docker hub using it's outgoing webhook (or from any other CI tool or container registry, such as GitHub registry or similar: https://github.com/features/packages):
-# http://IP_OR_DNS:PORT/api/repos/<github-user>/<github-repo>/builds?branch=<branch-name>&access_token=<32-characters-long-hash>
+# http://IP_OR_DNS:PORT/api/repos/<github-user>/<github-repo-name>/builds?branch=<branch-name>&access_token=<32-characters-long-hash>&your_custom_key=value
 # The personal bearer auth token can be found in your Drone account: http://IP_OR_DNS:PORT/account
-# There are more pipeline parameters and other details on this page: https://docs.drone.io/api/builds/build_create/
+# There are more pipeline parameters, including own custom parameters (&your_custom_key=value), and other details on this page: https://docs.drone.io/api/builds/build_create/
 # Finally, set up that url in the docker hub webhook's tab in the repository that's being built last of all: https://hub.docker.com/repository/docker/<organization/repo-name>/webhooks
 
 # Deployments can also be triggered using GitHub's actions and/or plugins:
@@ -42,6 +42,8 @@ steps:
         from_secret: file_name
       STACK_NAME:
         from_secret: stack_name
+      # 'build_tag' is a custom parameter passed over with the Docker Hub's Webhook: http://IP:PORT/api/repos/<github-user>/<github-repo-name>/builds?access_token=<32-characters-long-hash>&build_tag=frontend-docker-build
+      # This parameter is available in a pipeline step as an environment variable:
       build_tag: build_tag
     # https://github.com/appleboy/drone-ssh/issues/130
     # internal plugin-related environment variables:
@@ -65,7 +67,6 @@ steps:
         - echo $STACK_NAME
         - echo "Build tag as a parameter expression:"
         - echo ${build_tag}
-        - echo $DRONE_COMMIT
         # - docker stop my-service
         # - docker pull company/project:${DRONE_COMMIT}
         # - docker run -d company/project:${DRONE_COMMIT} my-service
@@ -96,9 +97,10 @@ steps:
         {{#success build.status}}
         ✅ Build #{{build.number}} of <i>{{repo.name}}</i> triggered on <i>{{build.event}}</i> event succeeded.
 
-        Build tag: <i>{{tpl.docker_build_tag}}</i>
+        Build tag: <b>{{tpl.docker_build_tag}}</b>
 
         Commit Ref: <i>{{commit.ref}}</i>
+
 
         📝 Commit by <i>{{commit.author}}</i> on branch <i>{{commit.branch}}</i>:
         <pre>{{commit.message}}</pre>
@@ -108,11 +110,16 @@ steps:
 
         🌐 Build link: {{ build.link }}.
         {{else}}
-        ❌ Build #{{build.number}} of <i>{{repo.name}}</i> failed.
+        ❌ Build #{{build.number}} of <i>{{repo.name}}</i> triggered on <i>{{build.event}}</i> event failed.
+
+        Build tag: <b>{{tpl.docker_build_tag}}</b>
+
+        Commit Ref: <i>{{commit.ref}}</i>
+
 
         📝 Commit by <i>{{commit.author}}</i> on branch <i>{{commit.branch}}</i>:
-
         <pre>{{commit.message}}</pre>
+
 
         🌐 <a href="{{ commit.link }}">Commit link</a>.
 
