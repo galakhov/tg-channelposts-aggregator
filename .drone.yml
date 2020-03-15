@@ -60,23 +60,19 @@ steps:
       port: 22
       envs: [FILE_PATH, FILE_NAME, STACK_NAME, build_tag]
       script:
-        - echo "The deployment has been started."
-        - echo "Docker Compose file path is:"
-        - echo $FILE_PATH/$FILE_NAME
-        - echo "The name of the stack file:"
-        - echo $STACK_NAME
-        - echo "Build tag as a parameter expression:"
-        - echo ${build_tag}
-        - docker stack services $STACK_NAME
-        # - docker stop my-service
-        # - docker pull company/project:${DRONE_COMMIT}
-        # - docker run -d company/project:${DRONE_COMMIT} my-service
+        - echo "The deployment pipeline has started."
+        - echo "Docker Compose file path is: $FILE_PATH/$FILE_NAME"
+        - echo "The name of the stack is: $STACK_NAME"
+        - echo "Build tag as a parameter expression: ${build_tag}"
+        # - docker stack services $STACK_NAME
+        # - docker stop $STACK_NAME_$build_tag
         # - docker stack rm $STACK_NAME # if you need to shut down the stack first
+        # - docker pull company/project:${DRONE_COMMIT}
         - docker image prune -f
         # either only update one service using this command:
-        # - docker service update --force $STACK_NAME_${build_tag}
+        # - docker service update --force $STACK_NAME_$build_tag
         # then check its status:
-        - docker service ps $STACK_NAME_${build_tag}
+        - docker service ps $STACK_NAME_$build_tag
         # https://docs.docker.com/engine/reference/commandline/service_update/
         # or update the whole stack:
         - docker stack deploy -c $FILE_PATH/$FILE_NAME $STACK_NAME
