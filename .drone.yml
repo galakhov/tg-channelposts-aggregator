@@ -47,7 +47,7 @@ steps:
         from_secret: stack_name
       # 'build_tag' is a custom parameter passed over with the Docker Hub's Webhook: http://IP:PORT/api/repos/<github-user>/<github-repo-name>/builds?access_token=<32-characters-long-hash>&build_tag=frontend-docker-build
       # This parameter is available in a pipeline step as an environment variable:
-      BUILD_TAG: build_tag
+      build_tag: build_tag
     # https://github.com/appleboy/drone-ssh/issues/130
     # internal plugin-related environment variables:
     settings:
@@ -61,7 +61,7 @@ steps:
       #   from_secret: ssh_key
       # passphrase: 1234
       port: 22
-      envs: [FILE_PATH, FILE_NAME, STACK_NAME, BUILD_TAG]
+      envs: [FILE_PATH, FILE_NAME, STACK_NAME, build_tag]
       script:
         - echo "The deployment has started."
         - echo "Docker Compose file path is:"
@@ -69,7 +69,8 @@ steps:
         - echo "The name of the stack file:"
         - echo $STACK_NAME
         - echo "Build tag as a parameter expression:"
-        - echo ${BUILD_TAG}
+        - echo ${build_tag}
+        - export SERVICE=$${STACK_NAME}_${build_tag}
         # - docker stack services $STACK_NAME
         # - docker stop $STACK_NAME_$build_tag
         # - docker stack rm $STACK_NAME # if you need to shut down the stack first
@@ -78,9 +79,9 @@ steps:
         # either only update one service using this command:
         # - docker service update --force $STACK_NAME_$build_tag
         # then check its status:
-        - docker service ps $${STACK_NAME}_${BUILD_TAG}
+        - docker service ps $SERVICE
         # https://docs.docker.com/engine/reference/commandline/service_update/
-        # escaping environment variables: https://laszlo.cloud/drone-environment-variables-three-tips
+        # escaping environment variabeles: https://laszlo.cloud/drone-environment-variables-three-tips
         # or update the whole stack:
         - docker stack deploy -c $FILE_PATH/$FILE_NAME $STACK_NAME
   # https://discourse.drone.io/t/triggering-promotion-event/6634/7
