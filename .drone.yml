@@ -97,12 +97,14 @@ steps:
         {{#success build.status}}
         ✅ Build #{{build.number}} of <i>{{repo.name}}</i> triggered on <i>{{build.event}}</i> event succeeded.
 
+
         Build tag: <b>{{tpl.docker_build_tag}}</b>
 
         Commit Ref: <i>{{commit.ref}}</i>
 
 
         📝 Commit by <i>{{commit.author}}</i> on branch <i>{{commit.branch}}</i>:
+
         <pre>{{commit.message}}</pre>
 
 
@@ -112,12 +114,14 @@ steps:
         {{else}}
         ❌ Build #{{build.number}} of <i>{{repo.name}}</i> triggered on <i>{{build.event}}</i> event failed.
 
+
         Build tag: <b>{{tpl.docker_build_tag}}</b>
 
         Commit Ref: <i>{{commit.ref}}</i>
 
 
         📝 Commit by <i>{{commit.author}}</i> on branch <i>{{commit.branch}}</i>:
+
         <pre>{{commit.message}}</pre>
 
 
