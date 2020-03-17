@@ -251,7 +251,7 @@ services:
       - /var/swarm/traefik/certs:/etc/traefik/certs
       - /var/swarm/traefik/logs:/logs
       # - /var/swarm/traefik/access.log:/traefik.access.log
-      - /var/swarm/traefik/.htpasswd:/.htpasswd
+      # - /var/swarm/traefik/.htpasswd:/.htpasswd
 
 networks:
   traefik_proxy:
