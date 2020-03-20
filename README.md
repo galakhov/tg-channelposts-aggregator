@@ -84,7 +84,7 @@ COPY --from=machine-1 /files/in/the/path /copied/here/in/another/path
 RUN cat /copied/here/in/another/path/file_with_a_custom_var
 ```
 
-By the way, you need to [prepend](https://create-react-app.dev/docs/adding-custom-environment-variables) the `REACT_APP_` prefix to your environment variables if you are trying to compile a react application (developed based on the create-react-app) during the build phase and do want to pass any ENV vars into it:
+By the way, you need to [prepend](https://create-react-app.dev/docs/adding-custom-environment-variables) the `REACT_APP_` prefix to your environment variables if you are trying to compile a react application (based on the create-react-app) during the build phase and do want to pass any ENV vars into it:
 
 ```bash
 # (...) so the line with an environment variable becomes:
@@ -99,7 +99,7 @@ Of course you can set up **multiple** environment variables ([like in this examp
 docker build --build-arg <varname1>=<value1> --build-arg <varname2>=<value2> -t $IMAGE_NAME  -f $DOCKERFILE_PATH .
 ```
 
-In case you wonder what these `$IMAGE_NAME` and `$DOCKERFILE_PATH` are? Those are the default utility environment variables and ["are available during automated builds"](https://docs.docker.com/docker-hub/builds/advanced/#environment-variables-for-building-and-testing). The flags `-t` and `-f` with these variables should be left as they are in order to correctly rerun (i.e., _override_) the `docker build` command with the same build configuration, as it was shown previously in Figures 2 and 3.
+In case you're wondering what these `$IMAGE_NAME` and `$DOCKERFILE_PATH` are? Those are the default utility environment variables and ["are available during automated builds"](https://docs.docker.com/docker-hub/builds/advanced/#environment-variables-for-building-and-testing). The flags `-t` and `-f` with these variables should remain unchanged in order to correctly rerun (i.e., _override_) the `docker build` command with the same build configuration, as it was shown previously in Figures 2 and 3.
 
 > Caution: A hooks/build file overrides the basic docker build command used by the builder, so you must include a similar build command in the hook or the automated build fails.
 > Source: [Override the “build” phase to set variables](https://docs.docker.com/docker-hub/builds/advanced/#build-hook-examples).
