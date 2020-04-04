@@ -40,7 +40,7 @@ class ThirdPartyCourses {
                         }
                     }
             }
-        }`
+        }`,
     }
   }
 
@@ -54,45 +54,50 @@ class ThirdPartyCourses {
   }
 
   addToQueue(urlsArray) {
+    const INTERVAL = 2000 // to delay parseAndSaveCourse (value in ms)
+
     if (urlsArray && urlsArray.length > 0) {
       // https://github.com/BalassaMarton/sequential-task-queue#readme
       const queue = new SequentialTaskQueue()
       // TODO: Run async actions sequentially: https://stackoverflow.com/questions/36672566/node-js-control-a-queue-of-promises
-      urlsArray.forEach(url => {
-        if (
-          url[1].indexOf('https://www.udemy.com/') !== -1 ||
-          url[1].indexOf('https://udemy.com/') !== -1
-        ) {
-          queue.push(() => {
-            return new Promise(resolve => {
-              setTimeout(() => {
-                ctlHelper.parseAndSaveCourse(url[1], url[0])
-                resolve()
-              }, 5000)
+      urlsArray.forEach((url, index) => {
+        setTimeout(() => {
+          if (
+            url[1].indexOf('https://www.udemy.com/') !== -1 ||
+            url[1].indexOf('https://udemy.com/') !== -1
+          ) {
+            queue.push(() => {
+              return new Promise((resolve) => {
+                setTimeout(() => {
+                  ctlHelper.parseAndSaveCourse(url[1], url[0])
+                  resolve()
+                }, INTERVAL * index)
+              })
+                .then((r) => {
+                  console.log(
+                    ctlHelper.getFullDate() +
+                      ' Following course added to the queue for parsing:\n' +
+                      url +
+                      '\n\n'
+                  )
+                })
+                .catch((e) => {
+                  console.log(
+                    ctlHelper.getFullDate() + ' SequentialTaskQueue error:\n',
+                    e
+                  )
+                })
             })
-              .then(r => {
-                console.log(
-                  ctlHelper.getFullDate() +
-                    ' Following course added to the queue for parsing:\n' +
-                    url +
-                    '\n\n'
-                )
-              })
-              .catch(e => {
-                console.log(
-                  ctlHelper.getFullDate() + ' SequentialTaskQueue error:\n',
-                  e
-                )
-              })
-          })
-          this.removeSingleElement(urlsArray, url[0])
-          console.log(
-            `${ctlHelper.getFullDate()} ThirdPartyCourses -> addToQueue -> reduced urlsArray to:\n${
-              urlsArray.length
-            } entries`
-          )
-        }
+            this.removeSingleElement(urlsArray, url[0])
+            console.log(
+              `${ctlHelper.getFullDate()} ThirdPartyCourses -> addToQueue -> reduced urlsArray to:\n${
+                urlsArray.length
+              } entries`
+            )
+          }
+        }, index * INTERVAL)
       })
+
       queue.wait().then(() => {
         // the last step in every queue is to cancel the running cron job
         if (this.jobs.running) {
@@ -106,15 +111,15 @@ class ThirdPartyCourses {
   execute() {
     const getCouponsNumber = async (graphqlQuery = this.config.query) => {
       const variables = {
-        myDate: new Date().toISOString().split('T')[0]
+        myDate: new Date().toISOString().split('T')[0],
       }
       const freeCoursesIds = [],
         freeCouponsIds = []
       // see docs at: https://github.com/prisma/graphql-request
       request('https://comidoc.net/api', graphqlQuery, variables)
-        .then(data => {
+        .then((data) => {
           if (data && data.free) {
-            JSON.parse(JSON.stringify(data.free)).forEach(course => {
+            JSON.parse(JSON.stringify(data.free)).forEach((course) => {
               const urlWithoutParameters = course.cleanUrl
               const courseId = course.udemyId
               const courseUrl = `https://www.udemy.com/course${urlWithoutParameters}`
@@ -131,7 +136,7 @@ class ThirdPartyCourses {
           }
 
           if (data && data.coupons) {
-            JSON.parse(JSON.stringify(data.coupons)).forEach(obj => {
+            JSON.parse(JSON.stringify(data.coupons)).forEach((obj) => {
               const urlWithoutParameters = obj.course.cleanUrl
               const courseId = obj.course.udemyId
               const freeCoupon = `https://www.udemy.com/course${urlWithoutParameters}?couponCode=${obj.course.coupon[0].code}`
@@ -147,7 +152,7 @@ class ThirdPartyCourses {
             }, 10000)
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(
             ctlHelper.getFullDate() + ' GraphQL response errors:\n',
             err
@@ -178,7 +183,7 @@ class ThirdPartyCourses {
     console.log(
       '\n-------- Planning automation: cron will run on the following dates:\n'
     )
-    this.jobs.nextDates(5).forEach(d => {
+    this.jobs.nextDates(5).forEach((d) => {
       const date = JSON.stringify(d)
         .replace(/-/g, '/')
         .replace(/T/, ' ')
