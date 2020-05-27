@@ -139,7 +139,7 @@ docker service update {SERVICE-NAME}
 
 <br />
 
-### Docker Hub Webhooks & Drone.io insights
+### Docker Registry Webhooks & Drone.io insights
 
 #### Docker Hub's outgoing Webhooks can be received by Drone CI/CD
 
