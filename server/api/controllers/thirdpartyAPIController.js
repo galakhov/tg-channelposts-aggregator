@@ -121,26 +121,32 @@ class ThirdPartyCourses {
           if (data && data.free) {
             JSON.parse(JSON.stringify(data.free)).forEach((course) => {
               const urlWithoutParameters = course.cleanUrl
-              const courseId = course.udemyId
-              const courseUrl = `https://www.udemy.com/course${urlWithoutParameters}`
-              freeCoursesIds.push([courseId, courseUrl])
-              setTimeout(() => {
-                console.log(
-                  '\nThirdPartyCourses -> freeCourses\n',
-                  freeCoursesIds.join('\n') + '\n\n'
-                )
-                // prepare & save the post
-                this.addToQueue(freeCoursesIds)
-              }, 5000)
+              // Check whether the course is already in DB
+              if (!ctlHelper.isAlreadyInDB(urlWithoutParameters)) {
+                const courseId = course.udemyId
+                const courseUrl = `https://www.udemy.com/course${urlWithoutParameters}`
+                freeCoursesIds.push([courseId, courseUrl])
+              }
             })
+            setTimeout(() => {
+              console.log(
+                '\nThirdPartyCourses -> freeCourses\n',
+                freeCoursesIds.join('\n') + '\n\n'
+              )
+              // prepare & save the post
+              this.addToQueue(freeCoursesIds)
+            }, 5000)
           }
 
           if (data && data.coupons) {
             JSON.parse(JSON.stringify(data.coupons)).forEach((obj) => {
               const urlWithoutParameters = obj.course.cleanUrl
-              const courseId = obj.course.udemyId
-              const freeCoupon = `https://www.udemy.com/course${urlWithoutParameters}?couponCode=${obj.course.coupon[0].code}`
-              freeCouponsIds.push([courseId, freeCoupon])
+              // Check whether the course is already in DB
+              if (!ctlHelper.isAlreadyInDB(urlWithoutParameters)) {
+                const courseId = obj.course.udemyId
+                const freeCoupon = `https://www.udemy.com/course${urlWithoutParameters}?couponCode=${obj.course.coupon[0].code}`
+                freeCouponsIds.push([courseId, freeCoupon])
+              }
             })
             setTimeout(() => {
               console.log(
