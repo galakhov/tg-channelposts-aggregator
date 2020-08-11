@@ -1,78 +1,83 @@
 [global]
-  sendAnonymousUsage = false
+sendAnonymousUsage = false
 
 [log]
-  level = "ERROR" # DEBUG|INFO
-  filePath = "/logs/traefik.log" # see 'traefik: volumes:' section in the compose file
-  format = "json"
-  # https://docs.traefik.io/observability/access-logs/
+filePath = "/logs/traefik.log" # see 'traefik: volumes:' section in the compose file
+format = "json" 
+level = "ERROR" # DEBUG|INFO
+# https://docs.traefik.io/observability/access-logs/
 
 [serversTransport]
-  insecureSkipVerify = true
-  # https://docs.traefik.io/user-guides/grpc/#with-https
+insecureSkipVerify = true
+# https://docs.traefik.io/user-guides/grpc/#with-https
 
 [providers]
-  [providers.file]
-    directory = "/etc/traefik/config/dynamic"
-    filename = "traefik.dynamic.toml"
-    watch = true
-  [providers.docker]
-    exposedByDefault = false
-    swarmMode = true
-    useBindPortIP = true
-    # endpoint = "tcp://127.0.0.1:2377"
-    # if it doesn't work, try ':2375'
-    network = "traefik_proxy"
-    watch = true
-    # watch for new (or no longer available) containers
-    endpoint = "unix:///var/run/docker.sock"
-    # docker swarm mode (1.12+): https://docs.traefik.io/routing/providers/docker/
+[providers.file]
+directory = "/etc/traefik/config/dynamic"
+filename = "traefik.dynamic.toml"
+watch = true
+[providers.docker]
+exposedByDefault = false
+swarmMode = true
+useBindPortIP = true
+# endpoint = "tcp://127.0.0.1:2377"
+# if it doesn't work, try ':2375'
+network = "traefik_proxy"
+watch = true
+# watch for new (or no longer available) containers
+endpoint = "unix:///var/run/docker.sock"
+# docker swarm mode (1.12+): https://docs.traefik.io/routing/providers/docker/
 
 [api]
-  dashboard = true
-  insecure = true
-  # https://docs.traefik.io/operations/dashboard/#insecure-mode
+dashboard = true
+insecure = true
+# https://docs.traefik.io/operations/dashboard/#insecure-mode
 
 # https://docs.traefik.io/routing/entrypoints/#configuration
 [entryPoints]
-  [entryPoints.web]
-    address = ":80"
-    # [entryPoints.web.proxyProtocol]
-      # insecure = true
-      # Enable the API in insecure mode, which means that the API will be available directly on the entryPoint named `traefik`.
-      # https://docs.traefik.io/v2.1/operations/api/#insecure
-  [entryPoints.backend]
-    address = ":8080"
-  [entryPoints.drone-server]
-    address = ":8090"
-  [entryPoints.drone-agent]
-    address = ":3002"
-  [entryPoints.traefik]
-    address = ":9009"
-    # If the entryPoint named traefik (api@internal) is not configured, it will be automatically assigned to port 8080, which is already occupied by 'backend'.
-  [entryPoints.dashboard_http]
-    address = ":9010"
-  # [entryPoints.dashboard_https]
-  #   address = ":9100"
-  [entryPoints.web-secure]
-    address = ":443"
-  [entryPoints.backend-secure]
-    address = ":8443"
+[entryPoints.web]
+address = ":80"
+# [entryPoints.web.proxyProtocol]
+# insecure = true
+# Enable the API in insecure mode, which means that the API will be available directly on the entryPoint named `traefik`.
+# https://docs.traefik.io/v2.1/operations/api/#insecure
+[entryPoints.backend]
+address = ":8080"
+[entryPoints.drone-server]
+address = ":8090"
+[entryPoints.drone-agent]
+address = ":3002"
+# If the entryPoint named traefik (api@internal) is not configured, it will be automatically assigned to port 8080, which is already occupied by 'backend'.
+[entryPoints.traefik]
+address = ":9009"
+# [entryPoints.dashboard_http]
+# address = ":9010"
+# [entryPoints.dashboard_https]
+#   address = ":9100"
+[entryPoints.web-secure]
+address = ":443"
+[entryPoints.backend-secure]
+address = ":8443"
+# [entryPoints.jam-entry]
+# address = ":9000"
+# [entryPoints.jam-secure]
+# address = ":9443"
 
-[certificatesResolvers]
-  [certificatesResolvers.my-resolver.acme]
-    # email to notify you in case of issues or expiring certificates
-    email = "your-email@your-domain.org"
-    storage = "/etc/traefik/acme/acme.json"
-    caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
-    # https://docs.traefik.io/v2.1/user-guides/docker-compose/acme-dns/
-    # https://docs.traefik.io/https/acme/#caserver
-    # [certificatesResolvers.my-resolver.acme.httpChallenge]
-    #   entryPoint = "web" # used during the challenge
-    [certificatesResolvers.my-resolver.acme.dnsChallenge]
-      # dnsChallenge is to generate wildcard certificates using ACME V2
-      provider = "godaddy"
-      delayBeforeCheck = 0
+# [certificatesResolvers]
+# [certificatesResolvers.jam-resolver.acme]
+# # email to notify you in case of issues or expiring certificates
+# caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+# email = "rootless@disroot.org"
+# storage = "/etc/traefik/acme/acme.json"
+# # https://docs.traefik.io/v2.1/user-guides/docker-compose/acme-dns/
+# # https://docs.traefik.io/https/acme/#caserver
+# [certificatesResolvers.jam-resolver.acme.httpChallenge]
+# delayBeforeCheck = 59 
+# entryPoint = "jam-entry" # used during the challenge
+# [certificatesResolvers.my-resolver.acme.dnsChallenge]
+# dnsChallenge is to generate wildcard certificates using ACME V2
+# delayBeforeCheck = 59
+# provider = "godaddy"
 
 # [certificatesResolvers]
 #   [certificatesResolvers.default.acme]

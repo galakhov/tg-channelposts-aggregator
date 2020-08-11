@@ -1,0 +1,102 @@
+version: '3.7'
+
+services:
+  postgresql:
+    image: 'bitnami/postgresql:11'
+    user: '1001'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - '/opt/containers/discourse/postgresql_data:/bitnami/postgresql'
+    networks:
+      - default
+  redis:
+    image: 'bitnami/redis:5.0'
+    user: root
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - '/opt/containers/discourse/redis_data:/bitnami'
+    networks:
+      - default
+  jam-discourse:
+    deploy:
+      labels:
+        # services
+        - 'traefik.http.services.jam-discourse.loadbalancer.server.port=${JAM_SERVICE_PORT}'
+        # e.g. - 'traefik.http.services.jam-service.loadbalancer.server.port=80'
+        - 'traefik.http.services.jam-discourse.loadbalancer.server.scheme=http'
+        - 'traefik.http.services.jam-discourse.loadbalancer.passhostheader=true'
+        - 'traefik.http.services.jam-discourse.loadbalancer.sticky=true'
+
+        # routers https
+        - 'traefik.http.routers.jam.tls=true'
+        - 'traefik.http.routers.jam.entryPoints=jam-entry'
+        - 'traefik.http.routers.jam.rule=(Host(`${JAM_SUBDOMAIN}`))' # jam.fuzzysouls.de
+        - 'traefik.http.routers.jam.tls.domains[0].main=${JAM_DOMAIN}' # fuzzysouls.de
+        - 'traefik.http.routers.jam.tls.domains[0].sans=${JAM_WILDCARD}' # jam.fuzzysouls.de
+        - 'traefik.http.routers.jam.tls.certresolver=jam-resolver'
+        - 'traefik.http.routers.jam.middlewares=jam_https_mdlwr@docker'
+
+        # middlewares
+        - 'traefik.http.middlewares.jam_https_mdlwr.redirectscheme.scheme=https'
+        - 'traefik.http.middlewares.jam_https_mdlwr.redirectscheme.permanent=true'
+        - 'traefik.http.middlewares.jam_https_mdlwr.redirectscheme.port=${JAM_SECURE_PORT}' # 9443
+
+        - 'traefik.http.routers.jam-secure.entrypoints=https'
+        - 'traefik.http.routers.jam-secure.rule=Host(`discourse.euredomain.de`)' ## Hier eure Domain eintragen
+        - 'traefik.http.routers.jam-secure.tls=true'
+        - 'traefik.http.routers.jam-secure.tls.certresolver=http'
+        - 'traefik.http.routers.jam-secure.service=discourse'
+
+        # network
+        - 'traefik.docker.network=proxy'
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+      placement:
+        constraints:
+          - node.role == worker
+    networks:
+      - proxy
+      - default
+    depends_on:
+      - postgresql
+      - redis
+    volumes:
+      - '/opt/containers/discourse/discourse_data:/bitnami'
+    environment:
+      - POSTGRESQL_HOST=postgresql
+      - POSTGRESQL_ROOT_USER=postgres
+      - POSTGRESQL_CLIENT_CREATE_DATABASE_NAME=bitnami_application
+      - POSTGRESQL_CLIENT_CREATE_DATABASE_USERNAME=bn_discourse
+      - POSTGRESQL_CLIENT_CREATE_DATABASE_PASSWORD=bitnami1 ### Bitte anpassen
+      - DISCOURSE_POSTGRESQL_NAME=bitnami_application
+      - DISCOURSE_POSTGRESQL_USERNAME=bn_discourse
+      - DISCOURSE_POSTGRESQL_PASSWORD=bitnami1 ### Bitte anpassen
+      - DISCOURSE_HOSTNAME=discourse.euredomain.de ## Hier eure Domain eintragen
+      - DISCOURSE_USERNAME=user ### Bitte anpassen
+      - DISCOURSE_PASSWORD=test ### Bitte anpassen
+      - DISCOURSE_EMAIL=eure@email.de ### Bitte anpassen
+  sidekiq:
+    image: 'bitnami/discourse:2'
+    depends_on:
+      - discourse
+    volumes:
+      - '/opt/containers/discourse/sidekiq_data:/bitnami'
+    command: 'nami start – foreground discourse-sidekiq'
+    environment:
+      - DISCOURSE_POSTGRESQL_NAME=bitnami_application
+      - DISCOURSE_POSTGRESQL_USERNAME=bn_discourse
+      - DISCOURSE_POSTGRESQL_PASSWORD=bitnami1 ### Bitte anpassen
+      - DISCOURSE_HOST=discourse
+      - DISCOURSE_PORT=3000
+      - DISCOURSE_HOSTNAME=discourse.euredomain.de ## Hier eure Domain eintragen
+    networks:
+      - default
+
+networks:
+  proxy:
+    external: true
