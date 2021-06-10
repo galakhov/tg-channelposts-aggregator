@@ -22,7 +22,7 @@
     "lodash": "^4.17.15",
     "mongoose": "^5.7.5",
     "node-fetch": "^2.6.0",
-    "normalize-url": "^3.3.0",
+    "normalize-url": "^4.5.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "sequential-task-queue": "^1.2.1",
