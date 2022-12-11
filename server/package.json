@@ -13,7 +13,7 @@
     "cors": "^2.8.5",
     "cron": "^1.7.1",
     "dotenv": "^8.0.0",
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "express-graphql": "^0.9.0",
     "get-urls": "^7.2.0",
     "graphql": "^14.4.2",
